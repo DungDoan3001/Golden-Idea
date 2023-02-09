@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Web.Api.Entities;
 
-namespace Web.Api.Data
+namespace Web.Api.Data.Context
 {
     public interface IAppDbContext
     {
