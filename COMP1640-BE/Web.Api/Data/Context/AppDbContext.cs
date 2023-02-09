@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Web.Api.Entities;
 
-namespace Web.Api.Data
+namespace Web.Api.Data.Context
 {
     public class AppDbContext : DbContext, IAppDbContext
     {
@@ -25,84 +25,84 @@ namespace Web.Api.Data
         {
             // Link Many-One || User - Role
             builder.Entity<User>()
-                .HasOne<Role>(x => x.Role)
+                .HasOne(x => x.Role)
                 .WithMany(x => x.Users)
                 .HasForeignKey(x => x.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || User - Department
             builder.Entity<User>()
-                .HasOne<Department>(x => x.Department)
+                .HasOne(x => x.Department)
                 .WithMany(x => x.Users)
                 .HasForeignKey(x => x.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || User - Idea
             builder.Entity<Idea>()
-                .HasOne<User>(x => x.User)
+                .HasOne(x => x.User)
                 .WithMany(x => x.Ideas)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || Idea - Topic
             builder.Entity<Idea>()
-                .HasOne<Topic>(x => x.Topic)
+                .HasOne(x => x.Topic)
                 .WithMany(x => x.Ideas)
                 .HasForeignKey(x => x.TopicId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || Idea - Category
             builder.Entity<Idea>()
-                .HasOne<Category>(x => x.Category)
+                .HasOne(x => x.Category)
                 .WithMany(x => x.Ideas)
                 .HasForeignKey(x => x.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || File - Idea
             builder.Entity<File>()
-                .HasOne<Idea>(x => x.Idea)
+                .HasOne(x => x.Idea)
                 .WithMany(x => x.Files)
                 .HasForeignKey(x => x.IdeaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || User - View
             builder.Entity<View>()
-                .HasOne<User>(x => x.User)
+                .HasOne(x => x.User)
                 .WithMany(x => x.Views)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || Idea - View
             builder.Entity<View>()
-                .HasOne<Idea>(x => x.Idea)
+                .HasOne(x => x.Idea)
                 .WithMany(x => x.Views)
                 .HasForeignKey(x => x.IdeaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || User - Comment
             builder.Entity<Comment>()
-                .HasOne<User>(x => x.User)
+                .HasOne(x => x.User)
                 .WithMany(x => x.Comments)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || Idea - Comment
             builder.Entity<Comment>()
-                .HasOne<Idea>(x => x.Idea)
+                .HasOne(x => x.Idea)
                 .WithMany(x => x.Comments)
                 .HasForeignKey(x => x.IdeaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || User - Reaction
             builder.Entity<Reaction>()
-                .HasOne<User>(x => x.User)
+                .HasOne(x => x.User)
                 .WithMany(x => x.Reactions)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Link Many-One || Idea - Reaction
             builder.Entity<Reaction>()
-                .HasOne<Idea>(x => x.Idea)
+                .HasOne(x => x.Idea)
                 .WithMany(x => x.Reactions)
                 .HasForeignKey(x => x.IdeaId)
                 .OnDelete(DeleteBehavior.Restrict);

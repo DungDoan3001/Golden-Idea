@@ -5,8 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Web.Api.Extensions;
-using Web.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using Web.Api.Data.Context;
+using Web.Api.Data.UnitOfWork;
+using Web.Api.Services.DepartmentService;
+using Microsoft.Extensions.Options;
+using System.IO;
+using System.Reflection;
+using System;
 
 namespace Web.Api
 {
@@ -28,10 +34,14 @@ namespace Web.Api
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
             // Swagger service
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web.Api", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "COMP1640 - GoldenIdea", Description = "This is a list of APIs we use to manage the GoldenIdea Application"});
+                // using System.Reflection;
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+
 
             // Connect Database
             services.AddDbContext<AppDbContext>(options =>
@@ -47,7 +57,10 @@ namespace Web.Api
             services.AddAuthorization();
 
             // Dependency Injections
+            services.AddScoped<IAppDbContext, AppDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<IDepartmentService, DepartmentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
