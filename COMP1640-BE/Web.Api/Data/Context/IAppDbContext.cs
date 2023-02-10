@@ -11,7 +11,6 @@ namespace Web.Api.Data.Context
         DbSet<File> Files { get; set; }
         DbSet<Idea> Ideas { get; set; }
         DbSet<Reaction> Reactions { get; set; }
-        DbSet<Role> Roles { get; set; }
         DbSet<Topic> Topics { get; set; }
         DbSet<User> Users { get; set; }
         DbSet<View> Views { get; set; }
