@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 using System.IO;
 using System.Reflection;
 using System;
+using Web.Api.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Web.Api
 {
@@ -50,8 +52,14 @@ namespace Web.Api
                     b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
             });
 
+            services.AddIdentity<User, IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
             // CORS
             services.AddCors();
+
+            //Authentication
+            services.AddAuthentication();
 
             // Authorization
             services.AddAuthorization();
@@ -86,7 +94,7 @@ namespace Web.Api
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

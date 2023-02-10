@@ -1,16 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Reflection.Emit;
 using Web.Api.Entities;
 
 namespace Web.Api.Data.Context
 {
-    public class AppDbContext : DbContext, IAppDbContext
+    public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IAppDbContext
     {
         // Constructor
         public AppDbContext(DbContextOptions options) : base(options) { }
 
         // Place DbSet here
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Topic> Topics { get; set; }
@@ -23,12 +25,7 @@ namespace Web.Api.Data.Context
         // Entity Linking
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // Link Many-One || User - Role
-            builder.Entity<User>()
-                .HasOne(x => x.Role)
-                .WithMany(x => x.Users)
-                .HasForeignKey(x => x.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
+           
 
             // Link Many-One || User - Department
             builder.Entity<User>()
@@ -105,10 +102,19 @@ namespace Web.Api.Data.Context
                 .HasOne(x => x.Idea)
                 .WithMany(x => x.Reactions)
                 .HasForeignKey(x => x.IdeaId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+            .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
+            
+            //Delete "AspNet" name of identity table
+            foreach(var entityType in builder.Model.GetEntityTypes())
+            {
+                var tablename = entityType.GetTableName();
+                if(tablename.StartsWith("AspNet"))
+                {
+                    entityType.SetTableName(tablename.Substring(6));
+                }
+            }
         }
     }
 }
