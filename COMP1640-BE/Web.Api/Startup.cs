@@ -9,12 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Web.Api.Data.Context;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.Services.DepartmentService;
-using Microsoft.Extensions.Options;
 using System.IO;
 using System.Reflection;
 using System;
 using Web.Api.Entities;
 using Microsoft.AspNetCore.Identity;
+using Web.Api.Services.Topic;
+using Microsoft.AspNetCore.Mvc;
+using Web.Api.Services.Category;
 
 namespace Web.Api
 {
@@ -31,6 +33,9 @@ namespace Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.Configure<ApiBehaviorOptions>(options
+                => options.SuppressModelStateInvalidFilter = true);
 
             // Auto mapper service
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -65,10 +70,14 @@ namespace Web.Api
             services.AddAuthorization();
 
             // Dependency Injections
+            services.AddScoped<ValidationFilterAttribute>();
+
             services.AddScoped<IAppDbContext, AppDbContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<ITopicService, TopicService>();
+            services.AddScoped<ICategoryService, CategoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

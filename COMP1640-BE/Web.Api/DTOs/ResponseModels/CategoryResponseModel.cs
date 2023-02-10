@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Web.Api.DTOs.ResponeModels
+namespace Web.Api.DTOs.ResponseModels
 {
-    public class DepartmentResponeModel
+    public class CategoryResponseModel
     {
         public Guid DepartmentId { get; set; }
         public string Name { get; set; }
