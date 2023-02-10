@@ -60,9 +60,9 @@ namespace Web.Api.Services.DepartmentService
         {
             try
             {
-                Department updateDepartment = _departmentRepo.Update(department);
+                Department updatedDepartment = _departmentRepo.Update(department);
                 await _unitOfWork.CompleteAsync();
-                return updateDepartment;
+                return updatedDepartment;
             }
             catch (Exception)
             {

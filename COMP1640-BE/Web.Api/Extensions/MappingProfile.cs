@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Web.Api.DTOs.RequestModels;
-using Web.Api.DTOs.ResponeModels;
+using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 
 namespace Web.Api.Extensions
@@ -10,9 +10,19 @@ namespace Web.Api.Extensions
         public MappingProfile()
         {
             // Department
-            CreateMap<Department, DepartmentResponeModel>()
+            CreateMap<Department, DepartmentResponseModel>()
                 .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.Id));
             CreateMap<DepartmentRequestModel, Department>();
+
+            // Topic
+            CreateMap<Entities.Topic, TopicResponseModel>()
+                .ForMember(dest => dest.TopicId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<TopicRequestModel, Entities.Topic>();
+
+            // Topic
+            CreateMap<Entities.Category, TopicResponseModel>()
+                .ForMember(dest => dest.TopicId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<TopicRequestModel, Entities.Category>();
         }
     }
 }
