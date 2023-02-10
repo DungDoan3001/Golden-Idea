@@ -20,9 +20,9 @@ namespace Web.Api.Extensions
             CreateMap<TopicRequestModel, Entities.Topic>();
 
             // Topic
-            CreateMap<Entities.Category, TopicResponseModel>()
-                .ForMember(dest => dest.TopicId, opt => opt.MapFrom(src => src.Id));
-            CreateMap<TopicRequestModel, Entities.Category>();
+            CreateMap<Entities.Category, CategoryResponseModel>()
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<CategoryRequestModel, Entities.Category>();
         }
     }
 }
