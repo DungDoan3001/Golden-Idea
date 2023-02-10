@@ -47,6 +47,7 @@ namespace Web.Api
                 // using System.Reflection;
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                options.DocumentFilter<RemoveSchemasFilter>();
             });
 
 
@@ -89,7 +90,10 @@ namespace Web.Api
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web.Api v1"));
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web.Api v1");
+            });
 
             app.UseCors(option =>
             {
