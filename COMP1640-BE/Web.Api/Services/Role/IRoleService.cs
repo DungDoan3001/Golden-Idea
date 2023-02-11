@@ -3,14 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.Api.DTOs.ResponseModels;
 
 namespace Web.Api.Services.Role
 {
     public interface IRoleService
     {
-        Task<IEnumerable<IdentityRole<Guid>>> GetAll();
-        Task<IdentityResult> Create(string roleName);
+        Task<List<RoleResponseModel>> GetAll();
+        Task<RoleResponseModel> Create(string roleName);
         Task<IdentityResult> Delete(string roleName);
-        Task<IdentityResult> Update(Guid id, string updateRole);
+        Task<RoleResponseModel> Update(Guid id, string updateRole);
     }
 }

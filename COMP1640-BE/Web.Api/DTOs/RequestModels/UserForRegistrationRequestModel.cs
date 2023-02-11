@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Web.Api.Entities;
 
 namespace Web.Api.DTOs.RequestModels
 {
@@ -14,6 +16,7 @@ namespace Web.Api.DTOs.RequestModels
         public string Password { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public ICollection<string> Department { get; set; }
         public ICollection<string> Roles { get; set; }
     }
 }
