@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using System;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
@@ -23,6 +25,9 @@ namespace Web.Api.Extensions
             CreateMap<Entities.Category, CategoryResponseModel>()
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Id));
             CreateMap<CategoryRequestModel, Entities.Category>();
+
+            // Role
+            
         }
     }
 }

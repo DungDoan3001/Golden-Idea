@@ -18,6 +18,7 @@ using Web.Api.Services.Topic;
 using Microsoft.AspNetCore.Mvc;
 using Web.Api.Services.Category;
 using Microsoft.Extensions.Options;
+using Web.Api.Services.Role;
 
 namespace Web.Api
 {
@@ -79,6 +80,7 @@ namespace Web.Api
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IRoleService, RoleService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
