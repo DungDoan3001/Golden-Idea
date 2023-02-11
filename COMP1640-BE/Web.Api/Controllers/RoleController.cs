@@ -9,6 +9,9 @@ using Web.Api.Services.Role;
 using Microsoft.AspNetCore.Identity;
 using System.Runtime.InteropServices;
 using Web.Api.Extensions;
+using Web.Api.DTOs.RequestModels;
+using AutoMapper;
+using System.Linq;
 
 namespace Web.Api.Controllers
 {
@@ -16,12 +19,12 @@ namespace Web.Api.Controllers
     [ApiController]
     public class RoleController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IRoleService _roleService;
-        private RoleManager<IdentityRole<Guid>> roleManager;
-        public RoleController(IRoleService roleService, RoleManager<IdentityRole<Guid>> roleManager)
+        public RoleController(IRoleService roleService, IMapper mapper)
         {
             _roleService = roleService;
-            this.roleManager = roleManager;
+            _mapper = mapper;
         }
         /// <summary>
         /// Get all roles.
@@ -30,7 +33,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no roles</response>
         [HttpGet("")]
-        public async Task<ActionResult<IEnumerable<IdentityRole<Guid>>>> GetAll()
+        public async Task<ActionResult<List<IdentityRole<Guid>>>> GetAll()
         {
             try
             {
@@ -52,11 +55,11 @@ namespace Web.Api.Controllers
         /// <response code="404">There is a conflict while creating</response>
         [HttpPost("")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Create(string roleName)
+        public async Task<ActionResult> Create([FromBody] RoleRequestModel requestModel)
         {
             try
             {
-                var roles = await _roleService.Create(roleName);
+                var roles = await _roleService.Create(requestModel.Name);
                 return Ok(roles);
             }
             catch (Exception ex)
@@ -75,11 +78,11 @@ namespace Web.Api.Controllers
         /// <response code="404">There is a conflict while update a role</response>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Update([FromRoute] Guid id, string roleUpdate)
+        public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] RoleRequestModel requestModel)
         {
             try
             {
-                var roles = await _roleService.Update(id, roleUpdate);
+                var roles = await _roleService.Update(id, requestModel.Name);
                 return Ok(roles);
             }
             catch (Exception ex)
@@ -98,11 +101,11 @@ namespace Web.Api.Controllers
         /// <response code="404">There is no role with the given roleName</response>
         [HttpDelete("{roleName}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Delete([FromRoute] string roleName)
+        public async Task<ActionResult> Delete([FromBody] RoleRequestModel requestModel)
         {
             try
             {
-                var roles = await _roleService.Delete(roleName);
+                var roles = await _roleService.Delete(requestModel.Name);
                 return Ok(roles);
             }
             catch (Exception ex)

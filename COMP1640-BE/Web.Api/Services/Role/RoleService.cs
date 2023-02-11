@@ -12,6 +12,10 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Data;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace Web.Api.Services.Role
 {
@@ -19,19 +23,21 @@ namespace Web.Api.Services.Role
     {
         private readonly IUnitOfWork _unitOfWork;
         private RoleManager<IdentityRole<Guid>> roleManager;
-
-        public RoleService(IUnitOfWork unitOfWork, RoleManager<IdentityRole<Guid>> roleManager)
+        private readonly IMapper _mapper;
+        public RoleService(IUnitOfWork unitOfWork, RoleManager<IdentityRole<Guid>> roleManager, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             this.roleManager = roleManager;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<IdentityRole<Guid>>> GetAll()
+        public async Task<List<RoleResponseModel>> GetAll()
         {
             try
             {
-                var role = roleManager.Roles.AsEnumerable();
-                return role;
+                var role = await roleManager.Roles.ToListAsync();
+                var result = _mapper.Map<List<RoleResponseModel>>(role);
+                return result;
             }
             catch (Exception)
             {
@@ -39,19 +45,29 @@ namespace Web.Api.Services.Role
             }
         }
 
-        public async Task<IdentityResult> Create(string roleName)
+        public async Task<RoleResponseModel> Create(string roleName)
         {
             try
             {
-                IdentityResult result = await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                IdentityResult create = await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                if(!create.Succeeded)
+                {
+                    foreach(var e in create.Errors)
+                    {
+                        var error = e.Description;
+                        throw new Exception(error);
+                    }
+                }
+                IdentityRole<Guid> data = await roleManager.FindByNameAsync(roleName);
+                var result = _mapper.Map<RoleResponseModel>(data);
                 return result;
             }
-            catch (Exception )
+            catch (Exception)
             {
                 throw;
             }
         }
-        public async Task<IdentityResult> Update(Guid id, string updateRole)
+        public async Task<RoleResponseModel> Update(Guid id, string updateRole)
         {
             try
             {
@@ -62,7 +78,9 @@ namespace Web.Api.Services.Role
                     throw new Exception("This role does not exist!");
                 }
                 role.Name = updateRole;
-                var result = await roleManager.UpdateAsync(role);
+                var update = await roleManager.UpdateAsync(role);
+                var data = await roleManager.FindByIdAsync(idUpdate);
+                var result = _mapper.Map<RoleResponseModel>(data);
                 return result;
             }
             catch (Exception)

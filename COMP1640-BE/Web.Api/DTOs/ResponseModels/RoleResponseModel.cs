@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
 
 namespace Web.Api.DTOs.ResponseModels
 {
@@ -6,5 +8,7 @@ namespace Web.Api.DTOs.ResponseModels
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+
+
     }
 }
