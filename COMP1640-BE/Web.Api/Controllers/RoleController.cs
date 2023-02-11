@@ -23,7 +23,12 @@ namespace Web.Api.Controllers
             _roleService = roleService;
             this.roleManager = roleManager;
         }
-
+        /// <summary>
+        /// Get all roles.
+        /// </summary>
+        /// <response code="200">Successfully get all the roles</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is no roles</response>
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<IdentityRole<Guid>>>> GetAll()
         {
@@ -37,7 +42,14 @@ namespace Web.Api.Controllers
                 return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
             }
         }
-
+        /// <summary>
+        /// Create a role.
+        /// </summary>
+        /// <param name="roleName">Name of role</param>
+        /// <returns>Add new role with roleName</returns>
+        /// <response code="200">Successfully add the role with the given roleName</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is a conflict while creating</response>
         [HttpPost("")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Create(string roleName)
@@ -52,9 +64,18 @@ namespace Web.Api.Controllers
                 return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
             }
         }
-        [HttpPut("")]
+        /// <summary>
+        /// Update a role
+        /// </summary>
+        /// <param name="id">Id of the role will be updated.</param>
+        /// <param name="roleUpdate">New name of the role for update</param>
+        /// <returns>A role just updated</returns>
+        /// <response code="200">Successfully updated the role</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is a conflict while update a role</response>
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Update(Guid id, string roleUpdate)
+        public async Task<ActionResult> Update([FromRoute] Guid id, string roleUpdate)
         {
             try
             {
@@ -66,9 +87,18 @@ namespace Web.Api.Controllers
                 return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
             }
         }
-        [HttpDelete("")]
+        /// <summary>
+        /// Delete a role by name
+        /// </summary>
+        /// <param name="roleName">Name of the role to be deleted.</param>
+        /// <returns>null</returns>
+        /// <response code="200">Successfully deleted the role</response>
+        /// <response code="204">Successfully deleted the role</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is no role with the given roleName</response>
+        [HttpDelete("{roleName}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Delete(string roleName)
+        public async Task<ActionResult> Delete([FromRoute] string roleName)
         {
             try
             {
