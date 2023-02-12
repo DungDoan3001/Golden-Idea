@@ -1,5 +1,5 @@
 import React from "react";
-import FlexBetween from  "../../app/components/FlexBetween";
+import FlexBetween from "../../app/components/FlexBetween";
 import Header from "../../app/components/Header";
 import {
   DownloadOutlined,
@@ -22,7 +22,7 @@ import BreakdownChart from "../../app/components/BreakdownChart";
 // import StatBox from "components/StatBox";
 
 const Dashboard = () => {
-  const theme:any = useTheme();
+  const theme: any = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   // const { data, isLoading } = useGetDashboardQuery();
 
@@ -174,7 +174,11 @@ const Dashboard = () => {
             columns={columns}
           /> */}
         </Box>
-        <Box sx ={{gridColumn:"span 4", gridRow:"span 3",backgroundColor: theme.palette.background.alt, p:"1.5rem", borderRadius:"0.55rem"}}
+        <Box sx={{
+          gridColumn: "span 4", gridRow: "span 3", backgroundColor: theme.palette.background.alt, p: "1.5rem", borderRadius: "0.55rem", [theme.breakpoints.down('sm')]: {
+            width: '100vw',
+          },
+        }}
         >
           <Typography variant="h6" sx={{ color: theme.palette.secondary[100] }}>
             Ideas By Category
@@ -185,8 +189,8 @@ const Dashboard = () => {
             fontSize="0.8rem"
             sx={{ color: theme.palette.secondary[200] }}
           >
-            Breakdown of real states and information via category for revenue
-            made for this year and total sales.
+            Breakdown of real states and information via department for ideas
+            made for this year and total ideas.
           </Typography>
         </Box>
       </Box>
