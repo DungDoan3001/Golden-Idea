@@ -28,6 +28,7 @@ import {
   TrendingUpOutlined,
   PieChartOutlined,
   TipsAndUpdates,
+  RoomPreferences,
 } from "@mui/icons-material";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { useEffect, useState } from "react";
@@ -45,20 +46,24 @@ const navItems = [
     icon: <DashboardIcon />,
   },
   {
-    text: "Management",
-    icon: null,
+    text: "My Ideas",
+    icon: <LightbulbCircle/>,
   },
   {
-    text: "Ideas",
-    icon: <LightbulbCircle/>,
+    text: "Management",
+    icon: null,
   },
   {
     text: "Staffs",
     icon: <Groups2Outlined />,
   },
   {
-    text: "Comments",
-    icon: <Forum />,
+    text: "Admin",
+    icon: <AdminPanelSettingsOutlined />,
+  },
+  {
+    text: "Departments",
+    icon: <RoomPreferences />,
   },
   {
     text: "Categories",
@@ -67,6 +72,10 @@ const navItems = [
   {
     text: "Topics",
     icon: <Topic />,
+  },
+  {
+    text: "Comments",
+    icon: <Forum />,
   },
   {
     text: "Data visualization",
@@ -87,14 +96,6 @@ const navItems = [
   {
     text: "Breakdown",
     icon: <PieChartOutlined />,
-  },
-  {
-    text: "Management",
-    icon: null,
-  },
-  {
-    text: "Admin",
-    icon: <AdminPanelSettingsOutlined />,
   },
   {
     text: "Performance",

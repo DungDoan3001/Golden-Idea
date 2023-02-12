@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 //import { store } from "../store/configureStore";
 import { useNavigate } from "react-router-dom";
 // import { PaginatedResponse } from "../models/pagination";
-const navigate = useNavigate();
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -29,6 +28,7 @@ axios.interceptors.response.use(async response => {
     return response;
 }, (error: AxiosError) => {
     const { data, status }: any = error.response!;
+    const navigate = useNavigate();
     switch (status) {
         case 400:
             if (data.errors) {
@@ -78,3 +78,14 @@ const createFormData = (item: any) =>{
     }
     return formData;
 }
+const User = {
+    listUser: () => requests.get('users'),
+    createUser: (user: any) => requests.postForm('users', createFormData(user)),
+    updateUser: (user: any) => requests.putForm('users', createFormData(user)),
+    deleteUser: (id: number) => requests.delete(`users/${id}`)
+}
+const agent = {
+    User
+}
+
+export default agent;
