@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: { spacing: (arg0: number) => any; palette: 
     dialog: {
         padding: theme.spacing(2),
         position: 'absolute',
-        top: theme.spacing(5)
+        top: theme.spacing(8)
     },
     dialogTitle: {
         textAlign: 'center'

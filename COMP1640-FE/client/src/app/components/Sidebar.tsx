@@ -23,7 +23,7 @@ import {
   Category,
   PointOfSaleOutlined,
   TodayOutlined,
-  CalendarMonthOutlined,
+  AssignmentLate,
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
@@ -47,7 +47,7 @@ const navItems = [
   },
   {
     text: "My Ideas",
-    icon: <LightbulbCircle/>,
+    icon: <LightbulbCircle />,
   },
   {
     text: "Management",
@@ -90,8 +90,8 @@ const navItems = [
     icon: <TodayOutlined />,
   },
   {
-    text: "Monthly",
-    icon: <CalendarMonthOutlined />,
+    text: "Exception",
+    icon: <AssignmentLate />,
   },
   {
     text: "Breakdown",
@@ -102,24 +102,24 @@ const navItems = [
     icon: <TrendingUpOutlined />,
   },
 ];
-interface sideBarProps{
+interface sideBarProps {
   drawerWidth: any;
   isNonMobile: any;
 }
 const Sidebar = ({
   drawerWidth,
   isNonMobile,
-} : sideBarProps) => {
+}: sideBarProps) => {
   const { pathname } = useLocation();
   const [active, setActive] = useState("");
   const navigate = useNavigate();
   const theme: any = useTheme();
-  const {isSidebarOpen, setIsSidebarOpen, screenSize }=useStoreContext();
+  const { isSidebarOpen, setIsSidebarOpen, screenSize } = useStoreContext();
   useEffect(() => {
     setActive(pathname.substring(1));
   }, [pathname]);
-  const handleCloseSidebar = () =>{
-    if(isSidebarOpen&&screenSize<=900){
+  const handleCloseSidebar = () => {
+    if (isSidebarOpen && screenSize <= 900) {
       setIsSidebarOpen(false);
     }
   }
@@ -147,7 +147,7 @@ const Sidebar = ({
               <FlexBetween color={theme.palette.secondary.main}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
                   <Typography variant="h4" align='center' fontWeight="bold">
-                  <TipsAndUpdates/>GOLDEN IDEA
+                    <TipsAndUpdates />GOLDEN IDEA
                   </Typography>
                 </Box>
                 {!isNonMobile && (

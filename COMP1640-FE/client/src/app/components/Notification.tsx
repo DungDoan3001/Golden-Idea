@@ -1,17 +1,21 @@
 import React from 'react'
-import { Snackbar, styled, Alert} from "@mui/material";
+import { Snackbar, styled, Alert } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 
-const Root = styled('div')(({ theme }) => ({
-    top: theme.spacing(1),
-  }));
-interface props{
-    notify:any, 
-    setNotify: (notify:any) => void,
+const useStyles = makeStyles((theme: { spacing: (arg0: number) => any; }) => ({
+    root: {
+        top: theme.spacing(9)
+    }
+}))
+interface Props {
+    notify: any
+    setNotify: (notify: any) => any,
 }
-export default function Notification({notify,setNotify}:props) {
+export default function Notification({ notify, setNotify }: Props) {
 
-    const handleClose = (event: any, reason: string) => {
+    const classes = useStyles()
+
+    const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -19,22 +23,20 @@ export default function Notification({notify,setNotify}:props) {
             ...notify,
             isOpen: false
         })
-    }
+    };
 
     return (
-        <Root> 
         <Snackbar
-        open={notify.isOpen}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        onClose={handleClose}>
-        <Alert
-            severity={notify.type}
-            onClose={()=>handleClose}>
-            {notify.message}
-        </Alert>
-    </Snackbar>
-    </Root>
-       
+            className={classes.root}
+            open={notify.isOpen}
+            autoHideDuration={3000}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            onClose={handleClose}>
+            <Alert
+                severity={notify.type}
+                onClose={handleClose}>
+                {notify.message}
+            </Alert>
+        </Snackbar>
     )
 }

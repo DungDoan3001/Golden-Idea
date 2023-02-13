@@ -3,10 +3,10 @@ import FlexBetween from "../../app/components/FlexBetween";
 import Header from "../../app/components/Header";
 import {
   DownloadOutlined,
-  Email,
-  PointOfSale,
+  PostAdd,
+  CalendarMonth,
   PersonAdd,
-  Traffic,
+  DynamicFeed,
 } from "@mui/icons-material";
 import {
   Box,
@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import BreakdownChart from "../../app/components/BreakdownChart";
+import StatBox from "../../app/components/StatBox";
 // import OverviewChart from "components/OverviewChart";
 // import { useGetDashboardQuery } from "state/api";
 // import StatBox from "components/StatBox";
@@ -88,13 +89,13 @@ const Dashboard = () => {
         }}
       >
         {/* ROW 1 */}
-        {/* <StatBox
+        <StatBox
           title="Total Staffs"
           value={1000}
           increase="+14%"
           description="Since last month"
           icon={
-            <Email
+            <PersonAdd
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
             />
           }
@@ -105,14 +106,14 @@ const Dashboard = () => {
           increase="+8%"
           description="Since yesterday"
           icon={
-            <PointOfSale
+            <PostAdd
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
             />
           }
         />
-        <Box sx={{  gridColumn:"span 8", gridRow:"span 2", backgroundColor:theme.palette.background.alt, p:"1rem", borderRadius:"0.55rem"}}
+        <Box sx={{ gridColumn: "span 8", gridRow: "span 2", backgroundColor: theme.palette.background.alt, p: "1rem", borderRadius: "0.55rem" }}
         >
-          <OverviewChart view="sales" isDashboard={true} />
+          {/* <OverviewChart view="sales" isDashboard={true} /> */}
         </Box>
         <StatBox
           title="Monthly Ideas"
@@ -120,7 +121,7 @@ const Dashboard = () => {
           increase="+5%"
           description="Since last month"
           icon={
-            <PersonAdd
+            <CalendarMonth
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
             />
           }
@@ -131,11 +132,11 @@ const Dashboard = () => {
           increase="+43%"
           description="Since last month"
           icon={
-            <Traffic
+            < DynamicFeed
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
             />
           }
-        /> */}
+        />
 
         {/* ROW 2 */}
         <Box
@@ -187,6 +188,7 @@ const Dashboard = () => {
           <Typography
             p="0 0.6rem"
             fontSize="0.8rem"
+            align="justify"
             sx={{ color: theme.palette.secondary[200] }}
           >
             Breakdown of real states and information via department for ideas

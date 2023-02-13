@@ -10,8 +10,11 @@ import Loading from "./app/components/Loading";
 import Layout from "./pages/layout";
 import Breakdown from "./pages/breakdown";
 import Staffs from "./pages/staffs";
+import Category from "./pages/category";
+import Department from "./pages/department";
+import Exception from "./pages/exception";
 
-const App =() => {
+const App = () => {
   const mode = useSelector((state: any) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const dispatch = useAppDispatch();
@@ -32,18 +35,21 @@ const App =() => {
   }, [initApp])
 
   if (loading) return <Loading message='Initializing app...' />
-  
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Routes>
-      <Route element={<Layout />}>
-      <Route path="/" element={<Navigate to="/home" replace />} />
-      <Route path='/home' element={<Home/>} />
-      <Route path='/dashboard' element={<Dashboard/>} />
-      <Route path='/staffs' element={<Staffs/>} />
-      <Route path='/breakdown' element={<Breakdown/>} />
-      </Route>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path='/home' element={<Home />} />
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/staffs' element={<Staffs />} />
+          <Route path='/categories' element={<Category />} />
+          <Route path='/departments' element={<Department />} />
+          <Route path='/breakdown' element={<Breakdown />} />
+          <Route path='/exception' element={<Exception />} />
+        </Route>
       </Routes>
     </ThemeProvider>
   );
