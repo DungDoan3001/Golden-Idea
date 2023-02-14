@@ -19,6 +19,11 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Api.Services.Category;
 using Microsoft.Extensions.Options;
 using Web.Api.Services.Role;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Web.Api.Configuration;
+using Web.Api.Services.Authentication;
 
 namespace Web.Api
 {
@@ -65,8 +70,30 @@ namespace Web.Api
             // CORS
             services.AddCors();
 
-            //Authentication
-            services.AddAuthentication();
+            //Authentication + JWT
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme= JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwt =>
+            {
+                var key = Encoding.UTF8.GetBytes(Configuration["JwtSettings:Secret"]);
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    
+                    ValidIssuer = Configuration["JwtSettings:Issuer"],
+                    ValidAudience = Configuration["JwtSettings:Audience"]
+                };
+            });
+    
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtSettings"));
 
             // Authorization
             services.AddAuthorization();
@@ -81,6 +108,7 @@ namespace Web.Api
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

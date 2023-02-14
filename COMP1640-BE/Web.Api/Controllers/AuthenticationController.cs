@@ -1,61 +1,105 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web.Http.Results;
+using System.Xml.Linq;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 using Web.Api.Extensions;
+using Web.Api.Services.Authentication;
 using Web.Api.Services.DepartmentService;
 
 namespace Web.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/authentication")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        private readonly IDepartmentService _departmentService;
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, IDepartmentService departmentService)
+        private readonly RoleManager<IdentityRole<Guid>> roleManager;
+        private readonly IAuthenticationManager _authManager;
+
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager, IAuthenticationManager authManager)
         {
             _mapper = mapper;
             _userManager = userManager;
-            _departmentService = departmentService;
+            this.roleManager = roleManager;
+            _authManager = authManager;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationRequestModel userForRegistration)
         {
             try
             {
-                var user = _mapper.Map<User>(userForRegistration);
-                var result = await _userManager.CreateAsync(user, userForRegistration.Password);
-                if (!result.Succeeded)
+                foreach(var role in userForRegistration.Roles)
                 {
-                    foreach (var error in result.Errors)
+                    if (!await roleManager.RoleExistsAsync(role))
                     {
-                        ModelState.TryAddModelError(error.Code, error.Description);
+                        return NotFound(new MessageResponseModel { Message = "The role does not existed!", StatusCode = (int)HttpStatusCode.NotFound });
                     }
-                    return BadRequest(ModelState);
+                }
+                if(await _userManager.FindByEmailAsync(userForRegistration.Email) != null)
+                {
+                    return NotFound(new MessageResponseModel { Message = "The email has existed!", StatusCode = (int)HttpStatusCode.NotFound });
+                } 
+                else if(!new EmailAddressAttribute().IsValid(userForRegistration.Email))
+                {
+                    return NotFound(new MessageResponseModel { Message = "The email is not valid!", StatusCode = (int)HttpStatusCode.NotFound });
+                }
+                var user = _mapper.Map<User>(userForRegistration);
+                var create = await _userManager.CreateAsync(user, userForRegistration.Password);
+                if (!create.Succeeded)
+                {
+                    foreach (var error in create.Errors)
+                    {
+                        return NotFound(new MessageResponseModel { Message = error.Description, StatusCode = (int)HttpStatusCode.Conflict});
+                    }              
                 }
                 await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
-                //var department = await _departmentService.GetAllAsync();
-                //foreach(var d in department)
-                //{
-                //    if(userForRegistration.Departments )
-                //}
+                //Get user data (id + role) to response
+                var data = await _userManager.FindByNameAsync(user.UserName);
+                var result = _mapper.Map<UserForRegistrationResponseModel>(data);
+                foreach (var i in userForRegistration.Roles)
+                {
+                    result.Roles.Add(i);
+                }
                 return Ok(result);
             }
             catch(Exception ex)
             {
                 return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
             }
-            
+        }
+
+        [HttpPost("login")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Authenticate([FromBody] UserForAuthenRequestModel user)
+        {
+            if (!await _authManager.ValidateUser(user))
+            {
+                return NotFound(new MessageResponseModel { Message = "Email or password is incorrect, please try again!", StatusCode = (int)HttpStatusCode.NotFound });
+            }
+            UserForAuthenResponseModel result = new UserForAuthenResponseModel()
+            {
+                Token = await _authManager.CreateToken(),
+                Status = "Success",
+                Message = "Authentication is success!"
+            };
+            return Ok(result);
         }
     }
 }
+
