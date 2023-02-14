@@ -5,10 +5,10 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { rawData } from "../../dataTest";
 
 const BreakdownChart = ({ isDashboard = false }) => {
-//   const { data, isLoading } = useGetSalesQuery();
-  const theme:any = useTheme();
+  //   const { data, isLoading } = useGetSalesQuery();
+  const theme: any = useTheme();
 
-//   if (!data || isLoading) return "Loading...";
+  //   if (!data || isLoading) return "Loading...";
 
   const colors = [
     theme.palette.secondary[500],
@@ -69,6 +69,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
             },
           },
         }}
+
         colors={{ datum: "data.color" }}
         margin={
           isDashboard
@@ -83,6 +84,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
+        arcLabel={(item) => `${item.value}%`}
         enableArcLinkLabels={!isDashboard}
         arcLinkLabelsTextColor={theme.palette.secondary[200]}
         arcLinkLabelsThickness={2}
@@ -120,20 +122,17 @@ const BreakdownChart = ({ isDashboard = false }) => {
       />
       <Box
         sx={{
-            position:"absolute",
-            top:"50%",
-            left:"50%",
-            color:theme.palette.secondary[400],
-            textAlign:"center",
-            pointerEvents:"none",
-            transform: isDashboard
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          color: theme.palette.secondary[400],
+          textAlign: "center",
+          pointerEvents: "none",
+          transform: isDashboard
             ? "translate(-75%, -170%)"
             : "translate(-50%, -100%)",
         }}
       >
-        <Typography variant="h6">
-          {!isDashboard && "Total:"} {10000} ideas
-        </Typography>
       </Box>
     </Box>
   );
