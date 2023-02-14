@@ -37,7 +37,14 @@ namespace Web.Api.Controllers
             this.roleManager = roleManager;
             _authManager = authManager;
         }
-
+        /// <summary>
+        /// Create a role.
+        /// </summary>
+        /// <param name="userForRegistration">Request model for register</param>
+        /// <returns>Add a new user</returns>
+        /// <response code="200">Successfully register a User</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is a conflict while creating</response>
         [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationRequestModel userForRegistration)
@@ -84,6 +91,14 @@ namespace Web.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a role.
+        /// </summary>
+        /// <param name="user">Request model for authentication</param>
+        /// <returns>Token of user</returns>
+        /// <response code="200">Successfully create a token for user</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is a conflict while creating</response>
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenRequestModel user)
