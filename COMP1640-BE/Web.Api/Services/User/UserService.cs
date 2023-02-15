@@ -25,31 +25,38 @@ namespace Web.Api.Services.User
             this.context = context;
         }
 
-        public async Task<IEnumerable<UserResponseModel>> GetAll()
+        public async Task<List<Entities.User>> GetAll()
         {
             try
             {
                 //var users = await _userManager.Users.Include<Entities.Role>.;
                 //var role = await _userManager.GetRolesAsync
 
-                var usersWithRoles = (from user in context.Users
-                                      select new
-                                      {
-                                          UserId = user.Id,
-                                          Username = user.UserName,
-                                          Email = user.Email,
-                                          RoleName = (from userRole in user.UserRoles
-                                                       join role in context.Roles on userRole.RoleId
-                                                       equals role.Id
-                                                       select role.Name)
-                                      }).ToList().Select(p => new UserResponseModel()
+                //var usersWithRoles = (from user in context.Users
+                //                      select new
+                //                      {
+                //                          UserId = user.Id,
+                //                          Username = user.UserName,
+                //                          Email = user.Email,
+                //                          RoleName = (from userRole in user.UserRoles
+                //                                      join role in context.Roles on userRole.RoleId
+                //                                      equals role.Id
+                //                                      select role.Name)
+                //                      }).ToList().Select(p => new UserResponseModel()
 
-                                      {
-                                          Id = p.UserId,
-                                          UserName = p.Username,
-                                          Email = p.Email,
-                                          Role = string.Join(",", p.RoleName)
-                                      });
+                //                      {
+                //                          Id = p.UserId,
+                //                          Username = p.Username,
+                //                          Email = p.Email,
+                //                          Role = string.Join(",", p.RoleName)
+                //                      });
+
+                //https://www.youtube.com/watch?v=6JVZwwAf88k
+                var usersWithRoles = await context.Users 
+                    .Include(x => x.UserRoles)
+                    .ThenInclude(x => x.Role)
+                    .ToListAsync();
+                
                 return usersWithRoles;
             }
             catch (Exception)

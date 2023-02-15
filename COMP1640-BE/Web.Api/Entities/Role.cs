@@ -7,6 +7,6 @@ namespace Web.Api.Entities
 {
     public class Role : IdentityRole<Guid>
     {
-        public ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace Web.Api.Services.User
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserResponseModel>> GetAll();
+        Task<List<Entities.User>> GetAll();
         Task<Entities.User> UpdateAsync(Guid id, Entities.User user);
         Task<IdentityResult> Delete(Guid id);
     }
