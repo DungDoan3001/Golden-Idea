@@ -10,8 +10,8 @@ using Web.Api.Data.Context;
 namespace Web.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230210173919_AddRoles")]
-    partial class AddRoles
+    [Migration("20230215162517_addDB")]
+    partial class addDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,82 +20,6 @@ namespace Web.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityRole");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "a6f6f9e8-b994-4812-b2d9-7eb9ee9fbcbf",
-                            ConcurrencyStamp = "d2aa95c3-4d10-43b5-a614-fb5cda302ee2",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        },
-                        new
-                        {
-                            Id = "e7bccec5-63c3-4204-a891-eb162e484aa5",
-                            ConcurrencyStamp = "0f7db73c-4efe-4401-83d6-88e2ba4a0f73",
-                            Name = "QA Manager",
-                            NormalizedName = "QA MANAGER"
-                        },
-                        new
-                        {
-                            Id = "35c69a33-434f-4f86-989d-04b5e73b82f4",
-                            ConcurrencyStamp = "8525ab48-15fd-4f28-b4bb-3ec1dde7b0dc",
-                            Name = "QA Coordinator",
-                            NormalizedName = "QA COORDINATOR"
-                        },
-                        new
-                        {
-                            Id = "6db80264-d78d-4802-9546-69e7e00b80cb",
-                            ConcurrencyStamp = "314bc5c3-56bc-4d85-81d9-3e3b14ba4277",
-                            Name = "Staff",
-                            NormalizedName = "STAFF"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("Roles");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -172,11 +96,17 @@ namespace Web.Api.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<Guid>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -334,6 +264,33 @@ namespace Web.Api.Migrations
                     b.ToTable("Reactions");
                 });
 
+            modelBuilder.Entity("Web.Api.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("Web.Api.Entities.Topic", b =>
                 {
                     b.Property<Guid>("Id")
@@ -400,9 +357,6 @@ namespace Web.Api.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("text");
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
@@ -457,9 +411,26 @@ namespace Web.Api.Migrations
                     b.ToTable("Views");
                 });
 
+            modelBuilder.Entity("Web.Api.Entities.UserRole", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>");
+
+                    b.Property<Guid?>("RoleId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("uuid");
+
+                    b.HasIndex("RoleId1");
+
+                    b.HasIndex("UserId1");
+
+                    b.HasDiscriminator().HasValue("UserRole");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("Web.Api.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -486,7 +457,7 @@ namespace Web.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("Web.Api.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -614,6 +585,21 @@ namespace Web.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Web.Api.Entities.UserRole", b =>
+                {
+                    b.HasOne("Web.Api.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId1");
+
+                    b.HasOne("Web.Api.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Web.Api.Entities.Category", b =>
                 {
                     b.Navigation("Ideas");
@@ -635,6 +621,11 @@ namespace Web.Api.Migrations
                     b.Navigation("Views");
                 });
 
+            modelBuilder.Entity("Web.Api.Entities.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
             modelBuilder.Entity("Web.Api.Entities.Topic", b =>
                 {
                     b.Navigation("Ideas");
@@ -647,6 +638,8 @@ namespace Web.Api.Migrations
                     b.Navigation("Ideas");
 
                     b.Navigation("Reactions");
+
+                    b.Navigation("UserRoles");
 
                     b.Navigation("Views");
                 });

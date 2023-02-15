@@ -27,10 +27,10 @@ namespace Web.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> roleManager;
+        private readonly RoleManager<Entities.Role> roleManager;
         private readonly IAuthenticationManager _authManager;
 
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager, IAuthenticationManager authManager)
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -38,7 +38,7 @@ namespace Web.Api.Controllers
             _authManager = authManager;
         }
         /// <summary>
-        /// Create a role.
+        /// Create a user.
         /// </summary>
         /// <param name="userForRegistration">Request model for register</param>
         /// <returns>Add a new user</returns>
@@ -51,12 +51,9 @@ namespace Web.Api.Controllers
         {
             try
             {
-                foreach(var role in userForRegistration.Roles)
+                if (!await roleManager.RoleExistsAsync(userForRegistration.Role))
                 {
-                    if (!await roleManager.RoleExistsAsync(role))
-                    {
-                        return NotFound(new MessageResponseModel { Message = "The role does not existed!", StatusCode = (int)HttpStatusCode.NotFound });
-                    }
+                    return NotFound(new MessageResponseModel { Message = "The role does not existed!", StatusCode = (int)HttpStatusCode.NotFound });
                 }
                 if(await _userManager.FindByEmailAsync(userForRegistration.Email) != null)
                 {
@@ -75,14 +72,11 @@ namespace Web.Api.Controllers
                         return NotFound(new MessageResponseModel { Message = error.Description, StatusCode = (int)HttpStatusCode.Conflict});
                     }              
                 }
-                await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+                await _userManager.AddToRoleAsync(user, userForRegistration.Role);
                 //Get user data (id + role) to response
                 var data = await _userManager.FindByNameAsync(user.UserName);
                 var result = _mapper.Map<UserForRegistrationResponseModel>(data);
-                foreach (var i in userForRegistration.Roles)
-                {
-                    result.Roles.Add(i);
-                }
+                result.Role = userForRegistration.Role;
                 return Ok(result);
             }
             catch(Exception ex)
@@ -92,13 +86,13 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
-        /// Create a role.
+        /// Login or Authenticate a user.
         /// </summary>
         /// <param name="user">Request model for authentication</param>
         /// <returns>Token of user</returns>
         /// <response code="200">Successfully create a token for user</response>
         /// <response code="400">There is something wrong while execute.</response>
-        /// <response code="404">There is a conflict while creating</response>
+        /// <response code="404">There is a conflict while authenticating</response>
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenRequestModel user)
@@ -114,6 +108,48 @@ namespace Web.Api.Controllers
                 Message = "Authentication is success!"
             };
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Logout.
+        /// </summary>
+        /// <param name="request">Request model for logout</param>
+        /// <returns>Remove authentication of user</returns>
+        /// <response code="200">Successfully remove authentication for user</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is a conflict while remove</response>
+        [Authorize]
+        [HttpPost("logout")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> LogOut([FromBody] UserForLogoutRequestModel request) //in process NOT DONE
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(request.Email);
+                if(user == null)
+                {
+                    return NotFound(new MessageResponseModel
+                    {
+                        Message = "Can not find user!",
+                        StatusCode = (int)HttpStatusCode.NotFound
+                    });
+                }
+                //Response.Headers.Remove("Authorization");
+                //HttpContext.Session.Clear();
+                await _userManager.UpdateSecurityStampAsync(user);
+                await _userManager.RemoveAuthenticationTokenAsync(user, "JWT", "JWT Token");
+
+                return Ok(new MessageResponseModel
+                {
+                    Message = "Logout successfull!",
+                    StatusCode = (int)HttpStatusCode.OK
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+            }
+            
         }
     }
 }

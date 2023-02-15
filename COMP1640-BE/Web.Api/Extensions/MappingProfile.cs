@@ -32,6 +32,10 @@ namespace Web.Api.Extensions
             // Authentication
             CreateMap<UserForRegistrationRequestModel, User>();
             CreateMap<User, UserForRegistrationResponseModel>();
+
+            //User
+            CreateMap<UserRequestModel, User>();
+            CreateMap<User, UserResponseModel>();
         }
     }
 }

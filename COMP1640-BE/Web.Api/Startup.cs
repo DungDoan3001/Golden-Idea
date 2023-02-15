@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Web.Api.Configuration;
 using Web.Api.Services.Authentication;
+using Web.Api.Services.User;
 
 namespace Web.Api
 {
@@ -64,7 +65,7 @@ namespace Web.Api
                     b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
             });
 
-            services.AddIdentity<User, IdentityRole<Guid>>()
+            services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             // CORS
@@ -109,6 +110,7 @@ namespace Web.Api
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

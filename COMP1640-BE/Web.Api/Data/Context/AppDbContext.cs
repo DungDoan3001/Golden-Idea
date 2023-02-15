@@ -7,7 +7,7 @@ using Web.Api.Entities;
 
 namespace Web.Api.Data.Context
 {
-    public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IAppDbContext
+    public class AppDbContext : IdentityDbContext<User, Role, Guid>, IAppDbContext
     {
         // Constructor
         public AppDbContext(DbContextOptions options) : base(options) { }
@@ -25,8 +25,6 @@ namespace Web.Api.Data.Context
         // Entity Linking
         protected override void OnModelCreating(ModelBuilder builder)
         {
-           
-
             // Link Many-One || User - Department
             builder.Entity<User>()
                 .HasOne(x => x.Department)

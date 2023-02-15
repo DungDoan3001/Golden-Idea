@@ -7,7 +7,6 @@ using System.Security.Claims;
 using System.Text;
 using System;
 using System.Threading.Tasks;
-using Web.Api.Entities;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.Configuration;
 using Microsoft.Extensions.Options;
@@ -16,10 +15,10 @@ namespace Web.Api.Services.Authentication
 {
     public class AuthenticationManager : IAuthenticationManager
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<Entities.User> _userManager;
         private readonly JwtConfig _jwtConfig;
-        private User _user;
-        public AuthenticationManager(UserManager<User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
+        private Entities.User _user;
+        public AuthenticationManager(UserManager<Entities.User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
