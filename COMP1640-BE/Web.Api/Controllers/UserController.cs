@@ -62,9 +62,14 @@ namespace Web.Api.Controllers
         {
             try
             {
-                var userUpdate = _mapper.Map<Entities.User>(user);
-                var updateUser = await _userService.UpdateAsync(id, userUpdate); //error
+                
+                var updateUser = await _userService.UpdateAsync(id, user);
+                if (updateUser == null)
+                {
+                    return NotFound(new MessageResponseModel { Message = "Update error! Can not find the user to update!", StatusCode = (int)HttpStatusCode.NotFound });
+                }
                 var result = _mapper.Map<UserResponseModel>(updateUser);
+                result.Role = user.Role;
                 return Ok(result);
             }
             catch (Exception ex)

@@ -95,6 +95,14 @@ namespace Web.Api
             });
     
             services.Configure<JwtConfig>(Configuration.GetSection("JwtSettings"));
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequireUppercase = false;
+            //    options.Password.RequireLowercase = false;
+            //    options.Password.RequireDigit = false;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //});
 
             // Authorization
             services.AddAuthorization();

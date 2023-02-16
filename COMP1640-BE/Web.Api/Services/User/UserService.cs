@@ -9,7 +9,8 @@ using Web.Api.Data.Context;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 using System.Linq;
-    
+using Web.Api.DTOs.RequestModels;
+
 namespace Web.Api.Services.User
 {
     public class UserService : IUserService
@@ -17,12 +18,14 @@ namespace Web.Api.Services.User
         private readonly UserManager<Entities.User> _userManager;
         private readonly IMapper _mapper;
         protected AppDbContext context;
+        private IPasswordHasher<Entities.User> _passwordHasher;
 
-        public UserService(UserManager<Entities.User> userManager, IMapper mapper, AppDbContext context)
+        public UserService(UserManager<Entities.User> userManager, IMapper mapper, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher)
         {
             _userManager = userManager;
             _mapper = mapper;
             this.context = context;
+            this._passwordHasher = passwordHasher;
         }
 
         public async Task<List<Entities.User>> GetAll()
@@ -65,20 +68,40 @@ namespace Web.Api.Services.User
             }
         }
 
-        public async Task<Entities.User> UpdateAsync(Guid id, Entities.User user)
+        public async Task<Entities.User> UpdateAsync(Guid id, UserRequestModel user)
         {
             try
             {
-                if(_userManager.FindByIdAsync(id.ToString()) == null)
+                var userUpdate = _userManager.FindByIdAsync(id.ToString());
+                if (userUpdate == null)
                 {
                     throw new Exception("Can not find the user");
-                }
-                var update = _userManager.UpdateAsync(user); //error
-                if (!update.IsCompletedSuccessfully)
+                }                
+                userUpdate.Result.UserName = user.UserName;
+                userUpdate.Result.Email = user.Email;
+                userUpdate.Result.Name = user.Name;
+                userUpdate.Result.PasswordHash = _passwordHasher.HashPassword(userUpdate.Result, user.Password);
+                userUpdate.Result.Address = user.Address;
+                userUpdate.Result.DepartmentId = user.DepartmentId;
+                userUpdate.Result.PhoneNumber = user.PhoneNumber;
+                var update = await _userManager.UpdateAsync(userUpdate.Result);
+                //Add role
+                var userRole = _userManager.GetRolesAsync(userUpdate.Result);
+                if (userRole.ToString() != user.Role)
                 {
-                    throw new Exception(update.Result.ToString());
+                    await _userManager.RemoveFromRoleAsync(userUpdate.Result, userRole.Result[0]);
+                    await _userManager.AddToRoleAsync(userUpdate.Result, user.Role);
                 }
-                return user;
+                if (!update.Succeeded)
+                {
+                    foreach(var e in update.Errors)
+                    {
+                        throw new Exception(e.Description); 
+                    }
+                    
+                }
+                var updated = _userManager.FindByIdAsync(userUpdate.Result.Id.ToString());
+                return updated.Result;
             }
             catch (Exception)
             {
