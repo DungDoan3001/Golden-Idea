@@ -13,6 +13,8 @@ import Staffs from "./pages/staffs";
 import Category from "./pages/category";
 import Department from "./pages/department";
 import Exception from "./pages/exception";
+import Contributors from "./pages/contributor";
+import Overview from "./pages/overview";
 
 const App = () => {
   const mode = useSelector((state: any) => state.global.mode);
@@ -47,8 +49,10 @@ const App = () => {
           <Route path='/staffs' element={<Staffs />} />
           <Route path='/categories' element={<Category />} />
           <Route path='/departments' element={<Department />} />
+          <Route path='/overview' element={<Overview />} />
           <Route path='/breakdown' element={<Breakdown />} />
           <Route path='/exception' element={<Exception />} />
+          <Route path='/contributors' element={<Contributors />} />
         </Route>
       </Routes>
     </ThemeProvider>

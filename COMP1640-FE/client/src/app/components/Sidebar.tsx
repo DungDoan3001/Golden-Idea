@@ -22,7 +22,7 @@ import {
   Groups2Outlined,
   Category,
   PointOfSaleOutlined,
-  TodayOutlined,
+  SwitchAccount,
   AssignmentLate,
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
@@ -86,8 +86,8 @@ const navItems = [
     icon: <PointOfSaleOutlined />,
   },
   {
-    text: "Daily",
-    icon: <TodayOutlined />,
+    text: "Contributors",
+    icon: < SwitchAccount />,
   },
   {
     text: "Exception",

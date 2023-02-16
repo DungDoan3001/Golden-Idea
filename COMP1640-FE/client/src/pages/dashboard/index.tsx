@@ -1,4 +1,3 @@
-import React from "react";
 import FlexBetween from "../../app/components/FlexBetween";
 import Header from "../../app/components/Header";
 import {
@@ -15,49 +14,64 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import BreakdownChart from "../../app/components/BreakdownChart";
 import StatBox from "../../app/components/StatBox";
+import OverviewChart from "../../app/components/OverviewChart";
+import { dataIdeas } from "../../dataTest";
+import Loading from "../../app/components/Loading";
+import React from "react";
+
 // import OverviewChart from "components/OverviewChart";
 // import { useGetDashboardQuery } from "state/api";
 // import StatBox from "components/StatBox";
-
 const Dashboard = () => {
   const theme: any = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
-  // const { data, isLoading } = useGetDashboardQuery();
-
-  const columns = [
+  const [pageSize, setPageSize] = React.useState<number>(5);
+  const columns: any = [
     {
-      field: "_id",
+      field: "id",
       headerName: "ID",
+      minWidth: 130,
       flex: 1,
     },
     {
-      field: "userId",
-      headerName: "User ID",
+      field: "image",
+      headerName: "Image",
+      minWidth: 130,
+      renderCell: (params: { value: any; }) => <Box
+        component="img"
+        sx={{
+          height: 42,
+          width: 62,
+          borderRadius: "10%",
+          objectFit: "fix-content"
+        }}
+        alt="img"
+        src={params.value}
+      />
+    },
+    {
+      field: "title",
+      headerName: "Title",
+      minWidth: 130,
       flex: 1,
     },
     {
-      field: "createdAt",
+      field: "lastUpdate",
       headerName: "CreatedAt",
+      minWidth: 130,
       flex: 1,
     },
-    {
-      field: "products",
-      headerName: "# of Products",
-      flex: 0.5,
-      sortable: false,
-      renderCell: (params: { value: string | any[]; }) => params.value.length,
-    },
-    {
-      field: "cost",
-      headerName: "Cost",
-      flex: 1,
-      renderCell: (params: { value: any; }) => `$${Number(params.value).toFixed(2)}`,
-    },
+    // {
+    //   field: "cost",
+    //   headerName: "Cost",
+    //   flex: 1,
+    //   renderCell: (params: { value: any; }) => `$${Number(params.value).toFixed(2)}`,
+    // },
   ];
-
+  if (!dataIdeas) return <Loading />;
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
@@ -111,9 +125,20 @@ const Dashboard = () => {
             />
           }
         />
-        <Box sx={{ gridColumn: "span 8", gridRow: "span 2", backgroundColor: theme.palette.background.alt, p: "1rem", borderRadius: "0.55rem" }}
+        <Box sx={{
+          gridColumn: "span 8", gridRow: "span 2", backgroundColor: theme.palette.background.alt, p: "1rem", borderRadius: "0.55rem", [theme.breakpoints.down('sm')]: {
+            width: '100vw',
+          },
+        }}
         >
-          {/* <OverviewChart view="sales" isDashboard={true} /> */}
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ padding: "5px 5px 0 5px" }}
+          >
+            Ideas by department
+          </Typography>
+          <OverviewChart isDashboard={true} />
         </Box>
         <StatBox
           title="Monthly Ideas"
@@ -168,12 +193,21 @@ const Dashboard = () => {
             },
           }}
         >
-          {/* <DataGrid
-            loading={isLoading || !data}
-            getRowId={(row) => row._id}
-            rows={(data && data.transactions) || []}
+          <DataGrid
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[5, 10, 20]}
+            getRowId={(row) => row.id}
+            rows={(dataIdeas) || []}
             columns={columns}
-          /> */}
+            components={{ Toolbar: GridToolbar }}
+            componentsProps={{
+              toolbar: {
+                showQuickFilter: true,
+                quickFilterProps: { debounceMs: 500 },
+              },
+            }}
+          />
         </Box>
         <Box sx={{
           gridColumn: "span 4", gridRow: "span 3", backgroundColor: theme.palette.background.alt, p: "1.5rem", borderRadius: "0.55rem", [theme.breakpoints.down('sm')]: {

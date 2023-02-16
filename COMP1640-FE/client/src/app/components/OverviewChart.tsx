@@ -1,38 +1,37 @@
 import { ResponsiveBar } from '@nivo/bar'
-import { dataExceptions } from '../../dataTest'
+import { dataOverview } from '../../dataTest'
 import { useTheme } from "@mui/material";
 
-const ExceptionBarChart = ({ isDashboard = false }) => {
+const OverviewChart = ({ isDashboard = false }) => {
     const theme: any = useTheme();
     return (
         <ResponsiveBar
-            data={dataExceptions}
+            data={dataOverview}
             theme={{
-                // added
                 axis: {
                     domain: {
                         line: {
-                            stroke: theme.palette.secondary[100],
+                            stroke: theme.palette.secondary[200],
                         },
                     },
                     legend: {
                         text: {
-                            fill: theme.palette.secondary[100],
+                            fill: theme.palette.secondary[200],
                         },
                     },
                     ticks: {
                         line: {
-                            stroke: theme.palette.secondary[100],
+                            stroke: theme.palette.secondary[200],
                             strokeWidth: 1,
                         },
                         text: {
-                            fill: theme.palette.secondary[100],
+                            fill: theme.palette.secondary[200],
                         },
                     },
                 },
                 legends: {
                     text: {
-                        fill: theme.palette.secondary[100],
+                        fill: theme.palette.secondary[200],
                     },
                 },
                 tooltip: {
@@ -41,13 +40,13 @@ const ExceptionBarChart = ({ isDashboard = false }) => {
                     },
                 },
             }}
-            keys={["no comment", "anonymous",]}
+            keys={["total ideas"]}
             indexBy="department"
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
-            colors={{ scheme: 'set2' }}
+            colors={{ scheme: "nivo" }}
             defs={[
                 {
                     id: "dots",
@@ -128,4 +127,5 @@ const ExceptionBarChart = ({ isDashboard = false }) => {
         />
     );
 };
-export default ExceptionBarChart
+
+export default OverviewChart
