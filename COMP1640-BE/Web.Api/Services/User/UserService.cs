@@ -32,40 +32,33 @@ namespace Web.Api.Services.User
         {
             try
             {
-                //var users = await _userManager.Users.Include<Entities.Role>.;
-                //var role = await _userManager.GetRolesAsync
-
-                //var usersWithRoles = (from user in context.Users
-                //                      select new
-                //                      {
-                //                          UserId = user.Id,
-                //                          Username = user.UserName,
-                //                          Email = user.Email,
-                //                          RoleName = (from userRole in user.UserRoles
-                //                                      join role in context.Roles on userRole.RoleId
-                //                                      equals role.Id
-                //                                      select role.Name)
-                //                      }).ToList().Select(p => new UserResponseModel()
-
-                //                      {
-                //                          Id = p.UserId,
-                //                          Username = p.Username,
-                //                          Email = p.Email,
-                //                          Role = string.Join(",", p.RoleName)
-                //                      });
-
+                var users = _userManager.Users.ToList();
                 //https://www.youtube.com/watch?v=6JVZwwAf88k
-                var usersWithRoles = await context.Users 
-                    .Include(x => x.UserRoles)
-                    .ThenInclude(x => x.Role)
-                    .ToListAsync();
-                
-                return usersWithRoles;
+                //var usersWithRoles = await context.Users 
+                //    .Include(x => x.UserRoles)
+                //    .ThenInclude(x => x.Role)
+                //    .ToListAsync();
+
+                return users;
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+
+        public async Task<Entities.User> GetById(Guid id)
+        {
+            try
+            {
+                var user = _userManager.FindByIdAsync(id.ToString());
+                return user.Result;
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            
         }
 
         public async Task<Entities.User> UpdateAsync(Guid id, UserRequestModel user)
