@@ -88,13 +88,22 @@ namespace Web.Api
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    
+                    ClockSkew = TimeSpan.FromSeconds(0),
+
                     ValidIssuer = Configuration["JwtSettings:Issuer"],
                     ValidAudience = Configuration["JwtSettings:Audience"]
                 };
             });
     
             services.Configure<JwtConfig>(Configuration.GetSection("JwtSettings"));
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequireUppercase = false;
+            //    options.Password.RequireLowercase = false;
+            //    options.Password.RequireDigit = false;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //});
 
             // Authorization
             services.AddAuthorization();

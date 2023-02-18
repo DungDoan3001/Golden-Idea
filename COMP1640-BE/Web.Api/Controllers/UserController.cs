@@ -22,10 +22,12 @@ namespace Web.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IMapper mapper)
+        private readonly UserManager<Entities.User> _userManager;
+        public UserController(IUserService userService, IMapper mapper, UserManager<Entities.User> userManager)
         {
             _userService = userService;
             _mapper = mapper;
+            _userManager = userManager;
         }
         /// <summary>
         /// Get all users.
@@ -33,13 +35,54 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all the users</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet]
-        public async Task<ActionResult<List<UserResponseModel>>> GetAll() //can not get role
+        public async Task<ActionResult<List<UserResponseModel>>> GetAll()
         {
             try
             {
-                var roles = await _userService.GetAll();
-                //var result = _mapper.Map<List<UserResponseModel>>(roles);
-                return Ok(roles);
+                var users = await _userService.GetAll();
+                var result = _mapper.Map<List<UserResponseModel>>(users);
+                //Get role for all user
+                for(int i = 0; i < users.Count; i++)
+                {
+                    var role = await _userManager.GetRolesAsync(users[i]);
+                    foreach(var r in role)
+                    {
+                        result[i].Role = r;
+                    }
+                }                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+            }
+        }
+
+        /// <summary>
+        /// Get user information by id.
+        /// </summary>
+        /// <param name="id">Id of the user</param>
+        /// <response code="200">Successfully get the user information</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is no user with the given Id</response>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserResponseModel>> GetById([FromRoute] Guid id)
+        {
+            try
+            {
+                var user = await _userService.GetById(id);
+                if(user == null)
+                {
+                    return NotFound(new MessageResponseModel { Message = "Can not find the user", StatusCode = (int)HttpStatusCode.BadRequest });
+                }
+                var result = _mapper.Map<UserResponseModel>(user);
+                //Get role
+                var role = _userManager.GetRolesAsync(user);
+                foreach(var r in role.Result)
+                {
+                    result.Role = r;
+                }
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -61,10 +104,14 @@ namespace Web.Api.Controllers
         public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UserRequestModel user)
         {
             try
-            {
-                var userUpdate = _mapper.Map<Entities.User>(user);
-                var updateUser = await _userService.UpdateAsync(id, userUpdate); //error
+            { 
+                var updateUser = await _userService.UpdateAsync(id, user);
+                if (updateUser == null)
+                {
+                    return NotFound(new MessageResponseModel { Message = "Update error! Can not find the user to update!", StatusCode = (int)HttpStatusCode.NotFound });
+                }
                 var result = _mapper.Map<UserResponseModel>(updateUser);
+                result.Role = user.Role;
                 return Ok(result);
             }
             catch (Exception ex)
