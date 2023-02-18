@@ -89,7 +89,7 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
                 Entities.Topic topic = _mapper.Map<Entities.Topic>(requestModel);
                 Entities.Topic createdTopic = await _topicService.CreateAsync(topic);
                 if (createdTopic == null)
@@ -119,7 +119,7 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
                 Entities.Topic topic = await _topicService.GetByIdAsync(id);
                 if (topic == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
                 _mapper.Map<TopicRequestModel, Entities.Topic>(requestModel, topic);
