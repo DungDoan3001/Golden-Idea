@@ -32,7 +32,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all the roles</response>
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no roles</response>
-        [HttpGet("")]
+        [HttpGet]
         public async Task<ActionResult<List<IdentityRole<Guid>>>> GetAll()
         {
             try

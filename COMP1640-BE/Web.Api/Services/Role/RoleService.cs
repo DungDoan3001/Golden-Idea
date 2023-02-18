@@ -22,9 +22,9 @@ namespace Web.Api.Services.Role
     public class RoleService : IRoleService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private RoleManager<IdentityRole<Guid>> roleManager;
+        private RoleManager<Entities.Role> roleManager;
         private readonly IMapper _mapper;
-        public RoleService(IUnitOfWork unitOfWork, RoleManager<IdentityRole<Guid>> roleManager, IMapper mapper)
+        public RoleService(IUnitOfWork unitOfWork, RoleManager<Entities.Role> roleManager, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             this.roleManager = roleManager;
@@ -49,7 +49,7 @@ namespace Web.Api.Services.Role
         {
             try
             {
-                IdentityResult create = await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                IdentityResult create = await roleManager.CreateAsync(new Entities.Role {Name= roleName});
                 if(!create.Succeeded)
                 {
                     foreach(var e in create.Errors)

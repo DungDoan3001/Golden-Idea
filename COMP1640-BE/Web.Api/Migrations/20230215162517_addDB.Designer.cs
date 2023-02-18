@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Web.Api.Data.Context;
@@ -9,9 +10,10 @@ using Web.Api.Data.Context;
 namespace Web.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230215162517_addDB")]
+    partial class addDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,16 +282,11 @@ namespace Web.Api.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Roles");
                 });
@@ -558,13 +555,6 @@ namespace Web.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Web.Api.Entities.Role", b =>
-                {
-                    b.HasOne("Web.Api.Entities.User", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("Web.Api.Entities.User", b =>
                 {
                     b.HasOne("Web.Api.Entities.Department", "Department")
@@ -648,8 +638,6 @@ namespace Web.Api.Migrations
                     b.Navigation("Ideas");
 
                     b.Navigation("Reactions");
-
-                    b.Navigation("Roles");
 
                     b.Navigation("UserRoles");
 
