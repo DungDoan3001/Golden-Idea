@@ -34,7 +34,6 @@ namespace Web.Api.Services.Authentication
             {
                 throw;
             }
-            
         }
         public async Task<string> CreateToken()
         {
@@ -70,7 +69,7 @@ namespace Web.Api.Services.Authentication
                 issuer: _jwtConfig.Issuer,
                 audience: _jwtConfig.Audience,
                 claims: claims,
-                expires:DateTime.Now.AddMinutes(Convert.ToDouble(_jwtConfig.Expires)),
+                expires:DateTime.Now.AddHours(Convert.ToDouble(_jwtConfig.Expires)),
                 signingCredentials: signingCredentials
             );
             return tokenOptions;

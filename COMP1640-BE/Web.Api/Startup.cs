@@ -88,7 +88,8 @@ namespace Web.Api
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    
+                    ClockSkew = TimeSpan.FromSeconds(0),
+
                     ValidIssuer = Configuration["JwtSettings:Issuer"],
                     ValidAudience = Configuration["JwtSettings:Audience"]
                 };

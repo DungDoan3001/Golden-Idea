@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using System.Xml.Linq;
@@ -118,39 +121,26 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully remove authentication for user</response>
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while remove</response>
-        [Authorize]
-        [HttpPost("logout")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> LogOut([FromBody] UserForLogoutRequestModel request) //in process NOT DONE
-        {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(request.Email);
-                if(user == null)
-                {
-                    return NotFound(new MessageResponseModel
-                    {
-                        Message = "Can not find user!",
-                        StatusCode = (int)HttpStatusCode.NotFound
-                    });
-                }
-                //Response.Headers.Remove("Authorization");
-                //HttpContext.Session.Clear();
-                await _userManager.UpdateSecurityStampAsync(user);
-                await _userManager.RemoveAuthenticationTokenAsync(user, "JWT", "JWT Token");
-
-                return Ok(new MessageResponseModel
-                {
-                    Message = "Logout successfull!",
-                    StatusCode = (int)HttpStatusCode.OK
-                });
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
-            }
-            
-        }
+        //[Authorize]
+        //[HttpPost("logout")]
+        //[ServiceFilter(typeof(ValidationFilterAttribute))]
+        //public async Task<IActionResult> LogOut() //in process NOT DONE
+        //{
+        //    try
+        //    {
+        //        Response.Headers.Remove("Authorization");
+        //        //HttpContext.Session.Clear();
+        //        return Ok(new MessageResponseModel
+        //        {
+        //            Message = "Logout successfull!",
+        //            StatusCode = (int)HttpStatusCode.OK
+        //        });
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+        //    }
+        //}
     }
 }
 

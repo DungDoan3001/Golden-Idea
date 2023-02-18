@@ -16,14 +16,12 @@ namespace Web.Api.Services.User
     public class UserService : IUserService
     {
         private readonly UserManager<Entities.User> _userManager;
-        private readonly IMapper _mapper;
         protected AppDbContext context;
         private IPasswordHasher<Entities.User> _passwordHasher;
 
-        public UserService(UserManager<Entities.User> userManager, IMapper mapper, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher)
+        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher)
         {
             _userManager = userManager;
-            _mapper = mapper;
             this.context = context;
             this._passwordHasher = passwordHasher;
         }
@@ -38,7 +36,7 @@ namespace Web.Api.Services.User
                 //    .Include(x => x.UserRoles)
                 //    .ThenInclude(x => x.Role)
                 //    .ToListAsync();
-
+                
                 return users;
             }
             catch (Exception)
@@ -69,7 +67,7 @@ namespace Web.Api.Services.User
                 if (userUpdate == null)
                 {
                     throw new Exception("Can not find the user");
-                }                
+                }    
                 userUpdate.Result.UserName = user.UserName;
                 userUpdate.Result.Email = user.Email;
                 userUpdate.Result.Name = user.Name;
@@ -77,24 +75,40 @@ namespace Web.Api.Services.User
                 userUpdate.Result.Address = user.Address;
                 userUpdate.Result.DepartmentId = user.DepartmentId;
                 userUpdate.Result.PhoneNumber = user.PhoneNumber;
+                //Check email and username is existed
+                var users = _userManager.Users.ToList();
+                foreach(var item in users)
+                {
+                    if(item.Email.ToLower().Trim() == userUpdate.Result.Email.ToLower().Trim())
+                    {
+                        throw new Exception("The email has been used, please choose another email!");
+                    }
+                    if(item.UserName.ToLower().Trim() == userUpdate.Result.UserName.ToLower().Trim())
+                    {
+                        throw new Exception("The username has been used, please choose another username!");
+                    }
+                }
                 var update = await _userManager.UpdateAsync(userUpdate.Result);
                 //Add role
                 var userRole = _userManager.GetRolesAsync(userUpdate.Result);
-                if (userRole.ToString() != user.Role)
+                if (userRole.ToString().Trim() != user.Role.Trim().ToLower())
                 {
                     await _userManager.RemoveFromRoleAsync(userUpdate.Result, userRole.Result[0]);
-                    await _userManager.AddToRoleAsync(userUpdate.Result, user.Role);
                 }
+                if (userRole == null)
+                {
+                    await _userManager.RemoveFromRoleAsync(userUpdate.Result, null);
+                }
+                await _userManager.AddToRoleAsync(userUpdate.Result, user.Role);
                 if (!update.Succeeded)
                 {
                     foreach(var e in update.Errors)
                     {
                         throw new Exception(e.Description); 
                     }
-                    
                 }
-                var updated = _userManager.FindByIdAsync(userUpdate.Result.Id.ToString());
-                return updated.Result;
+                var result = _userManager.FindByIdAsync(userUpdate.Result.Id.ToString());
+                return result.Result;
             }
             catch (Exception)
             {
