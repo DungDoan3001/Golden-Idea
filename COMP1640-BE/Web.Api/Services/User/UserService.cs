@@ -10,7 +10,6 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 using System.Linq;
 using Web.Api.DTOs.RequestModels;
-
 namespace Web.Api.Services.User
 {
     public class UserService : IUserService

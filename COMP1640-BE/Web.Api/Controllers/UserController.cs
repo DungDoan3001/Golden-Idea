@@ -104,8 +104,7 @@ namespace Web.Api.Controllers
         public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UserRequestModel user)
         {
             try
-            {
-                
+            { 
                 var updateUser = await _userService.UpdateAsync(id, user);
                 if (updateUser == null)
                 {
