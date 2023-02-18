@@ -9,6 +9,7 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Extensions;
 using Web.Api.Services.Category;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Web.Api.Controllers
 {
@@ -18,11 +19,13 @@ namespace Web.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(IMapper mapper, ICategoryService categoryService)
+        public CategoryController(IMapper mapper, ICategoryService categoryService, ILogger<CategoryController> logger)
         {
             _mapper = mapper;
             _categoryService = categoryService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -36,6 +39,7 @@ namespace Web.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("Called");
                 IEnumerable<Entities.Category> categories = await _categoryService.GetAllAsync();
                 IEnumerable<CategoryResponseModel> categoryResponses = _mapper.Map<IEnumerable<CategoryResponseModel>>(categories);
                 return Ok(categoryResponses);
