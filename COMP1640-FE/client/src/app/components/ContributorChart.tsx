@@ -1,41 +1,37 @@
+import React from 'react'
 import { ResponsiveBar } from '@nivo/bar'
+import { dataContributor } from '../../dataTest'
 import { useTheme } from "@mui/material";
-interface Props {
-    isComment: boolean,
-    dataChart: any
-}
-const ExceptionBarChart = ({ isComment, dataChart }: Props) => {
+const ContributorChart = () => {
     const theme: any = useTheme();
-
     return (
         <ResponsiveBar
-            data={dataChart}
+            data={dataContributor}
             theme={{
-                // added
                 axis: {
                     domain: {
                         line: {
-                            stroke: theme.palette.secondary[100],
+                            stroke: theme.palette.secondary[200],
                         },
                     },
                     legend: {
                         text: {
-                            fill: theme.palette.secondary[100],
+                            fill: theme.palette.secondary[200],
                         },
                     },
                     ticks: {
                         line: {
-                            stroke: theme.palette.secondary[100],
+                            stroke: theme.palette.secondary[200],
                             strokeWidth: 1,
                         },
                         text: {
-                            fill: theme.palette.secondary[100],
+                            fill: theme.palette.secondary[200],
                         },
                     },
                 },
                 legends: {
                     text: {
-                        fill: theme.palette.secondary[100],
+                        fill: theme.palette.secondary[200],
                     },
                 },
                 tooltip: {
@@ -44,14 +40,13 @@ const ExceptionBarChart = ({ isComment, dataChart }: Props) => {
                     },
                 },
             }}
-            keys={isComment ? ["total comments"] : ["no comment", "anonymous",]}
+            keys={["contributors", "non contributory"]}
             indexBy="department"
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
-            motionConfig={"stiff"}
-            colors={{ scheme: isComment ? 'nivo' : 'set2' }}
+            colors={{ scheme: "dark2" }}
             defs={[
                 {
                     id: "dots",
@@ -72,6 +67,10 @@ const ExceptionBarChart = ({ isComment, dataChart }: Props) => {
                     spacing: 10,
                 },
             ]}
+            fill={[
+                { match: { id: 'non contributory' }, id: 'lines' },
+                { match: { id: 'contributors' }, id: 'dots' },
+            ]}
             borderColor={{
                 from: "color",
                 modifiers: [["darker", 1.6]],
@@ -90,7 +89,7 @@ const ExceptionBarChart = ({ isComment, dataChart }: Props) => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: isComment ? "Comments" : "Ideas", // changed
+                legend: "Staffs", // changed
                 legendPosition: "middle",
                 legendOffset: -40,
             }}
@@ -132,4 +131,5 @@ const ExceptionBarChart = ({ isComment, dataChart }: Props) => {
         />
     );
 };
-export default ExceptionBarChart
+
+export default ContributorChart

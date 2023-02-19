@@ -69,7 +69,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
             },
           },
         }}
-
+        motionConfig={"stiff"}
         colors={{ datum: "data.color" }}
         margin={
           isDashboard

@@ -3,7 +3,7 @@ import Header from "../../app/components/Header";
 import {
   DownloadOutlined,
   PostAdd,
-  CalendarMonth,
+  InsertComment,
   PersonAdd,
   DynamicFeed,
 } from "@mui/icons-material";
@@ -14,11 +14,11 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import BreakdownChart from "../../app/components/BreakdownChart";
 import StatBox from "../../app/components/StatBox";
 import OverviewChart from "../../app/components/OverviewChart";
-import { dataIdeas } from "../../dataTest";
+import { dataIdeas, dataOverall } from "../../dataTest";
 import Loading from "../../app/components/Loading";
 import React from "react";
 
@@ -28,7 +28,8 @@ import React from "react";
 const Dashboard = () => {
   const theme: any = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
-  const [pageSize, setPageSize] = React.useState<number>(5);
+  const [pageSize, setPageSize] = React.useState<number>(10);
+  const data = dataOverall[0]
   const columns: any = [
     {
       field: "id",
@@ -39,7 +40,7 @@ const Dashboard = () => {
     {
       field: "image",
       headerName: "Image",
-      minWidth: 130,
+      minWidth: 70,
       renderCell: (params: { value: any; }) => <Box
         component="img"
         sx={{
@@ -55,25 +56,29 @@ const Dashboard = () => {
     {
       field: "title",
       headerName: "Title",
-      minWidth: 130,
+      minWidth: 300,
       flex: 1,
     },
     {
       field: "lastUpdate",
       headerName: "CreatedAt",
-      minWidth: 130,
+      minWidth: 250,
       flex: 1,
     },
-    // {
-    //   field: "cost",
-    //   headerName: "Cost",
-    //   flex: 1,
-    //   renderCell: (params: { value: any; }) => `$${Number(params.value).toFixed(2)}`,
-    // },
+    {
+      field: "userID",
+      headerName: "UserID",
+      minWidth: 250,
+      flex: 1,
+    },
   ];
   if (!dataIdeas) return <Loading />;
   return (
-    <Box m="1.5rem 2.5rem">
+    <Box m="1.5rem 2.5rem" sx={{
+      [theme.breakpoints.down('sm')]: {
+        width: '120%',
+      },
+    }}>
       <FlexBetween>
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
         <Box>
@@ -84,6 +89,9 @@ const Dashboard = () => {
               fontSize: "14px",
               fontWeight: "bold",
               padding: "10px 20px",
+              [theme.breakpoints.down('sm')]: {
+                marginLeft: "3.5rem",
+              },
             }}
           >
             <DownloadOutlined sx={{ mr: "10px" }} />
@@ -105,8 +113,8 @@ const Dashboard = () => {
         {/* ROW 1 */}
         <StatBox
           title="Total Staffs"
-          value={1000}
-          increase="+14%"
+          value={data.totalStaffs.value}
+          increase={`${data.totalStaffs.increase}%`}
           description="Since last month"
           icon={
             <PersonAdd
@@ -115,10 +123,10 @@ const Dashboard = () => {
           }
         />
         <StatBox
-          title="Ideas Today"
-          value={100}
-          increase="+8%"
-          description="Since yesterday"
+          title="Total Ideas"
+          value={data.totalIdeas.value}
+          increase={`${data.totalIdeas.increase}%`}
+          description="Since last month"
           icon={
             <PostAdd
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
@@ -127,7 +135,8 @@ const Dashboard = () => {
         />
         <Box sx={{
           gridColumn: "span 8", gridRow: "span 2", backgroundColor: theme.palette.background.alt, p: "1rem", borderRadius: "0.55rem", [theme.breakpoints.down('sm')]: {
-            width: '100vw',
+            width: '100%',
+            overflow: 'auto'
           },
         }}
         >
@@ -138,23 +147,34 @@ const Dashboard = () => {
           >
             Ideas by department
           </Typography>
-          <OverviewChart isDashboard={true} />
+          <Box sx={{
+            [theme.breakpoints.up('sm')]: {
+              width: '100%',
+              height: '100%',
+            },
+            [theme.breakpoints.down('sm')]: {
+              width: '210%',
+              height: '100%',
+              overflow: 'auto'
+            },
+          }}><OverviewChart isDashboard={true} /></Box>
+
         </Box>
         <StatBox
-          title="Monthly Ideas"
-          value={100}
-          increase="+5%"
+          title="Total comments"
+          value={data.totalComments.value}
+          increase={`${data.totalComments.increase}%`}
           description="Since last month"
           icon={
-            <CalendarMonth
+            <InsertComment
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
             />
           }
         />
         <StatBox
-          title="Yearly Ideas"
-          value={12353}
-          increase="+43%"
+          title="Total topics"
+          value={data.totalTopics.value}
+          increase={`${data.totalTopics.increase}%`}
           description="Since last month"
           icon={
             < DynamicFeed
@@ -168,6 +188,7 @@ const Dashboard = () => {
           gridColumn="span 8"
           gridRow="span 3"
           sx={{
+            marginBottom: "8px",
             "& .MuiDataGrid-root": {
               border: "none",
               borderRadius: "5rem",
@@ -196,23 +217,17 @@ const Dashboard = () => {
           <DataGrid
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
+            rowsPerPageOptions={[10, 50, 100]}
             getRowId={(row) => row.id}
             rows={(dataIdeas) || []}
             columns={columns}
-            components={{ Toolbar: GridToolbar }}
-            componentsProps={{
-              toolbar: {
-                showQuickFilter: true,
-                quickFilterProps: { debounceMs: 500 },
-              },
-            }}
           />
         </Box>
         <Box sx={{
           gridColumn: "span 4", gridRow: "span 3", backgroundColor: theme.palette.background.alt, p: "1.5rem", borderRadius: "0.55rem", [theme.breakpoints.down('sm')]: {
-            width: '100vw',
+            width: '100%',
           },
+          marginBottom: "8px",
         }}
         >
           <Typography variant="h6" sx={{ color: theme.palette.secondary[100] }}>

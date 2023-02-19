@@ -4,19 +4,20 @@ import Header from "../../app/components/Header";
 
 import ExceptionBarChart from "../../app/components/ExceptionBarChart";
 import { useState } from "react";
-import BreakdownChart from "../../app/components/BreakdownChart";
+import { dataComment, dataExceptions } from '../../dataTest'
 
 const Exception = () => {
     const theme = useTheme();
     const [view, setView] = useState("units");
     return (
-        <Box m="1.5rem 2.5rem"
-            sx={{
+        <Box m="1.5rem 2.5rem" >
+            <Box sx={{
                 [theme.breakpoints.down('sm')]: {
-                    width: '110%',
-                },
-            }} >
-            <Header title="EXCEPTION REPORT" subtitle="Ideas Without a Comment & Anonymous Ideas and Comments Chart" />
+                    width: "150%"
+                }
+            }}>
+                <Header title="EXCEPTION REPORT" subtitle="Ideas Without a Comment & Anonymous Ideas and Comments Chart" />
+            </Box>
             <Box height="2vh">
                 <FormControl sx={{ mt: "1rem" }}>
                     <InputLabel>View</InputLabel>
@@ -30,8 +31,22 @@ const Exception = () => {
                     </Select>
                 </FormControl>
             </Box>
-            <Box mt="40px" height="75vh">
-                {view === "comments" ? <BreakdownChart /> : <ExceptionBarChart />}
+            <Box
+                sx={{
+                    width: '100%',
+                    [theme.breakpoints.down('sm')]: {
+                        width: '130%',
+                        overflow: 'auto'
+                    },
+                }} >
+                <Box mt="40px" height="75vh" sx={{
+                    [theme.breakpoints.down('sm')]: {
+                        width: '180%',
+                        overflow: 'auto'
+                    },
+                }}>
+                    {view === "comments" ? <ExceptionBarChart isComment={true} dataChart={dataComment} /> : <ExceptionBarChart isComment={false} dataChart={dataExceptions} />}
+                </Box>
             </Box>
         </Box>
     );

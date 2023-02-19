@@ -42,12 +42,12 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
-    text: "Dashboard",
-    icon: <DashboardIcon />,
-  },
-  {
     text: "My Ideas",
     icon: <LightbulbCircle />,
+  },
+  {
+    text: "Dashboard",
+    icon: <DashboardIcon />,
   },
   {
     text: "Management",
@@ -98,7 +98,7 @@ const navItems = [
     icon: <PieChartOutlined />,
   },
   {
-    text: "Performance",
+    text: "Daily Report",
     icon: <TrendingUpOutlined />,
   },
 ];
@@ -166,7 +166,7 @@ const Sidebar = ({
                     </Typography>
                   );
                 }
-                const lcText = text.toLowerCase();
+                const lcText = text.toLowerCase().replaceAll(' ', '');
 
                 return (
                   <ListItem key={text} disablePadding>
