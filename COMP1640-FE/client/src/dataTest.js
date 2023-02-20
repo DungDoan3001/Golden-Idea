@@ -6394,3 +6394,117 @@ export const commentData = [
     ideaID: 4567,
   },
 ];
+export const categoryData = [
+  {
+    id: "6ef58a6e-0d69-4490-ba07-a1ec84c71e45",
+    name: "Innovation",
+  },
+  {
+    id: "caac48fd-857f-48e6-b7c0-0ed8aba61699",
+    name: "Productivity",
+  },
+  {
+    id: "cc6645b5-5e3f-49c3-a292-37b82f795cc8",
+    name: "Organizational",
+  },
+  {
+    id: "2eced48d-79b0-4889-baf9-2e95641614f4",
+    name: "Marketing",
+  },
+  {
+    id: "074bdc9e-fa63-45b2-93ef-72f16eba6b05",
+    name: "Financial",
+  },
+  {
+    id: "77b6d8fc-f0a6-457b-a43b-7b1060be9dc2",
+    name: "Administrative",
+  },
+  {
+    id: "14fca324-7b40-40bc-bcdf-1bfaf0273d7e",
+    name: "Creative",
+  },
+  {
+    id: "0cda7820-372a-4660-b3f3-662e3c30b741",
+    name: "Social",
+  },
+  {
+    id: "2bad496d-8ceb-4c1b-afe6-a9c7fef6a378",
+    name: "Research",
+  },
+  {
+    id: "3dd7505b-2231-4f5e-950f-2080451178eb",
+    name: "Technology",
+  },
+];
+export const topicData = [
+  {
+    id: "6ef58a6e-0d69-4490-ba07-a1ec84c71e45",
+    name: "sample-topic-1",
+    closureDate: "2020-11-23",
+    finalClousureDate: "2020-12-23",
+    userName: "UserName-001",
+  },
+  {
+    id: "559a6dcc-2668-46f1-a6cb-18c3d3fdd216",
+    name: "sample-topic-2",
+    closureDate: "2020-11-24",
+    finalClousureDate: "2020-12-24",
+    userName: "UserName-002",
+  },
+  {
+    id: "fd90e39a-d1ac-4cfc-b552-ff0a22add27d",
+    name: "sample-topic-3",
+    closureDate: "2020-12-25",
+    finalClousureDate: "2020-12-25",
+    userName: "UserName-003",
+  },
+  {
+    id: "879c3d7e-cad6-43fa-851c-2f71747caba6",
+    name: "sample-topic-4",
+    closureDate: "2020-11-26",
+    finalClousureDate: "2020-12-26",
+    userName: "UserName-004",
+  },
+  {
+    id: "8678646f-3ce7-4aea-b652-559f8d174616",
+    name: "sample-topic-5",
+    closureDate: "2020-11-27",
+    finalClousureDate: "2020-12-27",
+    userName: "UserName-005",
+  },
+  {
+    id: "99c76339-5c54-4604-b2ab-f7590fce4d4e",
+    name: "sample-topic-6",
+    closureDate: "2020-11-28",
+    finalClousureDate: "2020-12-28",
+    userName: "UserName-006",
+  },
+  {
+    id: "86f001ad-606a-473c-8f02-3fc1a771f6aa",
+    name: "sample-topic-7",
+    closureDate: "2020-11-29",
+    finalClousureDate: "2020-12-29",
+    userName: "UserName-007",
+  },
+  {
+    id: "098fce9b-27a4-4ea1-8dc8-d039cd51c71a",
+    name: "sample-topic-8",
+    closureDate: "2020-11-30",
+    finalClousureDate: "2020-12-31",
+    userName: "UserName-008",
+  },
+  {
+    id: "00e9cded-817c-4482-940b-100d36031244",
+    name: "sample-topic-9",
+    closureDate: "2020-12-01",
+    finalClousureDate: "2021-01-01",
+    userName: "UserName-009",
+  },
+  {
+    id: "97eab774-3cd9-4d4f-9725-92f55cf2cb54",
+    name: "sample-topic-10",
+    closureDate: "2020-12-02",
+    finalClousureDate: "2021-01-02",
+    userName: "UserName-010",
+  },
+];
