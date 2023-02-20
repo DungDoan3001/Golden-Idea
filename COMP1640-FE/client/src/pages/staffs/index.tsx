@@ -1,19 +1,26 @@
-import React, {useState} from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, Button, IconButton, useTheme } from "@mui/material";
+import { Delete, Edit } from '@mui/icons-material';
 import Header from "../../app/components/Header";
-import { DataGrid } from "@mui/x-data-grid";
 import { userData } from "../../dataTest";
-import { Link } from "react-router-dom";
-import "./style.scss"
+//import agent from "../../app/api/agent";
+import { AddCircleOutline } from '@mui/icons-material';
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import React, { useState } from 'react'
+import agent from "../../app/api/agent";
+import { User } from "../../app/models/User";
+import ConfirmDialog from "../../app/components/ConfirmDialog";
+import Notification from "../../app/components/Notification";
 
 const Staffs = () => {
-  const theme:any = useTheme();
-  const [data, setData] = useState(userData);
-
-//   const { data, isLoading } = useGetCustomersQuery();
-
-  console.log("data", userData);
+  const theme: any = useTheme();
   const [pageSize, setPageSize] = React.useState<number>(5);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(userData);
+  const [editMode, setEditMode] = useState(false);
+  const [recordForEdit, setRecordForEdit] = useState<User | undefined>(undefined);
+  const [openPopup, setOpenPopup] = useState(false)
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
   const columns: any = [
     {
       field: "_id",
@@ -43,14 +50,14 @@ const Staffs = () => {
       minWidth: 130,
     },
     {
-      field: "country",
-      headerName: "Country",
+      field: "address",
+      headerName: "Address",
       flex: 0.4,
       minWidth: 130,
     },
     {
-      field: "occupation",
-      headerName: "Occupation",
+      field: "department",
+      headerName: "Department",
       flex: 1,
       minWidth: 130,
     },
@@ -61,9 +68,6 @@ const Staffs = () => {
       minWidth: 130,
     },
   ];
-  const handleDelete = (id: any) => {
-    setData(data.filter((item) => item._id !== id));
-}
   const actionColumn = [
     {
       field: "action",
@@ -71,64 +75,133 @@ const Staffs = () => {
       width: 200,
       renderCell: (params: { row: { _id: any; }; }) => {
         return (
-          <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
-            </Link>
-            <button
-              className="deleteButton"
-              onClick={() => handleDelete(params.row._id)}
-            >
-              Delete
-            </button>
-          </div>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
+            <IconButton aria-label="edit" size="large" color="info">
+              <Edit fontSize="inherit" />
+            </IconButton>
+            <IconButton aria-label="delete" size="large" color="error" onClick={() => setConfirmDialog({
+              isOpen: true,
+              title: 'Are you sure to delete this record?',
+              subTitle: "You can't undo this operation",
+              onConfirm: () => { handleDelete(params.row._id) }
+            })}>
+              <Delete fontSize="inherit" />
+            </IconButton>
+          </Box>
         );
       },
     },
   ];
+  const handleDelete = (id: any) => {
+    //Integrate BE to use this functionality
+    // setLoading(true);
+    // agent.User.deleteUser(id)
+    //   .then(() => setData(data.filter((item: { _id: any; }) => item._id !== id)))
+    //   .catch(error => console.log(error))
+    //   .finally(() => setLoading(false))
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+    })
+    setNotify({
+      isOpen: true,
+      message: 'Deleted Successfully',
+      type: 'error'
+    })
+    setData(data.filter((item: { _id: any; }) => item._id !== id))
+  }
+  const addOrEdit = async (user: { id: number; }, resetForm: () => void) => {
+    if (user.id === 0)
+      agent.User.createUser(user)
+    else
+      agent.User.updateUser(user)
+    resetForm()
+    setRecordForEdit(undefined)
+    setOpenPopup(false)
+    setData(await agent.User.listUser())
+    setNotify({
+      isOpen: true,
+      message: 'Submitted Successfully',
+      type: 'success'
+    })
+  }
+  const openInPopup = (user: User) => {
+    setRecordForEdit(user)
+    setOpenPopup(true)
+  }
+
   return (
-    <Box m="1.5rem 2.5rem">
-      <Header title="STAFFS" subtitle="List of Staffs" />
-      <Box
-        mt="40px"
-        style={{ height: '50vh', width: '100%' }}
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: theme.palette.primary.light,
-          },
-          "& .MuiDataGrid-footerContainer": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderTop: "none",
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${theme.palette.secondary[200]} !important`,
-          },
-        }}
-      >
-        <DataGrid
-        //   loading={isLoading || !data}
-          loading={!data}
-          getRowId={(row) => row._id}
-          rows={data || []}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20]}
-          columns={columns.concat(actionColumn)}
-        />
+    <>
+      <Box m="1.5rem 2.5rem">
+        <Header title="STAFFS" subtitle="List of Staffs" />
+        <Button variant="contained" size="medium" color="success" style={{ marginTop: 5 }}
+          startIcon={<AddCircleOutline />}>
+          Create a new staff
+        </Button>
+        <Box
+          mt="40px"
+          style={{
+            height: '55vh',
+          }}
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+              [theme.breakpoints.up('sm')]: {
+                width: '100%',
+              },
+              [theme.breakpoints.down('sm')]: {
+                width: '130%',
+              },
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: theme.palette.background.alt,
+              color: theme.palette.secondary[100],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: theme.palette.primary.light,
+            },
+            "& .MuiDataGrid-footerContainer": {
+              backgroundColor: theme.palette.background.alt,
+              color: theme.palette.secondary[100],
+              borderTop: "none",
+            },
+            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+              color: `${theme.palette.secondary[200]} !important`,
+            },
+          }}
+        >
+
+          <DataGrid
+            loading={loading || !data}
+            getRowId={(row) => row._id}
+            rows={data || []}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[5, 10, 20]}
+            columns={columns.concat(actionColumn)}
+            components={{ Toolbar: GridToolbar }}
+            componentsProps={{
+              toolbar: {
+                showQuickFilter: true,
+                quickFilterProps: { debounceMs: 500 },
+              },
+            }}
+          />
+        </Box>
       </Box>
-    </Box>
+      <Notification
+        notify={notify}
+        setNotify={setNotify}
+      />
+      <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
+    </>
   );
 };
 
