@@ -9,6 +9,7 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Extensions;
 using Web.Api.Services.Category;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Web.Api.Controllers
 {
@@ -18,11 +19,13 @@ namespace Web.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(IMapper mapper, ICategoryService categoryService)
+        public CategoryController(IMapper mapper, ICategoryService categoryService, ILogger<CategoryController> logger)
         {
             _mapper = mapper;
             _categoryService = categoryService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -36,6 +39,7 @@ namespace Web.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("Called");
                 IEnumerable<Entities.Category> categories = await _categoryService.GetAllAsync();
                 IEnumerable<CategoryResponseModel> categoryResponses = _mapper.Map<IEnumerable<CategoryResponseModel>>(categories);
                 return Ok(categoryResponses);
@@ -89,7 +93,7 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
                 Entities.Category category = _mapper.Map<Entities.Category>(requestModel);
                 Entities.Category createdCategory = await _categoryService.CreateAsync(category);
                 if (createdCategory == null)
@@ -119,7 +123,7 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
                 Entities.Category category = await _categoryService.GetByIdAsync(id);
                 if (category == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
                 _mapper.Map<CategoryRequestModel, Entities.Category>(requestModel, category);
