@@ -58,11 +58,11 @@ namespace Web.Api.Controllers
                 {
                     return NotFound(new MessageResponseModel { Message = "The role does not existed!", StatusCode = (int)HttpStatusCode.NotFound });
                 }
-                if(await _userManager.FindByEmailAsync(userForRegistration.Email) != null)
+                if (await _userManager.FindByEmailAsync(userForRegistration.Email) != null)
                 {
                     return NotFound(new MessageResponseModel { Message = "The email has existed!", StatusCode = (int)HttpStatusCode.NotFound });
-                } 
-                else if(!new EmailAddressAttribute().IsValid(userForRegistration.Email))
+                }
+                else if (!new EmailAddressAttribute().IsValid(userForRegistration.Email))
                 {
                     return NotFound(new MessageResponseModel { Message = "The email is not valid!", StatusCode = (int)HttpStatusCode.NotFound });
                 }
@@ -72,8 +72,8 @@ namespace Web.Api.Controllers
                 {
                     foreach (var error in create.Errors)
                     {
-                        return NotFound(new MessageResponseModel { Message = error.Description, StatusCode = (int)HttpStatusCode.Conflict});
-                    }              
+                        return NotFound(new MessageResponseModel { Message = error.Description, StatusCode = (int)HttpStatusCode.Conflict });
+                    }
                 }
                 await _userManager.AddToRoleAsync(user, userForRegistration.Role);
                 //Get user data (id + role) to response
@@ -82,10 +82,11 @@ namespace Web.Api.Controllers
                 result.Role = userForRegistration.Role;
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
             }
+        }
         /// <summary>
         /// Login or Authenticate a user.
         /// </summary>

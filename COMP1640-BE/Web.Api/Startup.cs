@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Identity;
 using Web.Api.Services.Topic;
 using Microsoft.AspNetCore.Mvc;
 using Web.Api.Services.Category;
-using Microsoft.Extensions.Options;
 using Web.Api.Services.Role;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -25,6 +24,7 @@ using System.Text;
 using Web.Api.Configuration;
 using Web.Api.Services.Authentication;
 using Web.Api.Services.User;
+using Web.Api.Services.EmailService;
 
 namespace Web.Api
 {
@@ -120,6 +120,7 @@ namespace Web.Api
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
