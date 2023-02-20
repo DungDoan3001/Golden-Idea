@@ -62,43 +62,57 @@ namespace Web.Api.Services.User
         {
             try
             {
-                var userUpdate = _userManager.FindByIdAsync(id.ToString());
-                if (userUpdate == null)
+                //Check user is existed
+                var checkUser = await _userManager.FindByIdAsync(id.ToString());         
+                if (checkUser == null)
                 {
                     throw new Exception("Can not find the user");
-                }    
-                userUpdate.Result.UserName = user.UserName;
-                userUpdate.Result.Email = user.Email;
-                userUpdate.Result.Name = user.Name;
-                userUpdate.Result.PasswordHash = _passwordHasher.HashPassword(userUpdate.Result, user.Password);
-                userUpdate.Result.Address = user.Address;
-                userUpdate.Result.DepartmentId = user.DepartmentId;
-                userUpdate.Result.PhoneNumber = user.PhoneNumber;
+                }
+                var userUpdate = checkUser;
                 //Check email and username is existed
                 var users = _userManager.Users.ToList();
-                foreach(var item in users)
+                foreach (var item in users)
                 {
-                    if(item.Email.ToLower().Trim() == userUpdate.Result.Email.ToLower().Trim())
+                    //No update username or email if it sames
+                    //if(item.Id == id) 
+                    //{
+                    //    if(item.Email.ToLower().Trim() == user.Email.ToLower().Trim())
+                    //    {
+
+                    //    }
+                    //}
+                    if (item.Email.ToLower().Trim() == user.Email.ToLower().Trim())
                     {
                         throw new Exception("The email has been used, please choose another email!");
                     }
-                    if(item.UserName.ToLower().Trim() == userUpdate.Result.UserName.ToLower().Trim())
+                    if (item.UserName.ToLower().Trim() == user.UserName.ToLower().Trim())
                     {
                         throw new Exception("The username has been used, please choose another username!");
                     }
                 }
-                var update = await _userManager.UpdateAsync(userUpdate.Result);
-                //Add role
-                var userRole = _userManager.GetRolesAsync(userUpdate.Result);
-                if (userRole.ToString().Trim() != user.Role.Trim().ToLower())
+                //Add update data
+                userUpdate.UserName = user.UserName;
+                userUpdate.Email = user.Email;
+                userUpdate.Name = user.Name;
+                userUpdate.PasswordHash = _passwordHasher.HashPassword(userUpdate, user.Password);
+                userUpdate.Address = user.Address;
+                userUpdate.DepartmentId = user.DepartmentId;
+                userUpdate.PhoneNumber = user.PhoneNumber;
+                //Validate and update role
+                var userRole = await _userManager.GetRolesAsync(checkUser);
+                if(user.Role != null)
                 {
-                    await _userManager.RemoveFromRoleAsync(userUpdate.Result, userRole.Result[0]);
+                    if (userRole.Any())
+                    {
+                        if (userRole[0].Trim().ToLower() != user.Role.Trim().ToLower())
+                        {
+                            await _userManager.RemoveFromRoleAsync(checkUser, userRole[0]);
+                        }
+                    }
+                    await _userManager.AddToRoleAsync(userUpdate, user.Role);
                 }
-                if (userRole == null)
-                {
-                    await _userManager.RemoveFromRoleAsync(userUpdate.Result, null);
-                }
-                await _userManager.AddToRoleAsync(userUpdate.Result, user.Role);
+                //update user and their role
+                var update = await _userManager.UpdateAsync(userUpdate);          
                 if (!update.Succeeded)
                 {
                     foreach(var e in update.Errors)
@@ -106,8 +120,8 @@ namespace Web.Api.Services.User
                         throw new Exception(e.Description); 
                     }
                 }
-                var result = _userManager.FindByIdAsync(userUpdate.Result.Id.ToString());
-                return result.Result;
+                var result = await _userManager.FindByIdAsync(userUpdate.Id.ToString());
+                return result;
             }
             catch (Exception)
             {
