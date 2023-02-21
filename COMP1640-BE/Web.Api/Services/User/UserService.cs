@@ -73,21 +73,16 @@ namespace Web.Api.Services.User
                 var users = _userManager.Users.ToList();
                 foreach (var item in users)
                 {
-                    //No update username or email if it sames
-                    //if(item.Id == id) 
-                    //{
-                    //    if(item.Email.ToLower().Trim() == user.Email.ToLower().Trim())
-                    //    {
-
-                    //    }
-                    //}
-                    if (item.Email.ToLower().Trim() == user.Email.ToLower().Trim())
+                    if(item.Id != id)
                     {
-                        throw new Exception("The email has been used, please choose another email!");
-                    }
-                    if (item.UserName.ToLower().Trim() == user.UserName.ToLower().Trim())
-                    {
-                        throw new Exception("The username has been used, please choose another username!");
+                        if (item.Email.ToLower().Trim() == user.Email.ToLower().Trim())
+                        {
+                            throw new Exception("The email has been used, please choose another email!");
+                        }
+                        if (item.UserName.ToLower().Trim() == user.UserName.ToLower().Trim())
+                        {
+                            throw new Exception("The username has been used, please choose another username!");
+                        }
                     }
                 }
                 //Add update data
