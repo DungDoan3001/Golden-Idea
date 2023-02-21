@@ -18,6 +18,7 @@ import Overview from "./pages/overview";
 import DailyReport from "./pages/daily";
 import Topic from "./pages/topic";
 import Comment from "./pages/comment";
+import Login from "./pages/account/login";
 
 const App = () => {
   const mode = useSelector((state: any) => state.global.mode);
@@ -45,6 +46,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Routes>
+        <Route path='/login' element={<Login />} />
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path='/home' element={<Home />} />

@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 //import { store } from "../store/configureStore";
 import { useNavigate } from "react-router-dom";
+import { store } from "../store/configureStore";
 // import { PaginatedResponse } from "../models/pagination";
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
@@ -84,8 +85,13 @@ const User = {
     updateUser: (user: any) => requests.putForm('users', createFormData(user)),
     deleteUser: (id: number) => requests.delete(`users/${id}`)
 }
+const Account = {
+    login: (values: any) => requests.post('account/login', values),
+    currentUser: () => requests.get('account/currentUser'),
+}
 const agent = {
-    User
+    User,
+    Account
 }
 
 export default agent;

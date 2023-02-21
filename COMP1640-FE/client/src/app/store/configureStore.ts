@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { globalSlice } from "../utils/AppSlice";
+//import { accountSlice } from "../../pages/account/accountSlice";
 export const store = configureStore({
     reducer: {
         global: globalSlice.reducer,
+        //account: accountSlice.reducer
         }
     })
     

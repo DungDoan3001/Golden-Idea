@@ -6,16 +6,17 @@ import { Provider } from 'react-redux';
 import { store } from './app/store/configureStore';
 import { BrowserRouter } from 'react-router-dom';
 import { ContextProvider } from './app/context/ContextProvider';
-
+import { createBrowserHistory } from 'history';
+export const history = createBrowserHistory();
 ReactDOM.render(
   <React.StrictMode>
-     <BrowserRouter>
+    <BrowserRouter>
       <Provider store={store}>
-      <ContextProvider>
-        <App />
-      </ContextProvider>
+        <ContextProvider>
+          <App />
+        </ContextProvider>
       </Provider>
-      </BrowserRouter>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
