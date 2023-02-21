@@ -111,35 +111,6 @@ namespace Web.Api.Controllers
             };
             return Ok(result);
         }
-
-        /// <summary>
-        /// Logout.
-        /// </summary>
-        /// <param name="request">Request model for logout</param>
-        /// <returns>Remove authentication of user</returns>
-        /// <response code="200">Successfully remove authentication for user</response>
-        /// <response code="400">There is something wrong while execute.</response>
-        /// <response code="404">There is a conflict while remove</response>
-        //[Authorize]
-        //[HttpPost("logout")]
-        //[ServiceFilter(typeof(ValidationFilterAttribute))]
-        //public async Task<IActionResult> LogOut() //in process NOT DONE
-        //{
-        //    try
-        //    {
-        //        Response.Headers.Remove("Authorization");
-        //        //HttpContext.Session.Clear();
-        //        return Ok(new MessageResponseModel
-        //        {
-        //            Message = "Logout successfull!",
-        //            StatusCode = (int)HttpStatusCode.OK
-        //        });
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
-        //    }
-        //}
     }
 }
 
