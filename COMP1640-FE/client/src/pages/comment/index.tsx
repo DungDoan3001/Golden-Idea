@@ -97,7 +97,7 @@ const Comment = () => {
                             componentsProps={{
                                 toolbar: {
                                     showQuickFilter: true,
-                                    quickFilterProps: { debounceMs: 500 },
+                                    quickFilterProps: { field: "content", debounceMs: 500 },
                                 },
                             }}
                         />

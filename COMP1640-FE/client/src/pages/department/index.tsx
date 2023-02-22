@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
 const Department = () => {
     return (
-        <div>Department</div>
-    )
-}
+        <>Department</>
+    );
+};
 
-export default Department
+export default Department;

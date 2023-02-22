@@ -7,4 +7,5 @@ export interface User {
     avatarURL:string;
     deparmentID?: string;
     roles?: string[];
+    token: string;
 }
