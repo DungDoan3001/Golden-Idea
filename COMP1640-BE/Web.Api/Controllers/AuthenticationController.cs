@@ -15,6 +15,7 @@ using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using System.Xml.Linq;
+using Web.Api.Data.Context;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
@@ -32,13 +33,15 @@ namespace Web.Api.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Entities.Role> roleManager;
         private readonly IAuthenticationManager _authManager;
+        private readonly AppDbContext _context;
 
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager)
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context)
         {
             _mapper = mapper;
             _userManager = userManager;
             this.roleManager = roleManager;
             _authManager = authManager;
+            _context = context;
         }
         /// <summary>
         /// Create a user.
@@ -109,6 +112,52 @@ namespace Web.Api.Controllers
                 Status = "Success",
                 Message = "Authentication is success!"
             };
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> SendEmailChangePassword([FromBody] SendEmailChangePassword user)
+        {
+            var getUser = await _userManager.FindByEmailAsync(user.Email.ToUpper());
+            if (getUser != null)
+            {
+                bool changePass = await _authManager.GenerateChangePasswordTokenAsync(getUser);
+                if (changePass)
+                {
+                    return Ok(new MessageResponseModel { 
+                        StatusCode = (int)HttpStatusCode.BadRequest, 
+                        Message = "The email reset password has sent!" });
+                }
+            }
+            return BadRequest(new MessageResponseModel
+            {
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Message = "Please make sure that the Email is correct!"
+            });
+        }
+
+        [HttpPut("change-password")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> ChangePassword(Guid id, string token, [FromBody] ChangePasswordRequestModel password)
+        {
+            
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if(password.Password != password.ConfirmPassword)
+            {
+                return BadRequest(new MessageResponseModel { 
+                    StatusCode = (int)HttpStatusCode.BadRequest, 
+                    Message = "Please make sure that your password and confirm password are the same!"});
+            }
+            var result = await _userManager.ResetPasswordAsync(user, token, password.Password);
+            if(!result.Succeeded)
+            {
+                foreach(var e in result.Errors)
+                {
+                    return BadRequest(new MessageResponseModel { StatusCode = (int)HttpStatusCode.BadRequest, Message = e.Description });
+                }
+            }
             return Ok(result);
         }
     }

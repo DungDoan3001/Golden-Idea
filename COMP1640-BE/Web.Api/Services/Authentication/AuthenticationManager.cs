@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.Configuration;
 using Microsoft.Extensions.Options;
+using Web.Api.Services.EmailService;
 
 namespace Web.Api.Services.Authentication
 {
@@ -18,10 +19,14 @@ namespace Web.Api.Services.Authentication
         private readonly UserManager<Entities.User> _userManager;
         private readonly JwtConfig _jwtConfig;
         private Entities.User _user;
-        public AuthenticationManager(UserManager<Entities.User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
+        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
+        public AuthenticationManager(UserManager<Entities.User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
+            _configuration = configuration;
+            _emailService = emailService;
         }
         public async Task<bool> ValidateUser(UserForAuthenRequestModel userForAuth)
         {
@@ -73,6 +78,33 @@ namespace Web.Api.Services.Authentication
                 signingCredentials: signingCredentials
             );
             return tokenOptions;
+        }
+
+        public async Task<bool> GenerateChangePasswordTokenAsync(Entities.User user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            if(!string.IsNullOrEmpty(token))
+            {
+                await SendEmailChangePassword(user, System.Web.HttpUtility.UrlEncode(token));
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> SendEmailChangePassword(Entities.User user, string token)
+        {
+            string appDomain = _configuration.GetSection("Application:AppDomain").Value;
+            string confirmLink = _configuration.GetSection("Application:ChangePassword").Value;
+            SendEmailOptions option = new SendEmailOptions
+            {
+                ToName = user.Name,
+                ToEmail = user.Email,
+                Body = string.Format("Here is your link to change your password for your account: " 
+                        + appDomain + confirmLink, user.Id, token),
+                Subject = "[Golden Idea] Change password"
+            };
+            var result = await _emailService.SendEmailAsync(option.ToName, option.ToEmail, option.Subject, option.Body);
+            return result;
         }
     }
 }

@@ -7,5 +7,6 @@ namespace Web.Api.Services.Authentication
     {
         Task<bool> ValidateUser(UserForAuthenRequestModel userForAuth);
         Task<string> CreateToken();
+        Task<bool> GenerateChangePasswordTokenAsync(Entities.User user);
     }
 }
