@@ -105,6 +105,9 @@ namespace Web.Api
             //    options.Password.RequireNonAlphanumeric = false;
             //});
 
+            //Set expiration for identity token
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+                opt.TokenLifespan = TimeSpan.FromHours(1));
             // Authorization
             services.AddAuthorization();
 
