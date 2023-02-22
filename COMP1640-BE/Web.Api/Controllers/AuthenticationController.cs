@@ -115,6 +115,14 @@ namespace Web.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Send email to reset password.
+        /// </summary>
+        /// <param name="user">Request model for send email change password</param>
+        /// <returns>Message to email including changepass token and id</returns>
+        /// <response code="200">Successfully sending email</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is a conflict while sending email</response>
         [Authorize]
         [HttpPost("change-password")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -137,7 +145,14 @@ namespace Web.Api.Controllers
                 Message = "Please make sure that the Email is correct!"
             });
         }
-
+        /// <summary>
+        /// Change password.
+        /// </summary>
+        /// <param name="password">Request model for change password</param>
+        /// <returns>Change password for user</returns>
+        /// <response code="200">Successfully changing password</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is a conflict while changing password</response>
         [HttpPut("change-password")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> ChangePassword(Guid id, string token, [FromBody] ChangePasswordRequestModel password)

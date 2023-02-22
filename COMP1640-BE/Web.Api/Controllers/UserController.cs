@@ -121,7 +121,15 @@ namespace Web.Api.Controllers
                 return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
             }
         }
-
+        /// <summary>
+        /// Delete a user
+        /// </summary>
+        /// <param name="id">Id of the user to be deleted.</param>
+        /// <returns>null</returns>
+        /// <response code="200">Successfully deleted the user</response>
+        /// <response code="204">Successfully deleted the user</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is no user with the given Id</response>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Delete([FromRoute] Guid id)
