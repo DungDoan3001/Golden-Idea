@@ -13,12 +13,11 @@ export default function Login() {
     const { register, handleSubmit, formState: { isSubmitting, errors, isValid } } = useForm({
         mode: 'onTouched'
     });
-    const logo = require("../../app/assets/logo.png");
 
     async function submitForm(data: FieldValues) {
         try {
             await dispatch(signInUser(data));
-            navigate(location.state?.from || '/catalog');
+            navigate(location.state?.from || '/home');
         } catch (error) {
             console.log(error);
         }

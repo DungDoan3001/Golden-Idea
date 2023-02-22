@@ -1,23 +1,10 @@
-import { Container, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { themeSettings } from "./theme";
-import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
-import Dashboard from "./pages/dashboard";
+import { Outlet, useLocation } from "react-router-dom";
 import { useAppDispatch } from "./app/store/configureStore";
 import Loading from "./app/components/Loading";
-import Layout from "./pages/layout";
-import Breakdown from "./pages/breakdown";
-import Staffs from "./pages/staffs";
-import Category from "./pages/category";
-import Department from "./pages/department";
-import Exception from "./pages/exception";
-import Contributors from "./pages/contributor";
-import Overview from "./pages/overview";
-import DailyReport from "./pages/daily";
-import Topic from "./pages/topic";
-import Comment from "./pages/comment";
 import Login from "./pages/account/login";
 
 const App = () => {
@@ -25,6 +12,7 @@ const App = () => {
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   const initApp = useCallback(async () => {
     try {
@@ -45,24 +33,11 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route element={<Layout />}>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/staffs' element={<Staffs />} />
-          <Route path='/categories' element={<Category />} />
-          <Route path='/departments' element={<Department />} />
-          <Route path='/topics' element={<Topic />} />
-          <Route path='/comments' element={<Comment />} />
-          <Route path='/overview' element={<Overview />} />
-          <Route path='/breakdown' element={<Breakdown />} />
-          <Route path='/exception' element={<Exception />} />
-          <Route path='/contributors' element={<Contributors />} />
-          <Route path='/dailyreport' element={<DailyReport />} />
-        </Route>
-      </Routes>
+      {loading ? <Loading message="Initialising app..." />
+        : location.pathname === '/' ? <Login />
+          : <Outlet />
+      }
+
     </ThemeProvider>
   );
 }

@@ -7,17 +7,17 @@ interface Props {
 }
 
 export default function RequireAuth({ roles }: Props) {
-    // const { user } = useAppSelector(state => state.account);
-    // const location = useLocation();
+    const { user } = useAppSelector(state => state.account);
+    const location = useLocation();
 
-    // if (!user) {
-    //     return <Navigate to='/login' state={{ from: location }} />
-    // }
+    if (!user) {
+        return <Navigate to='/login' state={{ from: location }} />
+    }
 
-    // if (roles && !roles.some(r => user.roles?.includes(r))) {
-    //     toast.error('Not authorised to access this area');
-    //     return <Navigate to='/login' />
-    // }
+    if (roles && !roles.some(r => user.roles?.includes(r))) {
+        toast.error('Not authorised to access this area');
+        return <Navigate to='/login' />
+    }
 
     return <Outlet />
 }
