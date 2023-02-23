@@ -35,7 +35,7 @@ namespace Web.Api.Services.Authentication
                 _user = await _userManager.FindByEmailAsync(userForAuth.Email);
                 return (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -74,7 +74,7 @@ namespace Web.Api.Services.Authentication
                 issuer: _jwtConfig.Issuer,
                 audience: _jwtConfig.Audience,
                 claims: claims,
-                expires:DateTime.Now.AddHours(Convert.ToDouble(_jwtConfig.Expires)),
+                expires: DateTime.Now.AddHours(Convert.ToDouble(_jwtConfig.Expires)),
                 signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -83,7 +83,7 @@ namespace Web.Api.Services.Authentication
         public async Task<bool> GenerateChangePasswordTokenAsync(Entities.User user)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            if(!string.IsNullOrEmpty(token))
+            if (!string.IsNullOrEmpty(token))
             {
                 await SendEmailChangePassword(user, System.Web.HttpUtility.UrlEncode(token));
                 return true;
@@ -99,8 +99,7 @@ namespace Web.Api.Services.Authentication
             {
                 ToName = user.Name,
                 ToEmail = user.Email,
-                Body = string.Format("Here is your link to change your password for your account: " 
-                        + appDomain + confirmLink, user.Id, token),
+                Body = string.Format("Here is your link to change your password for your account: <a href=\"" + appDomain + confirmLink + "\">Click Here</a>", user.Id, token),
                 Subject = "[Golden Idea] Change password"
             };
             var result = await _emailService.SendEmailAsync(option.ToName, option.ToEmail, option.Subject, option.Body);
@@ -108,3 +107,4 @@ namespace Web.Api.Services.Authentication
         }
     }
 }
+

@@ -123,7 +123,6 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully sending email</response>
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while sending email</response>
-        [Authorize]
         [HttpPost("change-password")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> SendEmailChangePassword([FromBody] SendEmailChangePassword user)
@@ -135,7 +134,7 @@ namespace Web.Api.Controllers
                 if (changePass)
                 {
                     return Ok(new MessageResponseModel { 
-                        StatusCode = (int)HttpStatusCode.BadRequest, 
+                        StatusCode = (int)HttpStatusCode.OK, 
                         Message = "The email reset password has sent!" });
                 }
             }

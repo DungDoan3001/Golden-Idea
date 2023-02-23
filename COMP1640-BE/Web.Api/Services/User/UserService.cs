@@ -29,13 +29,7 @@ namespace Web.Api.Services.User
         {
             try
             {
-                var users = _userManager.Users.ToList();
-                //https://www.youtube.com/watch?v=6JVZwwAf88k
-                //var usersWithRoles = await context.Users 
-                //    .Include(x => x.UserRoles)
-                //    .ThenInclude(x => x.Role)
-                //    .ToListAsync();
-                
+                var users = await _userManager.Users.ToListAsync();
                 return users;
             }
             catch (Exception)
@@ -48,8 +42,8 @@ namespace Web.Api.Services.User
         {
             try
             {
-                var user = _userManager.FindByIdAsync(id.ToString());
-                return user.Result;
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                return user;
             }
             catch(Exception)
             {
@@ -70,7 +64,7 @@ namespace Web.Api.Services.User
                 }
                 var userUpdate = checkUser;
                 //Check email and username is existed
-                var users = _userManager.Users.ToList();
+                var users = await _userManager.Users.ToListAsync();
                 foreach (var item in users)
                 {
                     if(item.Id != id)
