@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { Box, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { categoryData } from '../../dataTest';
+import { topicData } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
+import Moment from 'moment';
 const Topic = () => {
     const theme: any = useTheme();
     const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
-    const [data, setData] = useState(categoryData);
+    const [data, setData] = useState(topicData);
     const columns: any = [
         {
             field: "id",
@@ -18,9 +19,33 @@ const Topic = () => {
         },
         {
             field: "name",
-            headerName: "Category Name",
+            headerName: "Topic Name",
             flex: 0.5,
             minWidth: 300,
+        },
+        {
+            field: "closureDate",
+            headerName: "Closure Date",
+            flex: 1,
+            minWidth: 50,
+            renderCell: (params: { value: string; }) => {
+                return Moment(params.value).format('DD-MM-YYYY');
+            },
+        },
+        {
+            field: "finalClousureDate",
+            headerName: "Final Closure Date",
+            flex: 1,
+            minWidth: 50,
+            renderCell: (params: { value: string; }) => {
+                return Moment(params.value).format('DD-MM-YYYY');
+            },
+        },
+        {
+            field: "userName",
+            headerName: "User Name",
+            flex: 1,
+            minWidth: 50,
         },
     ];
     if (!data) {
@@ -78,7 +103,7 @@ const Topic = () => {
                             componentsProps={{
                                 toolbar: {
                                     showQuickFilter: true,
-                                    quickFilterProps: { debounceMs: 500 },
+                                    quickFilterProps: { fields: ["name", "userName"], debounceMs: 500 },
                                 },
                             }}
                         />
@@ -92,3 +117,4 @@ const Topic = () => {
 }
 
 export default Topic
+
