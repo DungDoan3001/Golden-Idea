@@ -8,6 +8,7 @@ namespace Web.Api.Entities
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Content { get; set; }
+        public bool IsAnonymous { get; set; }
         public DateTime CreatedDate { get; set; }
 
         public Guid UserId { get; set; }

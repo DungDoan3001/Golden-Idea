@@ -60,6 +60,10 @@ namespace Web.Api.Services.Authentication
                 new Claim(ClaimTypes.Name, _user.UserName),
                 new Claim(ClaimTypes.Email, _user.Email)
             };
+            if(_user.Avatar != null)
+            {
+                claims.Add(new Claim("Avatar", _user.Avatar));
+            }
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles)
             {
