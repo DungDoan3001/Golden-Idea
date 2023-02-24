@@ -18,7 +18,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import BreakdownChart from "../../app/components/BreakdownChart";
 import StatBox from "../../app/components/StatBox";
 import OverviewChart from "../../app/components/OverviewChart";
-import { dataIdeas, dataOverall } from "../../dataTest";
+import { dataIdeas, dataOverall, dataOverview } from "../../dataTest";
 import Loading from "../../app/components/Loading";
 import React from "react";
 
@@ -92,6 +92,11 @@ const Dashboard = () => {
               [theme.breakpoints.down('sm')]: {
                 marginLeft: "3.5rem",
               },
+              '&:hover': {
+                backgroundColor: theme.palette.secondary.light,
+                opacity: 0.8,
+                boxShadow: 'none',
+              },
             }}
           >
             <DownloadOutlined sx={{ mr: "10px" }} />
@@ -157,7 +162,7 @@ const Dashboard = () => {
               height: '100%',
               overflow: 'auto'
             },
-          }}><OverviewChart isDashboard={true} /></Box>
+          }}><OverviewChart isDashboard={true} formatedData={dataOverview} /></Box>
 
         </Box>
         <StatBox

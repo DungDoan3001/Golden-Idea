@@ -1,12 +1,14 @@
 import React from 'react'
 import { ResponsiveBar } from '@nivo/bar'
-import { dataContributor } from '../../dataTest'
 import { useTheme } from "@mui/material";
-const ContributorChart = () => {
+interface Props {
+    formatedData: any,
+}
+const ContributorChart = ({ formatedData }: Props) => {
     const theme: any = useTheme();
     return (
         <ResponsiveBar
-            data={dataContributor}
+            data={formatedData}
             theme={{
                 axis: {
                     domain: {

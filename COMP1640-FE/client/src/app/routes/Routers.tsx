@@ -63,6 +63,7 @@ export const router = createBrowserRouter([
             { path: 'server-error', element: <ServerError /> },
             { path: 'not-found', element: <NotFound /> },
             { path: 'forgot', element: <ForgotPassword /> },
+            { path: 'test', element: <ForgotPassword /> },
             { path: 'change-password/:resetCode', element: <ResetPass /> },
             { path: '*', element: <Navigate replace to='/not-found' /> }
         ]
