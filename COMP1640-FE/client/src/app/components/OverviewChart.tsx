@@ -1,12 +1,16 @@
 import { ResponsiveBar } from '@nivo/bar'
-import { dataOverview } from '../../dataTest'
+
 import { useTheme } from "@mui/material";
 
-const OverviewChart = ({ isDashboard = false }) => {
+interface Props {
+    isDashboard: any,
+    formatedData: any,
+}
+const OverviewChart = ({ isDashboard = false, formatedData }: Props) => {
     const theme: any = useTheme();
     return (
         <ResponsiveBar
-            data={dataOverview}
+            data={formatedData}
             theme={{
                 axis: {
                     domain: {
