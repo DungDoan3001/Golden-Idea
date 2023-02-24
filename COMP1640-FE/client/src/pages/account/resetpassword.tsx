@@ -28,6 +28,7 @@ const ResetPass = () => {
     const store = useStoreContext();
     const navigate = useNavigate();
     const { resetCode } = useParams();
+    console.log(resetCode);
 
     const methods = useForm<ResetPasswordInput>({
         resolver: zodResolver(resetPasswordSchema),

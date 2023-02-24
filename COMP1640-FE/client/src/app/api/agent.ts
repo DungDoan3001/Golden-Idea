@@ -88,7 +88,7 @@ const Account = {
     login: (values: any) => requests.post('authentication/login', values),
     currentUser: () => requests.get('account/currentUser'),
     forgotpassword: (input: any) => requests.postForm('account/forgotpassword',createFormData(input)),
-    resetpassword: (input: any, resetCode: any) => requests.putForm(`account/forgotpassword/${resetCode}`,createFormData(input))
+    resetpassword: (input: any, resetCode: any) => requests.putForm(`authentication/change-password/${resetCode}`,createFormData(input))
 }
 const agent = {
     User,
