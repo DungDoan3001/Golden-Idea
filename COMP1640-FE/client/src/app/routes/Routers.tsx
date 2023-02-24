@@ -16,25 +16,32 @@ import Contributors from "../../pages/contributor";
 import DailyReport from "../../pages/daily";
 import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
+import ForgotPassword from "../../pages/account/forgotpassword";
+import ResetPass from "../../pages/account/resetpassword";
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <App />,
         children: [
-            // user authenticated routes
+            // User authenticated routes
             {
                 element: <RequireAuth />, children: [
                 ]
             },
-            // admin routes
+            // Admin routes
             {
-                element: <RequireAuth roles={['Admin']} />, children: [
+                element: <RequireAuth roles={['Administrator']} />, children: [
                 ]
             },
             // QA manager routes
             {
-                element: <RequireAuth roles={['QAManager']} />, children: [
+                element: <RequireAuth roles={['QA Manager']} />, children: [
+                ]
+            },
+            // QA coordinator routes
+            {
+                element: <RequireAuth roles={[' QA Coordinator']} />, children: [
                 ]
             },
             {
@@ -55,6 +62,8 @@ export const router = createBrowserRouter([
             },
             { path: 'server-error', element: <ServerError /> },
             { path: 'not-found', element: <NotFound /> },
+            { path: 'forgot', element: <ForgotPassword /> },
+            { path: 'change-password/:resetCode', element: <ResetPass /> },
             { path: '*', element: <Navigate replace to='/not-found' /> }
         ]
     }

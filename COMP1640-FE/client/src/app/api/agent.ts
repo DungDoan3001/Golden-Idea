@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-//import { store } from "../store/configureStore";
 import { useNavigate } from "react-router-dom";
 import { store } from "../store/configureStore";
 // import { PaginatedResponse } from "../models/pagination";
@@ -12,11 +11,11 @@ axios.defaults.withCredentials = true;
 const responseBody = (response: AxiosResponse) => response.data;
 
 //Login here (Bearer token)
-// axios.interceptors.request.use(config => {
-//     const token = store.getState().account.user?.token;
-//     if (token) config.headers.Authorization = `Bearer ${token}`;
-//     return config;
-// })
+axios.interceptors.request.use(config => {
+    const token: any = store.getState().account.user?.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+})
 
 axios.interceptors.response.use(async response => {
     if (process.env.NODE_ENV === 'development') await sleep();
@@ -86,8 +85,10 @@ const User = {
     deleteUser: (id: number) => requests.delete(`users/${id}`)
 }
 const Account = {
-    login: (values: any) => requests.post('account/login', values),
+    login: (values: any) => requests.post('authentication/login', values),
     currentUser: () => requests.get('account/currentUser'),
+    forgotpassword: (input: any) => requests.postForm('account/forgotpassword',createFormData(input)),
+    resetpassword: (input: any, resetCode: any) => requests.putForm(`authentication/change-password/${resetCode}`,createFormData(input))
 }
 const agent = {
     User,
