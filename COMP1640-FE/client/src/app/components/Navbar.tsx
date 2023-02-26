@@ -24,29 +24,29 @@ import {
   styled,
 } from "@mui/material";
 import { ContextProvider, useStoreContext } from "../context/ContextProvider";
+import { signOut } from "../../pages/account/accountSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const theme : any = useTheme();
-  const {screenSize,setScreenSize, isSidebarOpen, setIsSidebarOpen }=useStoreContext();
+  const theme: any = useTheme();
+  const { screenSize, setScreenSize, isSidebarOpen, setIsSidebarOpen } = useStoreContext();
   //Handle resize screen went the website resize or use on mobile devices
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
-      window.addEventListener("resize", handleResize);
-      handleResize();
-      return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
 
-  },[])
+  }, [])
   useEffect(() => {
     console.log(screenSize);
-    if ((screenSize!== undefined)&&(screenSize <= 900))
-    {
+    if ((screenSize !== undefined) && (screenSize <= 900)) {
       setIsSidebarOpen(false);
     }
-    else{
+    else {
       setIsSidebarOpen(true);
     }
-  },[screenSize])
+  }, [screenSize])
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
   const handleClick = (event: any) => setAnchorEl(event.currentTarget);
@@ -73,17 +73,17 @@ const Navbar = () => {
             <MenuIcon />
           </IconButton>
           <Root>
-          <FlexBetween 
-            backgroundColor={theme.palette.background.alt}
-            borderRadius="9px"
-            gap="3rem"
-            p="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
+            <FlexBetween
+              backgroundColor={theme.palette.background.alt}
+              borderRadius="9px"
+              gap="3rem"
+              p="0.1rem 1.5rem"
+            >
+              <InputBase placeholder="Search..." />
+              <IconButton>
+                <Search />
+              </IconButton>
+            </FlexBetween>
           </Root>
         </FlexBetween>
 
@@ -145,7 +145,9 @@ const Navbar = () => {
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
-              <MenuItem onClick={handleClose}>Log Out</MenuItem>
+              <MenuItem onClick={() => {
+                dispatch(signOut());
+              }}>Log Out</MenuItem>
             </Menu>
           </FlexBetween>
         </FlexBetween>

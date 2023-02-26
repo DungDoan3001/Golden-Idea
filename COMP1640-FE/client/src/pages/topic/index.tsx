@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, useTheme } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { topicData } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
@@ -12,10 +12,14 @@ const Topic = () => {
     const [data, setData] = useState(topicData);
     const columns: any = [
         {
-            field: "id",
-            headerName: "ID",
-            flex: 1,
-            minWidth: 50,
+            field: "ordinal",
+            headerName: "#",
+            flex: 0.2,
+            valueGetter: (params: GridValueGetterParams) => {
+                const { row } = params;
+                const index = data.findIndex((r) => r.id === row.id);
+                return index + 1;
+            }
         },
         {
             field: "name",

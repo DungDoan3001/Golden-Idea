@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './style.scss'
 import {
-    LockReset, Password
+    LockReset, Margin, Password
 } from "@mui/icons-material";
 import Image from '../../app/assets/GoldenIdea.svg'
 import { LoadingButton } from '@mui/lab';
@@ -82,9 +82,9 @@ const ResetPass = () => {
     return (
         <div className="container">
             <div className="forms-container">
-                <div className="signin-signup">
+                <div className="signin-signup" style={{ marginTop: '6rem' }}>
                     <FormProvider {...methods}>
-                        <form onSubmit={handleSubmit(onSubmitHandler)} className="sign-in-form">
+                        <form onSubmit={handleSubmit(onSubmitHandler)} className="sign-in-form" >
                             <h2 className="title">Change password</h2>
                             <div className="input-field">
                                 <i><LockReset /></i>

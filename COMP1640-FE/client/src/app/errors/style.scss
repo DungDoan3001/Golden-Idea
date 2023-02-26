@@ -4,7 +4,7 @@
   }
   
   body {
-    padding: 0;
+    padding: 0 12px 12px 12px;
     margin: 0;
   }
   
@@ -28,11 +28,13 @@
     text-align: center;
     line-height: 1.4;
   }
-  
+  .notfound .img_error {
+    max-width: 70%;
+  }
   .notfound .notfound-404 {
     height: 190px;
   }
-  
+
   .notfound .notfound-404 h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 146px;
@@ -47,7 +49,7 @@
     font-weight: 700;
     margin: 0;
     text-transform: uppercase;
-    color: #232323;
+    color: #997d3d;
   }
   
   .notfound p {
@@ -72,7 +74,6 @@
   .notfound a:hover {
     opacity: 0.8;
   }
-  
   @media only screen and (max-width: 767px) {
     .notfound .notfound-404 {
       height: 115px;

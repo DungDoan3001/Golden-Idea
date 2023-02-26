@@ -77,6 +77,7 @@ const Dashboard = () => {
     <Box m="1.5rem 2.5rem" sx={{
       [theme.breakpoints.down('sm')]: {
         width: '120%',
+        margin: '1.5rem 1rem',
       },
     }}>
       <FlexBetween>

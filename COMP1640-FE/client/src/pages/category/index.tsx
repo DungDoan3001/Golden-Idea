@@ -1,20 +1,29 @@
 import React, { useState } from 'react'
 import { Box, IconButton, useTheme } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { categoryData } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
 import { Delete, Edit } from '@mui/icons-material';
 import ConfirmDialog from '../../app/components/ConfirmDialog';
-import Notification from '../../app/components/Notification';
+import { toast } from 'react-toastify';
 const Category = () => {
     const theme: any = useTheme();
     const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [data, setData] = useState(categoryData);
-    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
     const columns: any = [
+        {
+            field: "ordinal",
+            headerName: "#",
+            flex: 0.2,
+            valueGetter: (params: GridValueGetterParams) => {
+                const { row } = params;
+                const index = data.findIndex((r) => r.id === row.id);
+                return index + 1;
+            }
+        },
         {
             field: "id",
             headerName: "ID",
@@ -33,7 +42,7 @@ const Category = () => {
             field: "action",
             headerName: "Action",
             width: 200,
-            renderCell: (params: { row: { _id: any; }; }) => {
+            renderCell: (params: { row: { id: any; }; }) => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
                         <IconButton aria-label="edit" size="large" color="info">
@@ -43,7 +52,7 @@ const Category = () => {
                             isOpen: true,
                             title: 'Are you sure to delete this record?',
                             subTitle: "You can't undo this operation",
-                            onConfirm: () => { handleDelete(params.row._id) }
+                            onConfirm: () => { handleDelete(params.row.id) }
                         })}>
                             <Delete fontSize="inherit" />
                         </IconButton>
@@ -57,18 +66,17 @@ const Category = () => {
         // setLoading(true);
         // agent.User.deleteUser(id)
         //   .then(() => setData(data.filter((item: { _id: any; }) => item._id !== id)))
-        //   .catch(error => console.log(error))
+        //   .catch(error => toast.error(error.toString(), {style: { marginTop: '50px' }, position: toast.POSITION.TOP_RIGHT}))
         //   .finally(() => setLoading(false))
+        setData(data.filter((item: { id: any; }) => item.id !== id))
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
         })
-        setNotify({
-            isOpen: true,
-            message: 'Deleted Successfully',
-            type: 'success'
-        })
-        setData(data.filter((item: { id: any; }) => item.id !== id))
+        toast.success('Delete Record Success !', {
+            style: { marginTop: '50px' },
+            position: toast.POSITION.TOP_RIGHT
+        });
     }
     if (!data) {
         setLoading(true);
@@ -133,10 +141,6 @@ const Category = () => {
                 </Box>
             )
             }
-            <Notification
-                notify={notify}
-                setNotify={setNotify}
-            />
             <ConfirmDialog
                 confirmDialog={confirmDialog}
                 setConfirmDialog={setConfirmDialog}

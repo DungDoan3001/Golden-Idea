@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
 * {
   margin: 0;
@@ -8,8 +8,9 @@
 
 body,
 input {
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
 }
+
 
 .container {
   position: relative;
@@ -176,10 +177,10 @@ form.sign-in-form {
 }
 
 .image {
-  width: 100%;
+  width: 110%;
   transition: transform 1.1s ease-in-out;
   transition-delay: 0.4s;
-  margin: -5rem 0 0 1rem;
+  margin: 0 0 0 1rem;
 }
 
 .panel {

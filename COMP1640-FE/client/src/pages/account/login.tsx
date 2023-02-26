@@ -5,7 +5,7 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/store/configureStore';
 import { signInUser } from './accountSlice';
-import Image from '../../app/assets/GoldenIdea.svg'
+import Image from '../../app/assets/test.svg'
 
 export default function Login() {
     const navigate = useNavigate();
@@ -41,7 +41,6 @@ export default function Login() {
                             {...register('username', { required: 'Username is required' })}
                             error={!!errors.username}
                             helperText={errors?.username?.message as string}
-                            className='input-field'
                             sx={{
                                 "& fieldset": { border: 'none' },
                             }}
@@ -52,6 +51,7 @@ export default function Login() {
                                     </InputAdornment>
                                 ),
                             }}
+                            className='input-field'
                         />
                         <TextField
                             margin="normal"
@@ -59,11 +59,9 @@ export default function Login() {
                             fullWidth
                             placeholder="Password"
                             type="password"
-                            autoFocus
                             {...register('password', { required: 'Password is required' })}
                             error={!!errors.password}
                             helperText={errors?.password?.message as string}
-                            className='input-field'
                             sx={{
                                 "& fieldset": { border: 'none' },
                             }}
@@ -74,6 +72,7 @@ export default function Login() {
                                     </InputAdornment>
                                 ),
                             }}
+                            className='input-field'
                         />
                         <LoadingButton
                             disabled={!isValid}

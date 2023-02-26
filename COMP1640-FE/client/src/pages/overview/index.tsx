@@ -20,6 +20,10 @@ const Overview = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <Box sx={{
+        [theme.breakpoints.up('sm')]: {
+          width: '50%',
+          maxWidth: '50%',
+        },
         [theme.breakpoints.down('sm')]: {
           width: "150%"
         }
