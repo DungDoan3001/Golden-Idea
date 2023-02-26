@@ -255,11 +255,35 @@ export const rawData = {
   Marketing: 40,
 };
 export const getDepartmentCollection = () => [
-  { id: "1", title: "Development" },
-  { id: "2", title: "Graphic Design" },
-  { id: "3", title: "Accounting" },
-  { id: "4", title: "HR" },
-  { id: "5", title: "Business" },
+  { id: "83e5a1ca-47e2-4bf8-a3c3-3d76c1d4645e", name: "Computer Science" },
+  {
+    id: "c277ebd8-76ca-4a0e-8ea6-1d8f1b7c9e42",
+    name: "Design and Visual Arts",
+  },
+  {
+    id: "32ef09d7-1b8f-41dd-9e9a-749c5902d71e",
+    name: "Accounting and Finance",
+  },
+  {
+    id: "8f3cbb49-9f1b-4ee3-8c04-4241bba986fd",
+    name: "Human Resource Management",
+  },
+  {
+    id: "e4d0c84f-8b4e-4f0a-9427-dfd4f8f84c7a",
+    name: "Business Administration",
+  },
+  { id: "6c1f0bc2-9d9e-427c-9370-95d3711d6e5b", name: "Civil Engineering" },
+  { id: "bc9f59ce-3a35-4d2a-8cb7-2bf031ff98f2", name: "Marketing" },
+  {
+    id: "e69e7bde-58dd-49a7-9f79-53767a35438e",
+    name: "Mechanical Engineering",
+  },
+  { id: "c011b8a7-7156-431f-95bb-9e1d9fcf3cc3", name: "Environmental Studies" },
+  {
+    id: "10d7b5e2-5c7d-4635-88f7-763c2d15df22",
+    name: "Mathematics and Statistics",
+  },
+  { id: "7f26dbb8-f974-4a27-89a4-835bb8b72a4a", name: "Physics" },
 ];
 export const userData = [
   {

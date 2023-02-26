@@ -56,10 +56,10 @@ const DailyReport = () => {
             }}>
                 <Header title="DAILY REPORT" subtitle="Chart of Daily Ideas and Comments" />
             </Box>
-            <Box display="flex" justifyContent="flex-end" sx={{
+            <Box display="flex" justifyContent="flex-start" flexDirection="row" alignItems='center' sx={{
+                marginTop: "1rem",
                 [theme.breakpoints.down('sm')]: {
                     marginTop: "3rem",
-                    marginLeft: "21.3rem",
                 },
             }}>
                 <Box>
@@ -79,124 +79,139 @@ const DailyReport = () => {
                         startDate={startDate}
                         endDate={endDate}
                         minDate={startDate}
+
                     />
                 </Box>
             </Box>
             <Box
                 sx={{
-                    width: '100%',
                     [theme.breakpoints.down('sm')]: {
-                        width: '130%',
+                        maxWidth: '140%',
+                        width: '180%',
                         overflow: 'auto'
                     },
                 }} >
                 <Box mt="40px" height="75vh" sx={{
                     [theme.breakpoints.down('sm')]: {
-                        width: '180%',
+                        width: '200%',
                         overflow: 'auto'
                     },
                 }}>
                     {formattedData ? (
-                        <ResponsiveLine
-                            data={formattedData}
-                            theme={{
-                                axis: {
-                                    domain: {
-                                        line: {
-                                            stroke: theme.palette.secondary[200],
-                                        },
-                                    },
-                                    legend: {
-                                        text: {
-                                            fill: theme.palette.secondary[200],
-                                        },
-                                    },
-                                    ticks: {
-                                        line: {
-                                            stroke: theme.palette.secondary[200],
-                                            strokeWidth: 1,
-                                        },
-                                        text: {
-                                            fill: theme.palette.secondary[200],
-                                        },
-                                    },
+
+                        <Box height={"100%"}
+                            width={"73rem"}
+                            minHeight={"325px"}
+                            minWidth={"325px"}
+                            position="relative"
+                            sx={{
+                                [theme.breakpoints.down('sm')]: {
+                                    width: '100%',
+                                    maxWidth: '250%',
+                                    overflow: 'auto'
                                 },
-                                legends: {
-                                    text: {
-                                        fill: theme.palette.secondary[200],
-                                    },
-                                },
-                                tooltip: {
-                                    container: {
-                                        color: theme.palette.primary.main,
-                                    },
-                                },
-                            }}
-                            colors={{ scheme: 'set2' }}
-                            margin={{ top: 50, right: 50, bottom: 70, left: 60 }}
-                            xScale={{ type: "point" }}
-                            yScale={{
-                                type: "linear",
-                                min: "auto",
-                                max: "auto",
-                                stacked: false,
-                                reverse: false,
-                            }}
-                            yFormat=" >-.2f"
-                            curve="catmullRom"
-                            axisTop={null}
-                            axisRight={null}
-                            axisBottom={{
-                                tickSize: 5,
-                                tickPadding: 5,
-                                tickRotation: 90,
-                                legend: "Month",
-                                legendOffset: 60,
-                                legendPosition: "middle",
-                            }}
-                            axisLeft={{
-                                tickSize: 5,
-                                tickPadding: 5,
-                                tickRotation: 0,
-                                legend: "Total",
-                                legendOffset: -50,
-                                legendPosition: "middle",
-                            }}
-                            enableGridX={false}
-                            enableGridY={false}
-                            pointSize={10}
-                            pointColor={{ theme: "background" }}
-                            pointBorderWidth={2}
-                            pointBorderColor={{ from: "serieColor" }}
-                            pointLabelYOffset={-12}
-                            useMesh={true}
-                            legends={[
-                                {
-                                    anchor: "top-right",
-                                    direction: "column",
-                                    justify: false,
-                                    translateX: 50,
-                                    translateY: 0,
-                                    itemsSpacing: 0,
-                                    itemDirection: "left-to-right",
-                                    itemWidth: 95,
-                                    itemHeight: 20,
-                                    itemOpacity: 0.75,
-                                    symbolSize: 12,
-                                    symbolShape: "circle",
-                                    symbolBorderColor: "rgba(0, 0, 0, .5)",
-                                    effects: [
-                                        {
-                                            on: "hover",
-                                            style: {
-                                                itemBackground: "rgba(0, 0, 0, .03)",
-                                                itemOpacity: 1,
+                            }}>
+                            <ResponsiveLine
+                                data={formattedData}
+                                theme={{
+                                    axis: {
+                                        domain: {
+                                            line: {
+                                                stroke: theme.palette.secondary[200],
                                             },
                                         },
-                                    ],
-                                },
-                            ]}
-                        />
+                                        legend: {
+                                            text: {
+                                                fill: theme.palette.secondary[200],
+                                            },
+                                        },
+                                        ticks: {
+                                            line: {
+                                                stroke: theme.palette.secondary[200],
+                                                strokeWidth: 1,
+                                            },
+                                            text: {
+                                                fill: theme.palette.secondary[200],
+                                            },
+                                        },
+                                    },
+                                    legends: {
+                                        text: {
+                                            fill: theme.palette.secondary[200],
+                                        },
+                                    },
+                                    tooltip: {
+                                        container: {
+                                            color: theme.palette.primary.main,
+                                        },
+                                    },
+                                }}
+                                colors={{ scheme: 'set2' }}
+                                margin={{ top: 50, right: 50, bottom: 70, left: 60 }}
+                                xScale={{ type: "point" }}
+                                yScale={{
+                                    type: "linear",
+                                    min: "auto",
+                                    max: "auto",
+                                    stacked: false,
+                                    reverse: false,
+                                }}
+                                yFormat=" >-.2f"
+                                curve="catmullRom"
+                                axisTop={null}
+                                axisRight={null}
+                                axisBottom={{
+                                    tickSize: 5,
+                                    tickPadding: 5,
+                                    tickRotation: 90,
+                                    legend: "Month",
+                                    legendOffset: 60,
+                                    legendPosition: "middle",
+                                }}
+                                axisLeft={{
+                                    tickSize: 5,
+                                    tickPadding: 5,
+                                    tickRotation: 0,
+                                    legend: "Total",
+                                    legendOffset: -50,
+                                    legendPosition: "middle",
+                                }}
+                                enableGridX={false}
+                                enableGridY={false}
+                                pointSize={10}
+                                pointColor={{ theme: "background" }}
+                                pointBorderWidth={2}
+                                pointBorderColor={{ from: "serieColor" }}
+                                pointLabelYOffset={-12}
+                                useMesh={true}
+                                legends={[
+                                    {
+                                        anchor: "top-right",
+                                        direction: "column",
+                                        justify: false,
+                                        translateX: 50,
+                                        translateY: 0,
+                                        itemsSpacing: 0,
+                                        itemDirection: "left-to-right",
+                                        itemWidth: 95,
+                                        itemHeight: 20,
+                                        itemOpacity: 0.75,
+                                        symbolSize: 12,
+                                        symbolShape: "circle",
+                                        symbolBorderColor: "rgba(0, 0, 0, .5)",
+                                        effects: [
+                                            {
+                                                on: "hover",
+                                                style: {
+                                                    itemBackground: "rgba(0, 0, 0, .03)",
+                                                    itemOpacity: 1,
+                                                },
+                                            },
+                                        ],
+                                    },
+                                ]}
+                            />
+                        </Box>
                     ) : (
                         <Loading />
                     )}

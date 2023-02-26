@@ -1,45 +1,56 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, useTheme } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { commentData } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
+import Moment from 'moment';
 
 const Comment = () => {
     const theme: any = useTheme();
     const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [data, setData] = useState(commentData);
+    useEffect(() => {
+        setData(commentData);
+    }, []);
     const columns: any = [
         {
-            field: "id",
-            headerName: "ID",
-            flex: 1,
-            minWidth: 50,
+            field: "ordinal",
+            headerName: "#",
+            flex: 0.2,
+            valueGetter: (params: GridValueGetterParams) => {
+                const { row } = params;
+                const index = data.findIndex((r) => r.id === row.id);
+                return index + 1;
+            }
         },
         {
             field: "content",
             headerName: "Content",
             flex: 0.5,
-            minWidth: 300,
+            minWidth: 350,
         },
         {
             field: "createdDate",
             headerName: "Created Date",
             flex: 1,
-            minWidth: 50,
+            minWidth: 250,
+            renderCell: (params: { value: string; }) => {
+                return Moment(params.value).format('DD-MM-YYYY');
+            },
         },
         {
             field: "userID",
-            headerName: "User ID",
+            headerName: "User Name",
             flex: 0.5,
-            minWidth: 130,
+            minWidth: 250,
         },
         {
             field: "ideaID",
-            headerName: "Idea ID",
+            headerName: "Idea Title",
             flex: 0.4,
-            minWidth: 130,
+            minWidth: 250,
         },
     ];
     if (!data) {
