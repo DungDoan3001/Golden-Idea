@@ -25,6 +25,7 @@ using Web.Api.Configuration;
 using Web.Api.Services.Authentication;
 using Web.Api.Services.User;
 using Web.Api.Services.EmailService;
+using Web.Api.Services.ResetPassword;
 
 namespace Web.Api
 {
@@ -124,6 +125,7 @@ namespace Web.Api
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IResetPasswordService, ResetPasswordService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

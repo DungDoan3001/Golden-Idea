@@ -13,6 +13,7 @@ namespace Web.Api.Data.Context
         public AppDbContext(DbContextOptions options) : base(options) { }
 
         // Place DbSet here
+        public DbSet<ResetPassword> ResetPasswords { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Topic> Topics { get; set; }
@@ -116,7 +117,7 @@ namespace Web.Api.Data.Context
                 .WithMany(x => x.Reactions)
                 .HasForeignKey(x => x.IdeaId)
             .OnDelete(DeleteBehavior.Restrict);
-
+            
             base.OnModelCreating(builder);
             
             //Delete "AspNet" name of identity table

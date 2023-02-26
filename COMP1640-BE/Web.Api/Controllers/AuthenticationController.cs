@@ -22,6 +22,7 @@ using Web.Api.Entities;
 using Web.Api.Extensions;
 using Web.Api.Services.Authentication;
 using Web.Api.Services.DepartmentService;
+using Web.Api.Services.ResetPassword;
 
 namespace Web.Api.Controllers
 {
@@ -34,14 +35,15 @@ namespace Web.Api.Controllers
         private readonly RoleManager<Entities.Role> roleManager;
         private readonly IAuthenticationManager _authManager;
         private readonly AppDbContext _context;
-
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context)
+        private readonly IResetPasswordService _resetPasswordService;
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService)
         {
             _mapper = mapper;
             _userManager = userManager;
             this.roleManager = roleManager;
             _authManager = authManager;
             _context = context;
+            _resetPasswordService = resetPasswordService;
         }
         /// <summary>
         /// Create a user.
@@ -133,8 +135,8 @@ namespace Web.Api.Controllers
                 bool changePass = await _authManager.GenerateChangePasswordTokenAsync(getUser);
                 if (changePass)
                 {
-                    return Ok(new MessageResponseModel { 
-                        StatusCode = (int)HttpStatusCode.OK, 
+                    return Ok(new MessageResponseModel {
+                        StatusCode = (int)HttpStatusCode.OK,
                         Message = "The email reset password has sent!" });
                 }
             }
@@ -147,24 +149,44 @@ namespace Web.Api.Controllers
         /// <summary>
         /// Change password.
         /// </summary>
+        /// <param name="resetPasswordIdEncoded">Id of reset password</param>
         /// <param name="password">Request model for change password</param>
         /// <returns>Change password for user</returns>
         /// <response code="200">Successfully changing password</response>
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while changing password</response>
-        [HttpPut("change-password")]
+        [HttpPut("change-password/{resetPasswordIdEncoded}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> ChangePassword(Guid id, string token, [FromBody] ChangePasswordRequestModel password)
+        public async Task<IActionResult> ChangePassword([FromRoute] string resetPasswordIdEncoded, [FromBody] ChangePasswordRequestModel password)
         {
-            
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            Guid resetPasswordIdDecoded = Helpers.GuidBase64.Decode(resetPasswordIdEncoded);
+            var resetPassword = await _resetPasswordService.GetByIdAsync(resetPasswordIdDecoded);
+            if(resetPassword == null)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Wrong identity, please make sure your link is correct!"
+                });
+            }
+            var checkExpire = DateTime.Compare(resetPassword.CreatedDate.AddHours(24), DateTime.Now);
+            if (checkExpire == -1)
+            {
+                await _resetPasswordService.DeleteAsync(resetPasswordIdDecoded);
+                return BadRequest(new MessageResponseModel
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Sorry, your reset password link is expired! (more than 24h)"
+                });
+            }
+            var user = await _userManager.FindByIdAsync(resetPassword.UserId.ToString());
             if(password.Password != password.ConfirmPassword)
             {
                 return BadRequest(new MessageResponseModel { 
                     StatusCode = (int)HttpStatusCode.BadRequest, 
                     Message = "Please make sure that your password and confirm password are the same!"});
             }
-            var result = await _userManager.ResetPasswordAsync(user, token, password.Password);
+            var result = await _userManager.ResetPasswordAsync(user, resetPassword.Token, password.Password);
             if(!result.Succeeded)
             {
                 foreach(var e in result.Errors)
