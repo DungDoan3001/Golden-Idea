@@ -166,7 +166,7 @@ namespace Web.Api.Controllers
                 return BadRequest(new MessageResponseModel
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = "Wrong identity, please check your link in your email again!"
+                    Message = "Wrong identity, please make sure your link is correct!"
                 });
             }
             var checkExpire = DateTime.Compare(resetPassword.CreatedDate.AddHours(24), DateTime.Now);
