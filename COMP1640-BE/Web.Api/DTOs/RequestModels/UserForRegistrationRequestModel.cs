@@ -14,6 +14,7 @@ namespace Web.Api.DTOs.RequestModels
         public string Email { get; set; }
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
+        public string Avatar { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public Guid DepartmentId { get; set; }
