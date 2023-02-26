@@ -13,6 +13,7 @@ namespace Web.Api.Entities
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
 
+        public ResetPassword ResetPassword { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public ICollection<Role> Roles { get; set; }
         public ICollection<Idea> Ideas { get; set; }

@@ -11,6 +11,7 @@ using Web.Api.DTOs.RequestModels;
 using Web.Api.Configuration;
 using Microsoft.Extensions.Options;
 using Web.Api.Services.EmailService;
+using Web.Api.Services.ResetPassword;
 
 namespace Web.Api.Services.Authentication
 {
@@ -21,12 +22,14 @@ namespace Web.Api.Services.Authentication
         private Entities.User _user;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-        public AuthenticationManager(UserManager<Entities.User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, IConfiguration configuration, IEmailService emailService)
+        private readonly IResetPasswordService _resetPasswordService;
+        public AuthenticationManager(UserManager<Entities.User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, IConfiguration configuration, IEmailService emailService, IResetPasswordService resetPasswordService)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
             _configuration = configuration;
             _emailService = emailService;
+            _resetPasswordService = resetPasswordService;
         }
         public async Task<bool> ValidateUser(UserForAuthenRequestModel userForAuth)
         {
@@ -89,13 +92,32 @@ namespace Web.Api.Services.Authentication
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             if (!string.IsNullOrEmpty(token))
             {
-                await SendEmailChangePassword(user, System.Web.HttpUtility.UrlEncode(token));
+                
+                var checkResetPassword = await _resetPasswordService.FindByUserIdAsync(user.Id);
+                if (checkResetPassword != null)
+                {
+                    foreach (var userReset in checkResetPassword)
+                    {
+                        await _resetPasswordService.DeleteAsync(userReset.Id);
+                    }
+                }
+                Entities.ResetPassword resetPassword = new Entities.ResetPassword()
+                {
+                    UserId = user.Id,
+                    Token = token
+                };
+                await _resetPasswordService.CreateAsync(resetPassword);
+                var userResetPassword = await _resetPasswordService.FindByUserIdAsync(user.Id);
+                foreach (var item in userResetPassword)
+                {
+                    await SendEmailChangePassword(user, Helpers.GuidBase64.Encode(item.Id));
+                }
                 return true;
             }
             return false;
         }
 
-        public async Task<bool> SendEmailChangePassword(Entities.User user, string token)
+        public async Task<bool> SendEmailChangePassword(Entities.User user, string resetPasswordId)
         {
             string appDomain = _configuration.GetSection("Application:AppDomain").Value;
             string confirmLink = _configuration.GetSection("Application:ChangePassword").Value;
@@ -103,7 +125,8 @@ namespace Web.Api.Services.Authentication
             {
                 ToName = user.Name,
                 ToEmail = user.Email,
-                Body = string.Format("Here is your link to change your password for your account: <a href=\"" + appDomain + confirmLink + "\">Click Here</a>", user.Id, token),
+                Body = string.Format("Here is your link to change your password for your account (this link will be expired in 24 hours): <a href=\"" 
+                    + appDomain + confirmLink + "\">Click Here</a>", resetPasswordId),
                 Subject = "[Golden Idea] Change password"
             };
             var result = await _emailService.SendEmailAsync(option.ToName, option.ToEmail, option.Subject, option.Body);
