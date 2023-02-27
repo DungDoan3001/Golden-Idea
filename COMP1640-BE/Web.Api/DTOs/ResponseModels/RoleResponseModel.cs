@@ -8,7 +8,5 @@ namespace Web.Api.DTOs.ResponseModels
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-
-
     }
 }

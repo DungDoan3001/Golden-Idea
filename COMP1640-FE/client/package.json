@@ -5,9 +5,15 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@hookform/resolvers": "^2.9.11",
     "@mui/icons-material": "^5.11.0",
+    "@mui/lab": "^5.0.0-alpha.120",
     "@mui/material": "^5.11.7",
+    "@mui/styles": "^5.11.7",
     "@mui/x-data-grid": "^5.17.22",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/core": "^0.80.0",
+    "@nivo/line": "^0.78.0",
     "@nivo/pie": "^0.80.0",
     "@reduxjs/toolkit": "^1.9.2",
     "@types/jest": "^27.5.2",
@@ -17,15 +23,19 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.2.6",
     "history": "^5.3.0",
+    "moment": "^2.29.4",
     "react": "^17.0.2",
+    "react-datepicker": "^4.10.0",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.43.1",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.1",
     "redux": "^4.2.1",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zod": "^3.20.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -52,6 +62,9 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
+    "@types/react-datepicker": "^4.8.0",
+    "file-loader": "^6.2.0",
     "sass": "^1.58.0"
   }
 }

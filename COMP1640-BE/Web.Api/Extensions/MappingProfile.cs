@@ -27,9 +27,15 @@ namespace Web.Api.Extensions
             CreateMap<CategoryRequestModel, Entities.Category>();
 
             // Role
-            CreateMap<UserForRegistrationRequestModel, User>();
             CreateMap<IdentityRole<Guid>, RoleResponseModel>();
-            
+
+            // Authentication
+            CreateMap<UserForRegistrationRequestModel, User>();
+            CreateMap<User, UserForRegistrationResponseModel>();
+
+            //User
+            CreateMap<UserRequestModel, User>();
+            CreateMap<User, UserResponseModel>();
         }
     }
 }

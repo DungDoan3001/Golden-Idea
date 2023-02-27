@@ -6,5 +6,9 @@ namespace Web.Api.DTOs.ResponseModels
     {
         public Guid TopicId { get; set; }
         public string Name { get; set; }
+        public string Username { get; set; }
+        public DateTime ClosureDate { get; set; }
+        public DateTime FinalClosureDate { get; set; }
+
     }
 }

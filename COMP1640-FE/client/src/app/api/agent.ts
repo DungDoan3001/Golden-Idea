@@ -1,9 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-//import { store } from "../store/configureStore";
 import { useNavigate } from "react-router-dom";
+import { store } from "../store/configureStore";
 // import { PaginatedResponse } from "../models/pagination";
-const navigate = useNavigate();
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -12,11 +11,11 @@ axios.defaults.withCredentials = true;
 const responseBody = (response: AxiosResponse) => response.data;
 
 //Login here (Bearer token)
-// axios.interceptors.request.use(config => {
-//     const token = store.getState().account.user?.token;
-//     if (token) config.headers.Authorization = `Bearer ${token}`;
-//     return config;
-// })
+axios.interceptors.request.use(config => {
+    const token: any = store.getState().account.user?.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+})
 
 axios.interceptors.response.use(async response => {
     if (process.env.NODE_ENV === 'development') await sleep();
@@ -29,6 +28,7 @@ axios.interceptors.response.use(async response => {
     return response;
 }, (error: AxiosError) => {
     const { data, status }: any = error.response!;
+    const navigate = useNavigate();
     switch (status) {
         case 400:
             if (data.errors) {
@@ -78,3 +78,21 @@ const createFormData = (item: any) =>{
     }
     return formData;
 }
+const User = {
+    listUser: () => requests.get('users'),
+    createUser: (user: any) => requests.postForm('users', createFormData(user)),
+    updateUser: (user: any) => requests.putForm('users', createFormData(user)),
+    deleteUser: (id: number) => requests.delete(`users/${id}`)
+}
+const Account = {
+    login: (values: any) => requests.post('authentication/login', values),
+    currentUser: () => requests.get('account/currentUser'),
+    forgotpassword: (input: any) => requests.postForm('account/forgotpassword',createFormData(input)),
+    resetpassword: (input: any, resetCode: any) => requests.putForm(`authentication/change-password/${resetCode}`,createFormData(input))
+}
+const agent = {
+    User,
+    Account
+}
+
+export default agent;

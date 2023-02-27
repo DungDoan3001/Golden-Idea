@@ -9,6 +9,8 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Extensions;
 using Web.Api.Services.Category;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Web.Api.Services.EmailService;
 
 namespace Web.Api.Controllers
 {
@@ -18,11 +20,15 @@ namespace Web.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<CategoryController> _logger;
+        private readonly IEmailService _emailService;
 
-        public CategoryController(IMapper mapper, ICategoryService categoryService)
+        public CategoryController(IMapper mapper, ICategoryService categoryService, ILogger<CategoryController> logger, IEmailService emailService)
         {
             _mapper = mapper;
             _categoryService = categoryService;
+            _logger = logger;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -36,6 +42,7 @@ namespace Web.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("Called");
                 IEnumerable<Entities.Category> categories = await _categoryService.GetAllAsync();
                 IEnumerable<CategoryResponseModel> categoryResponses = _mapper.Map<IEnumerable<CategoryResponseModel>>(categories);
                 return Ok(categoryResponses);

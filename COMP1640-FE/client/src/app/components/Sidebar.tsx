@@ -22,12 +22,13 @@ import {
   Groups2Outlined,
   Category,
   PointOfSaleOutlined,
-  TodayOutlined,
-  CalendarMonthOutlined,
+  SwitchAccount,
+  AssignmentLate,
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
   TipsAndUpdates,
+  RoomPreferences,
 } from "@mui/icons-material";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { useEffect, useState } from "react";
@@ -41,6 +42,10 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
+    text: "My Ideas",
+    icon: <LightbulbCircle />,
+  },
+  {
     text: "Dashboard",
     icon: <DashboardIcon />,
   },
@@ -49,16 +54,16 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Ideas",
-    icon: <LightbulbCircle/>,
-  },
-  {
     text: "Staffs",
     icon: <Groups2Outlined />,
   },
   {
-    text: "Comments",
-    icon: <Forum />,
+    text: "Admin",
+    icon: <AdminPanelSettingsOutlined />,
+  },
+  {
+    text: "Departments",
+    icon: <RoomPreferences />,
   },
   {
     text: "Categories",
@@ -69,6 +74,10 @@ const navItems = [
     icon: <Topic />,
   },
   {
+    text: "Comments",
+    icon: <Forum />,
+  },
+  {
     text: "Data visualization",
     icon: null,
   },
@@ -77,48 +86,40 @@ const navItems = [
     icon: <PointOfSaleOutlined />,
   },
   {
-    text: "Daily",
-    icon: <TodayOutlined />,
+    text: "Contributors",
+    icon: < SwitchAccount />,
   },
   {
-    text: "Monthly",
-    icon: <CalendarMonthOutlined />,
+    text: "Exception",
+    icon: <AssignmentLate />,
   },
   {
     text: "Breakdown",
     icon: <PieChartOutlined />,
   },
   {
-    text: "Management",
-    icon: null,
-  },
-  {
-    text: "Admin",
-    icon: <AdminPanelSettingsOutlined />,
-  },
-  {
-    text: "Performance",
+    text: "Daily Report",
     icon: <TrendingUpOutlined />,
   },
 ];
-interface sideBarProps{
+interface sideBarProps {
   drawerWidth: any;
   isNonMobile: any;
 }
 const Sidebar = ({
   drawerWidth,
   isNonMobile,
-} : sideBarProps) => {
+}: sideBarProps) => {
   const { pathname } = useLocation();
   const [active, setActive] = useState("");
   const navigate = useNavigate();
   const theme: any = useTheme();
-  const {isSidebarOpen, setIsSidebarOpen, screenSize }=useStoreContext();
+  const { isSidebarOpen, setIsSidebarOpen, screenSize } = useStoreContext();
   useEffect(() => {
     setActive(pathname.substring(1));
   }, [pathname]);
-  const handleCloseSidebar = () =>{
-    if(isSidebarOpen&&screenSize<=900){
+  const handleCloseSidebar = () => {
+    if (isSidebarOpen && screenSize <= 900) {
       setIsSidebarOpen(false);
     }
   }
@@ -146,7 +147,7 @@ const Sidebar = ({
               <FlexBetween color={theme.palette.secondary.main}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
                   <Typography variant="h4" align='center' fontWeight="bold">
-                  <TipsAndUpdates/>GOLDEN IDEA
+                    <TipsAndUpdates />GOLDEN IDEA
                   </Typography>
                 </Box>
                 {!isNonMobile && (
@@ -165,7 +166,7 @@ const Sidebar = ({
                     </Typography>
                   );
                 }
-                const lcText = text.toLowerCase();
+                const lcText = text.toLowerCase().replaceAll(' ', '');
 
                 return (
                   <ListItem key={text} disablePadding>

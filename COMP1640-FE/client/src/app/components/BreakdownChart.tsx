@@ -5,10 +5,10 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { rawData } from "../../dataTest";
 
 const BreakdownChart = ({ isDashboard = false }) => {
-//   const { data, isLoading } = useGetSalesQuery();
-  const theme:any = useTheme();
+  //   const { data, isLoading } = useGetSalesQuery();
+  const theme: any = useTheme();
 
-//   if (!data || isLoading) return "Loading...";
+  //   if (!data || isLoading) return "Loading...";
 
   const colors = [
     theme.palette.secondary[500],
@@ -65,16 +65,37 @@ const BreakdownChart = ({ isDashboard = false }) => {
           },
           tooltip: {
             container: {
-              color: theme.palette.primary.main,
+              color: theme.palette.modify.default,
             },
           },
         }}
+        motionConfig={"stiff"}
         colors={{ datum: "data.color" }}
         margin={
           isDashboard
             ? { top: 40, right: 80, bottom: 100, left: 50 }
             : { top: 40, right: 80, bottom: 80, left: 80 }
         }
+        defs={[
+          {
+            id: "dots",
+            type: "patternDots",
+            background: "inherit",
+            color: "#38bcb2",
+            size: 4,
+            padding: 1,
+            stagger: true,
+          },
+          {
+            id: "lines",
+            type: "patternLines",
+            background: "inherit",
+            color: "#eed312",
+            rotation: -45,
+            lineWidth: 6,
+            spacing: 10,
+          },
+        ]}
         sortByValue={true}
         innerRadius={0.45}
         activeOuterRadiusOffset={8}
@@ -83,6 +104,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
+        arcLabel={(item) => `${item.value}%`}
         enableArcLinkLabels={!isDashboard}
         arcLinkLabelsTextColor={theme.palette.secondary[200]}
         arcLinkLabelsThickness={2}
@@ -120,20 +142,17 @@ const BreakdownChart = ({ isDashboard = false }) => {
       />
       <Box
         sx={{
-            position:"absolute",
-            top:"50%",
-            left:"50%",
-            color:theme.palette.secondary[400],
-            textAlign:"center",
-            pointerEvents:"none",
-            transform: isDashboard
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          color: theme.palette.secondary[400],
+          textAlign: "center",
+          pointerEvents: "none",
+          transform: isDashboard
             ? "translate(-75%, -170%)"
             : "translate(-50%, -100%)",
         }}
       >
-        <Typography variant="h6">
-          {!isDashboard && "Total:"} {10000} ideas
-        </Typography>
       </Box>
     </Box>
   );

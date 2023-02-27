@@ -10,6 +10,7 @@ namespace Web.Api.Entities
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
+        public bool IsAnonymous { get; set; }
         public DateTime ClosureDate { get; set; }
         public DateTime FinalClosureDate { get; set; }
 

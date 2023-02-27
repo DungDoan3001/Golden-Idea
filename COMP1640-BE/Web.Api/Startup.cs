@@ -17,8 +17,15 @@ using Microsoft.AspNetCore.Identity;
 using Web.Api.Services.Topic;
 using Microsoft.AspNetCore.Mvc;
 using Web.Api.Services.Category;
-using Microsoft.Extensions.Options;
 using Web.Api.Services.Role;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Web.Api.Configuration;
+using Web.Api.Services.Authentication;
+using Web.Api.Services.User;
+using Web.Api.Services.EmailService;
+using Web.Api.Services.ResetPassword;
 
 namespace Web.Api
 {
@@ -59,15 +66,49 @@ namespace Web.Api
                     b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
             });
 
-            services.AddIdentity<User, IdentityRole<Guid>>()
+            services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             // CORS
             services.AddCors();
 
-            //Authentication
-            services.AddAuthentication();
+            //Authentication + JWT
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme= JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwt =>
+            {
+                var key = Encoding.UTF8.GetBytes(Configuration["JwtSettings:Secret"]);
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromSeconds(0),
 
+                    ValidIssuer = Configuration["JwtSettings:Issuer"],
+                    ValidAudience = Configuration["JwtSettings:Audience"]
+                };
+            });
+    
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtSettings"));
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequireUppercase = false;
+            //    options.Password.RequireLowercase = false;
+            //    options.Password.RequireDigit = false;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //});
+
+            //Set expiration for identity token
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+                opt.TokenLifespan = TimeSpan.FromHours(1));
             // Authorization
             services.AddAuthorization();
 
@@ -81,6 +122,10 @@ namespace Web.Api
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IResetPasswordService, ResetPasswordService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
