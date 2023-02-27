@@ -4,6 +4,70 @@ export const rawData = {
   HR: 16288,
   Marketing: 19545,
 };
+
+export const postData = [
+  {
+    _id: 1,
+    title: "I don't know what to post 1",
+    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
+    lastUpdate: "00:00:00 | 12/02/2023",
+    userId: "63701cc1f03239c72c00017f",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    catalog: "anime",
+  },
+  {
+    _id: 1,
+    title: "I don't know what to post 2",
+    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
+    lastUpdate: "00:00:00 | 12/02/2023",
+    userId: "63701cc1f03239c72c00017f",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    catalog: "anime",
+  },
+  {
+    _id: 1,
+    title: "I don't know what to post 3",
+    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
+    lastUpdate: "00:00:00 | 12/02/2023",
+    userId: "63701cc1f03239c72c00017f",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    catalog: "anime",
+  },
+  {
+    _id: 1,
+    title: "I don't know what to post 4",
+    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
+    lastUpdate: "00:00:00 | 12/02/2023",
+    userId: "63701cc1f03239c72c00017f",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    catalog: "anime",
+  },
+  {
+    _id: 1,
+    title: "I don't know what to post 5",
+    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
+    lastUpdate: "00:00:00 | 12/02/2023",
+    userId: "63701cc1f03239c72c00017f",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    catalog: "anime",
+  },
+  {
+    _id: 1,
+    title: "I don't know what to post 6",
+    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
+    lastUpdate: "00:00:00 | 12/02/2023",
+    userId: "63701cc1f03239c72c00017f",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    catalog: "anime",
+  },
+];
+
 export const userData = [
   {
     _id: "63701cc1f03239c72c00017f",

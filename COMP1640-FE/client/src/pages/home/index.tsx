@@ -1,21 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { Box } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
 import HomePageTopItem from '../../app/components/HomePageTopItem';
+import AppPagination from '../../app/components/AppPagination';
+import Service from '../../app/utils/Service';
 
 const Home = () => {
-  const profileImage = require("../../app/assets/profile.jpeg");
-  const thumbnail = require("../../app/assets/101.jpg");
-  const content = "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw";
+  const [post, setPost] = useState([]);
+  const [topPost, setTopPost] = useState([]);
+
+  useEffect(() => {
+    Service.getData(0, 1).then((response: any) => {
+      setTopPost(response.data)
+
+      console.log(response);
+    })
+  }, []);
+
   return (
-    <Box>
-      <HomePageTopItem profileImage={profileImage} thumbnail={thumbnail} content={content} />
-      <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(() => (
-          <HomePageItem profileImage={profileImage} thumbnail={thumbnail} content={content} />
-        ))}
-      </Grid>
+    <Box m="4rem" alignItems="center" justifyContent="center">
+      {topPost.map((topPost: any) => (
+        <HomePageTopItem post={topPost} />
+      )
+      )}
+      <Box mt="10%" alignItems="center" justifyContent="center">
+        <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
+          {post.map((post: any) => (
+            <HomePageItem post={post} />
+          )
+          )}
+        </Grid>
+        <AppPagination
+          setPost={(p: any) => setPost(p)}
+        />
+      </Box>
     </Box>
   );
 }
