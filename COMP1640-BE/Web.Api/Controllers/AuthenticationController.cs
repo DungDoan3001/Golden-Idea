@@ -22,6 +22,7 @@ using Web.Api.Entities;
 using Web.Api.Extensions;
 using Web.Api.Services.Authentication;
 using Web.Api.Services.DepartmentService;
+using Web.Api.Services.ImageService;
 using Web.Api.Services.ResetPassword;
 
 namespace Web.Api.Controllers
@@ -36,7 +37,9 @@ namespace Web.Api.Controllers
         private readonly IAuthenticationManager _authManager;
         private readonly AppDbContext _context;
         private readonly IResetPasswordService _resetPasswordService;
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService)
+        private readonly IImageService _imageService;
+
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService, IImageService imageService)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -44,6 +47,7 @@ namespace Web.Api.Controllers
             _authManager = authManager;
             _context = context;
             _resetPasswordService = resetPasswordService;
+            _imageService = imageService;
         }
         /// <summary>
         /// Create a user.
@@ -55,7 +59,7 @@ namespace Web.Api.Controllers
         /// <response code="404">There is a conflict while creating</response>
         [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationRequestModel userForRegistration)
+        public async Task<IActionResult> RegisterUser([FromForm] UserForRegistrationRequestModel userForRegistration)
         {
             try
             {
@@ -71,7 +75,19 @@ namespace Web.Api.Controllers
                 {
                     return NotFound(new MessageResponseModel { Message = "The email is not valid!", StatusCode = (int)HttpStatusCode.NotFound });
                 }
+
                 var user = _mapper.Map<User>(userForRegistration);
+                if (userForRegistration.File != null)
+                {
+                    var imageResult = await _imageService.AddImageAsync(userForRegistration.File);
+
+                    if (imageResult.Error != null)
+                        return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
+
+                    user.Avatar = imageResult.SecureUrl.ToString();
+                    user.PublicId = imageResult.PublicId;
+                }
+
                 var create = await _userManager.CreateAsync(user, userForRegistration.Password);
                 if (!create.Succeeded)
                 {

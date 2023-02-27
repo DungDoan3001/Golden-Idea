@@ -10,6 +10,9 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 using System.Linq;
 using Web.Api.DTOs.RequestModels;
+using Web.Api.Services.ImageService;
+using Microsoft.AspNetCore.Mvc;
+
 namespace Web.Api.Services.User
 {
     public class UserService : IUserService
@@ -17,12 +20,14 @@ namespace Web.Api.Services.User
         private readonly UserManager<Entities.User> _userManager;
         protected AppDbContext context;
         private IPasswordHasher<Entities.User> _passwordHasher;
+        private readonly IImageService _imageService;
 
-        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher)
+        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IImageService imageService)
         {
             _userManager = userManager;
             this.context = context;
             this._passwordHasher = passwordHasher;
+            _imageService = imageService;
         }
 
         public async Task<List<Entities.User>> GetAll()
@@ -87,6 +92,19 @@ namespace Web.Api.Services.User
                 userUpdate.Address = user.Address;
                 userUpdate.DepartmentId = user.DepartmentId;
                 userUpdate.PhoneNumber = user.PhoneNumber;
+                
+                if (user.File != null)
+                {
+                    var imageUploadResult = await _imageService.AddImageAsync(user.File);
+                    if (imageUploadResult.Error != null)
+                        throw new Exception(imageUploadResult.Error.Message);
+
+                    if (!string.IsNullOrEmpty(userUpdate.PublicId))
+                        await _imageService.DeleteImageAsync(userUpdate.PublicId);
+
+                    userUpdate.Avatar = imageUploadResult.SecureUrl.ToString();
+                    userUpdate.PublicId = imageUploadResult.PublicId;
+                }
                 //Validate and update role
                 var userRole = await _userManager.GetRolesAsync(checkUser);
                 if(user.Role != null)
@@ -127,6 +145,9 @@ namespace Web.Api.Services.User
                 {
                     throw new Exception("Can not find the user!");
                 }
+                if (!string.IsNullOrEmpty(user.PublicId))
+                    await _imageService.DeleteImageAsync(user.PublicId);
+
                 var result = await _userManager.DeleteAsync(user);
                 return result;
             }

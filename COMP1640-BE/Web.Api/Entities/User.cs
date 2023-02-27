@@ -11,6 +11,7 @@ namespace Web.Api.Entities
         public string Avatar { get; set; }
         public string Address { get; set; }
         public Guid DepartmentId { get; set; }
+        public string PublicId { get; set; }
         public Department Department { get; set; }
 
         public ResetPassword ResetPassword { get; set; }
