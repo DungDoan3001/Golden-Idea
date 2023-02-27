@@ -5,44 +5,55 @@ import CategoryButton from '../../app/components/CategoryButton';
 import PostAuthorInfo from './PostAuthorInfo';
 
 interface HomePageItemProps {
-  profileImage: any;
-  thumbnail: any;
-  content: any;
+  post:any
 }
 
-const HomePageItem = ({ profileImage, thumbnail, content }: HomePageItemProps) => {
+const HomePageItem = ({ post }: HomePageItemProps) => {
   const theme: any = useTheme();
 
   return (
     <Grid item xs={4}>
-      <Box
-        m="1rem"
-        sx={{ backgroundColor: theme.palette.background.alt, p: "1.5rem", borderRadius: "0.55rem" }}
-      >
+      <Box>
         <Box
-          component="img"
-          alt="profile"
-          src={thumbnail}
-          height="100%"
-          width="100%"
-          sx={{ objectFit: "cover", borderRadius: "0.5rem" }}
-        />
-        <CategoryButton category="Anime" />
-        <Typography
-          variant="h3"
-          color={theme.palette.secondary[100]}
-          fontWeight="bold"
-          sx={{ mb: "5px" }}
+          alignItems="center"
+          sx={{
+            backgroundColor: theme.palette.thumbnail.main, p: "1rem", borderRadius: "2rem 0rem"
+          }}
         >
-          Title
+          <Box
+            component="img"
+            alt="thumbnail"
+            src={post.img}
+            height="100%"
+            width="100%"
+            sx={{
+              objectFit: "cover",
+              borderRadius: "2rem 0rem",
+              '&:hover': {
+                backgroundColor: theme.palette.thumbnail.main,
+                opacity:'0.7',
+                cursor: 'pointer',
+              }
+            }}
+          />
+        </Box>
+        <CategoryButton category={post.catalog} />
+        <Typography
+          mt="0.5rem"
+          variant="h3"
+          color={theme.palette.content.main}
+          fontWeight="bold"
+        >
+          {post.title.length <= 50 ? post.title : post.title.substring(0, 50) + "..."}
         </Typography>
         <Typography
           variant="h5"
-          color={theme.palette.secondary[300]}
+          color={theme.palette.content.main}
+          fontSize="1rem"
         >
-          {content.length <= 50 ? content : content.substring(0, 50) + "..."}
+          {post.content.length <= 100 ? post.content : post.content.substring(0, 100) + "..."}
         </Typography>
-        <PostAuthorInfo profileImage={profileImage} />
+        <PostAuthorInfo top={false} post={post} />
       </Box>
     </Grid>
   );
