@@ -39,7 +39,6 @@ const Navbar = () => {
 
   }, [])
   useEffect(() => {
-    console.log(screenSize);
     if ((screenSize !== undefined) && (screenSize <= 900)) {
       setIsSidebarOpen(false);
     }

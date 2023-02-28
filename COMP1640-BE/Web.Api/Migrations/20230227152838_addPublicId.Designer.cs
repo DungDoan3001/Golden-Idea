@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Web.Api.Data.Context;
@@ -9,9 +10,10 @@ using Web.Api.Data.Context;
 namespace Web.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230227152838_addPublicId")]
+    partial class addPublicId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,9 +220,6 @@ namespace Web.Api.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsAnonymous")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("timestamp without time zone");
 
@@ -335,15 +334,13 @@ namespace Web.Api.Migrations
                     b.Property<DateTime>("FinalClosureDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Topics");
                 });
@@ -616,17 +613,6 @@ namespace Web.Api.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Web.Api.Entities.Topic", b =>
-                {
-                    b.HasOne("Web.Api.Entities.User", "User")
-                        .WithMany("Topic")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Web.Api.Entities.User", b =>
                 {
                     b.HasOne("Web.Api.Entities.Department", "Department")
@@ -714,8 +700,6 @@ namespace Web.Api.Migrations
                     b.Navigation("ResetPassword");
 
                     b.Navigation("Roles");
-
-                    b.Navigation("Topic");
 
                     b.Navigation("UserRoles");
 

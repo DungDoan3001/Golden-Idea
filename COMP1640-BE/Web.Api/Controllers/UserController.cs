@@ -12,6 +12,7 @@ using System.Data;
 using System.Web.Http.Results;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Web.Api.Services.ImageService;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -103,7 +104,7 @@ namespace Web.Api.Controllers
         /// <response code="404">There is a conflict while update a user</response>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UserRequestModel user)
+        public async Task<ActionResult> Update([FromRoute] Guid id, [FromForm] UserRequestModel user)
         {
             try
             { 

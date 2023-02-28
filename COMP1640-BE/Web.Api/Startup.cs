@@ -28,6 +28,7 @@ using Web.Api.Services.EmailService;
 using Web.Api.Services.ResetPassword;
 using Web.Api.Services.UploadFileService;
 using Web.Api.Data.Queries;
+using Web.Api.Services.ImageService;
 
 namespace Web.Api
 {
@@ -130,9 +131,11 @@ namespace Web.Api
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
             services.AddScoped<IUploadFileService, UploadFileService>();
-
+            services.AddScoped<IImageService, ImageService>();
+            
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -4,14 +4,12 @@
     <TargetFramework>net5.0</TargetFramework>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<NoWarn>$(NoWarn);1591</NoWarn>
-	<UserSecretsId>7225d249-9ff8-49d6-a409-9551bbaa2545</UserSecretsId>
+    <UserSecretsId>739d97ad-7713-4cf4-877f-592bcab4c5bf</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="Dropbox.Api" Version="6.37.0" />
-    <PackageReference Include="CloudinaryDotNet" Version="1.20.0" />
     <PackageReference Include="MailKit" Version="3.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />

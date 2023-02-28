@@ -13,6 +13,6 @@ namespace Web.Api.DTOs.ResponseModels
         public string PhoneNumber { get; set; }
         public Guid DepartmentId { get; set; }
         public string Role { get; set; }
-        
+        public string PublicId { get; set; }
     }
 }
