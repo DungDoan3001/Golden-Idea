@@ -9,13 +9,13 @@ namespace Web.Api.Services.ImageService
     public class ImageService : IImageService
     {
         private readonly Cloudinary _cloudinary;
-        public ImageService(IConfiguration config)
+        public ImageService(IConfiguration _configuration)
         {
             var acc = new Account
             (
-                config["Cloudinary:CloudName"],
-                config["Cloudinary:ApiKey"],
-                config["Cloudinary:ApiSecret"]
+                _configuration.GetSection("Cloudinary:CloudName").Value,
+                _configuration.GetSection("Cloudinary:ApiKey").Value,
+                _configuration.GetSection("Cloudinary:ApiSecret").Value
             );
             _cloudinary = new Cloudinary(acc);
         }
