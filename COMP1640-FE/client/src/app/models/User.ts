@@ -1,11 +1,13 @@
 export interface User {
     id: string;
+    name: string;
     userName:string;
-    password: string;
     email: string;
+    password: string;
     address: string;
+    phoneNumber: string,
     avatarURL:string;
-    deparmentID?: string;
-    roles?: string[];
+    departmentId: string;
+    role: string;
     token: string;
 }
