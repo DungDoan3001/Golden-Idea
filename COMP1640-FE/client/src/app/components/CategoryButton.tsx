@@ -4,19 +4,22 @@ import { Box } from "@mui/system";
 
 interface CategoryButtonProps {
   category: any;
+  search: any;
 }
 
-const CategoryButton = ({ category }: CategoryButtonProps) => {
+const CategoryButton = ({ category, search }: CategoryButtonProps) => {
   const theme: any = useTheme();
   return (
-    <Box mt="0.7rem">
+    <Box mt="0.7rem"
+      display={(search)?"flex":""} alignItems="center" justifyContent="center"
+    >
       <Button
         sx={{
           backgroundColor: theme.palette.thumbnail.main,
           color: theme.palette.content.main,
           fontSize: "0.7rem",
           fontWeight: "bold",
-          padding: "0.2rem 0rem",
+          padding: "0.2rem 0.5rem",
           '&:hover': {
             backgroundColor: theme.palette.thumbnail.main,
             opacity: '0.7',

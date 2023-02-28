@@ -16,7 +16,6 @@ const AppPagination = ({setPost}:any) => {
       setPagination({ ...pagination, count: response.count })
 
       setPost(response.data);
-      console.log(response);
     })
   }, [pagination.from, pagination.to]);
 
