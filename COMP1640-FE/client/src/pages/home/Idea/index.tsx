@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { Box } from '@mui/material';
-import HomePageItem from '../../app/components/HomePageItem';
-import HomePageTopItem from '../../app/components/HomePageTopItem';
-import AppPagination from '../../app/components/AppPagination';
-import Service from '../../app/utils/Service';
-import CategoryButton from '../../app/components/CategoryButton';
+import HomePageItem from '../../../app/components/HomePageItem';
+import HomePageTopItem from '../../../app/components/HomePageTopItem';
+import AppPagination from '../../../app/components/AppPagination';
+import Service from '../../../app/utils/Service';
+import CategoryButton from '../../../app/components/CategoryButton';
 
-import { categoryData } from '../../dataTest.js';
+import { categoryData } from '../../../dataTest.js';
 import { useTheme } from '@emotion/react';
 
 const Home = () => {

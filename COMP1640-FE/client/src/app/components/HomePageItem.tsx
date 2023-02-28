@@ -37,7 +37,7 @@ const HomePageItem = ({ post }: HomePageItemProps) => {
             }}
           />
         </Box>
-        <CategoryButton category={post.catalog} />
+        <CategoryButton search={false} category={post.catalog} />
         <Typography
           mt="0.5rem"
           variant="h3"
