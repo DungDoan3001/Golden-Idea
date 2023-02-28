@@ -11,6 +11,7 @@ namespace Web.Api.Entities
         public string Title { get; set; }
         public string Content { get; set; }
         public string Image { get; set; }
+        public bool IsAnonymous { get; set; }
         public DateTime LastUpdate { get; set; }
 
         public Guid UserId { get; set; }
