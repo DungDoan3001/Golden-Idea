@@ -9,11 +9,12 @@ namespace Web.Api.Entities
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid UserId { get; set; }
         public string Name { get; set; }
-        public bool IsAnonymous { get; set; }
         public DateTime ClosureDate { get; set; }
         public DateTime FinalClosureDate { get; set; }
 
         public ICollection<Idea> Ideas { get; set; }
+        public User User { get; set; }
     }
 }

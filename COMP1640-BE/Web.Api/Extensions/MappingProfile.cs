@@ -18,7 +18,8 @@ namespace Web.Api.Extensions
 
             // Topic
             CreateMap<Entities.Topic, TopicResponseModel>()
-                .ForMember(dest => dest.TopicId, opt => opt.MapFrom(src => src.Id));
+                .ForMember(dest => dest.TopicId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
             CreateMap<TopicRequestModel, Entities.Topic>();
 
             // Topic
