@@ -95,7 +95,7 @@ namespace Web.Api.Services.User
                 
                 if (user.File != null)
                 {
-                    var imageUploadResult = await _imageService.AddImageAsync(user.File);
+                    var imageUploadResult = await _imageService.UploadFileAsync(user.File);
                     if (imageUploadResult.Error != null)
                         throw new Exception(imageUploadResult.Error.Message);
 

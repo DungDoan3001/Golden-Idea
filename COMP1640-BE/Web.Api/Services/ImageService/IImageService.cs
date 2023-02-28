@@ -6,7 +6,7 @@ namespace Web.Api.Services.ImageService
 {
     public interface IImageService
     {
-        Task<ImageUploadResult> AddImageAsync(IFormFile file);
+        Task<RawUploadResult> UploadFileAsync(IFormFile file);
         Task<DeletionResult> DeleteImageAsync(string publicId);
     }
 }

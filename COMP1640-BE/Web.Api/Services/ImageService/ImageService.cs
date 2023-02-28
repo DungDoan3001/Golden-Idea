@@ -20,18 +20,26 @@ namespace Web.Api.Services.ImageService
             _cloudinary = new Cloudinary(acc);
         }
 
-        public async Task<ImageUploadResult> AddImageAsync(IFormFile file)
+        public async Task<RawUploadResult> UploadFileAsync(IFormFile file)
         {
-            var uploadResult =  new ImageUploadResult();
+            var uploadResult =  new RawUploadResult();
             if(file.Length > 0)
             {
                 using var stream = file.OpenReadStream();
-                var uploadParams = new ImageUploadParams
+                //var uploadParams = new ImageUploadParams
+                //{
+                //    File = new FileDescription(file.FileName, stream)
+                //};
+                var uploadParams = new RawUploadParams
                 {
-                    File = new FileDescription(file.FileName, stream)
+                    File = new FileDescription(file.FileName, stream),
+                    PublicId = "abc/" + file.FileName,
+                    UniqueFilename = true
                 };
+
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
+
             return uploadResult;
         }
 

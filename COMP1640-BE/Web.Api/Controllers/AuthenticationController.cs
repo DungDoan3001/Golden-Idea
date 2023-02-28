@@ -79,7 +79,7 @@ namespace Web.Api.Controllers
                 var user = _mapper.Map<User>(userForRegistration);
                 if (userForRegistration.File != null)
                 {
-                    var imageResult = await _imageService.AddImageAsync(userForRegistration.File);
+                    var imageResult = await _imageService.UploadFileAsync(userForRegistration.File);
 
                     if (imageResult.Error != null)
                         return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });

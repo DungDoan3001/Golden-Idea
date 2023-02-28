@@ -153,13 +153,10 @@ namespace Web.Api
                 c.DefaultModelsExpandDepth(-1);
             });
 
-            app.UseCors(option =>
-            {
-                option.AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials()
-                .WithOrigins("http://localhost:5000");
-            });
+            app.UseCors(x => x
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Services.UploadFileService;
 using Web.Api.DTOs.RequestModels;
+using Web.Api.Services.ImageService;
+using CloudinaryDotNet.Actions;
 
 namespace Web.Api.Controllers
 {
@@ -14,10 +16,12 @@ namespace Web.Api.Controllers
     public class UploadFileController : ControllerBase
     {
         private readonly IUploadFileService _uploadFileService;
+        private readonly IImageService _imageService;
 
-        public UploadFileController(IUploadFileService uploadFileService)
+        public UploadFileController(IUploadFileService uploadFileService, IImageService imageService)
         {
             _uploadFileService = uploadFileService;
+            _imageService = imageService;
         }
 
         [HttpPost("")]
@@ -25,8 +29,9 @@ namespace Web.Api.Controllers
         {
             try
             {
-                string url = await _uploadFileService.UploadFile(fileInput.file);
-                return Ok(url);
+                //string url = await _uploadFileService.UploadFile(fileInput.file);
+                RawUploadResult result = await _imageService.UploadFileAsync(fileInput.file);
+                return Ok(result.SecureUrl.ToString());
             }
             catch (Exception ex)
             {
