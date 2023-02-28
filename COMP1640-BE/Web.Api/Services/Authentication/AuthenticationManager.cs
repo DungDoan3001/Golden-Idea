@@ -125,7 +125,8 @@ namespace Web.Api.Services.Authentication
             {
                 ToName = user.Name,
                 ToEmail = user.Email,
-                Body = string.Format("Here is your link to change your password for your account (this link will be expired in 24 hours): <a href=\"" 
+                Body = string.Format(
+                    "Here is your link to change your password for your account (this link will be expired in 24 hours): <a href=\"" 
                     + appDomain + confirmLink + "\">Click Here</a>", resetPasswordId),
                 Subject = "[Golden Idea] Change password"
             };
