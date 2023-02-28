@@ -44,7 +44,7 @@ const HomePageTopItem = ({ post }: HomePageTopItemProps) => {
         </Grid>
         <Grid item xs={7}>
           <Box m="0.7rem">
-            <CategoryButton category={post.catalog} />
+            <CategoryButton search={false} category={post.catalog} />
             <Box>
               <Typography
                 variant="h2"
