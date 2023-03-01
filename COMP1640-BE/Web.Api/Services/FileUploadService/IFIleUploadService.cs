@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Web.Api.Services.FileUploadService
 {
-    public interface IFIleUploadService
+    public interface IFileUploadService
     {
         Task<DeletionResult> DeleteMediaAsync(string publicId);
         Task<RawUploadResult> UploadFileAsync(IFormFile file);

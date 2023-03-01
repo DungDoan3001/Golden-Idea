@@ -129,7 +129,7 @@ namespace Web.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
-            services.AddScoped<IFIleUploadService, FIleUploadService>();
+            services.AddScoped<IFileUploadService, FileUploadService>();
             
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();

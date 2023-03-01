@@ -20,9 +20,9 @@ namespace Web.Api.Services.User
         private readonly UserManager<Entities.User> _userManager;
         protected AppDbContext context;
         private IPasswordHasher<Entities.User> _passwordHasher;
-        private readonly IFIleUploadService _fileUploadService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IFIleUploadService fileUploadService)
+        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IFileUploadService fileUploadService)
         {
             _userManager = userManager;
             this.context = context;

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Web.Api.Services.FileUploadService
 {
-    public class FIleUploadService : IFIleUploadService
+    public class FileUploadService : IFileUploadService
     {
         private readonly Cloudinary _cloudinary;
-        public FIleUploadService(IConfiguration _configuration)
+        public FileUploadService(IConfiguration _configuration)
         {
             var acc = new Account
             (

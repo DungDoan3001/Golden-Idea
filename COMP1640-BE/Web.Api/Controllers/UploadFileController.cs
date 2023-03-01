@@ -14,11 +14,11 @@ namespace Web.Api.Controllers
     [ApiController]
     public class UploadFileController : ControllerBase
     {
-        private readonly IFIleUploadService _fIleUploadService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public UploadFileController(IFIleUploadService fIleUploadService)
+        public UploadFileController(IFileUploadService fileUploadService)
         {
-            _fIleUploadService = fIleUploadService;
+            _fileUploadService = fileUploadService;
         }
 
         [HttpPost("image")]
@@ -27,7 +27,7 @@ namespace Web.Api.Controllers
             try
             {
                 //string url = await _uploadFileService.UploadFile(fileInput.file);
-                RawUploadResult result = await _fIleUploadService.UploadImageAsync(fileInput.file);
+                RawUploadResult result = await _fileUploadService.UploadImageAsync(fileInput.file);
                 return Ok(result.SecureUrl.ToString());
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace Web.Api.Controllers
             try
             {
                 //string url = await _uploadFileService.UploadFile(fileInput.file);
-                RawUploadResult result = await _fIleUploadService.UploadFileAsync(fileInput.file);
+                RawUploadResult result = await _fileUploadService.UploadFileAsync(fileInput.file);
                 return Ok(result.SecureUrl.ToString());
             }
             catch (Exception ex)

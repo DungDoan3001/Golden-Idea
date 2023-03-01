@@ -26,9 +26,9 @@ namespace Web.Api.Controllers
         private readonly IAuthenticationManager _authManager;
         private readonly AppDbContext _context;
         private readonly IResetPasswordService _resetPasswordService;
-        private readonly IFIleUploadService _fileUploadService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService, IFIleUploadService fileUploadService)
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService)
         {
             _mapper = mapper;
             _userManager = userManager;
