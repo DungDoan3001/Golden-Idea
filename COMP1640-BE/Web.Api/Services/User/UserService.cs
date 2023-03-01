@@ -10,7 +10,7 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 using System.Linq;
 using Web.Api.DTOs.RequestModels;
-using Web.Api.Services.ImageService;
+using Web.Api.Services.FileUploadService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Services.User
@@ -20,14 +20,14 @@ namespace Web.Api.Services.User
         private readonly UserManager<Entities.User> _userManager;
         protected AppDbContext context;
         private IPasswordHasher<Entities.User> _passwordHasher;
-        private readonly IImageService _imageService;
+        private readonly IFIleUploadService _fileUploadService;
 
-        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IImageService imageService)
+        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IFIleUploadService fileUploadService)
         {
             _userManager = userManager;
             this.context = context;
             this._passwordHasher = passwordHasher;
-            _imageService = imageService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<List<Entities.User>> GetAll()
@@ -95,12 +95,12 @@ namespace Web.Api.Services.User
                 
                 if (user.File != null)
                 {
-                    var imageUploadResult = await _imageService.UploadFileAsync(user.File);
+                    var imageUploadResult = await _fileUploadService.UploadImageAsync(user.File);
                     if (imageUploadResult.Error != null)
                         throw new Exception(imageUploadResult.Error.Message);
 
                     if (!string.IsNullOrEmpty(userUpdate.PublicId))
-                        await _imageService.DeleteImageAsync(userUpdate.PublicId);
+                        await _fileUploadService.DeleteMediaAsync(userUpdate.PublicId);
 
                     userUpdate.Avatar = imageUploadResult.SecureUrl.ToString();
                     userUpdate.PublicId = imageUploadResult.PublicId;
@@ -146,7 +146,7 @@ namespace Web.Api.Services.User
                     throw new Exception("Can not find the user!");
                 }
                 if (!string.IsNullOrEmpty(user.PublicId))
-                    await _imageService.DeleteImageAsync(user.PublicId);
+                    await _fileUploadService.DeleteMediaAsync(user.PublicId);
 
                 var result = await _userManager.DeleteAsync(user);
                 return result;

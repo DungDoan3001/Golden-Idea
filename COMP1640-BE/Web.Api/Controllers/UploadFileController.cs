@@ -4,10 +4,9 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Api.DTOs.ResponseModels;
-using Web.Api.Services.UploadFileService;
 using Web.Api.DTOs.RequestModels;
-using Web.Api.Services.ImageService;
 using CloudinaryDotNet.Actions;
+using Web.Api.Services.FileUploadService;
 
 namespace Web.Api.Controllers
 {
@@ -15,22 +14,35 @@ namespace Web.Api.Controllers
     [ApiController]
     public class UploadFileController : ControllerBase
     {
-        private readonly IUploadFileService _uploadFileService;
-        private readonly IImageService _imageService;
+        private readonly IFIleUploadService _fIleUploadService;
 
-        public UploadFileController(IUploadFileService uploadFileService, IImageService imageService)
+        public UploadFileController(IFIleUploadService fIleUploadService)
         {
-            _uploadFileService = uploadFileService;
-            _imageService = imageService;
+            _fIleUploadService = fIleUploadService;
         }
 
-        [HttpPost("")]
-        public async Task<IActionResult> GetAGtell([FromForm] FileRequestModel fileInput)
+        [HttpPost("image")]
+        public async Task<IActionResult> UploadImage([FromForm] FileRequestModel fileInput)
         {
             try
             {
                 //string url = await _uploadFileService.UploadFile(fileInput.file);
-                RawUploadResult result = await _imageService.UploadFileAsync(fileInput.file);
+                RawUploadResult result = await _fIleUploadService.UploadImageAsync(fileInput.file);
+                return Ok(result.SecureUrl.ToString());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+            }
+        }
+
+        [HttpPost("file")]
+        public async Task<IActionResult> UploadFile([FromForm] FileRequestModel fileInput)
+        {
+            try
+            {
+                //string url = await _uploadFileService.UploadFile(fileInput.file);
+                RawUploadResult result = await _fIleUploadService.UploadFileAsync(fileInput.file);
                 return Ok(result.SecureUrl.ToString());
             }
             catch (Exception ex)

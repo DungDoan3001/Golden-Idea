@@ -26,9 +26,8 @@ using Web.Api.Services.Authentication;
 using Web.Api.Services.User;
 using Web.Api.Services.EmailService;
 using Web.Api.Services.ResetPassword;
-using Web.Api.Services.UploadFileService;
 using Web.Api.Data.Queries;
-using Web.Api.Services.ImageService;
+using Web.Api.Services.FileUploadService;
 
 namespace Web.Api
 {
@@ -130,8 +129,7 @@ namespace Web.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
-            services.AddScoped<IUploadFileService, UploadFileService>();
-            services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IFIleUploadService, FIleUploadService>();
             
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();

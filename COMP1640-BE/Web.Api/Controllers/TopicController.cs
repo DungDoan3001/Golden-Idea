@@ -9,8 +9,6 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Services.Topic;
 using System.Linq;
 using Web.Api.Extensions;
-using Microsoft.AspNetCore.Http;
-using Web.Api.Services.UploadFileService;
 
 namespace Web.Api.Controllers
 {

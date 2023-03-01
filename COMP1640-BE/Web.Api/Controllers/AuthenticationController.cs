@@ -1,28 +1,17 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
-using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
-using System.Web.Http.Results;
-using System.Xml.Linq;
 using Web.Api.Data.Context;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 using Web.Api.Extensions;
 using Web.Api.Services.Authentication;
-using Web.Api.Services.DepartmentService;
-using Web.Api.Services.ImageService;
+using Web.Api.Services.FileUploadService;
 using Web.Api.Services.ResetPassword;
 
 namespace Web.Api.Controllers
@@ -37,9 +26,9 @@ namespace Web.Api.Controllers
         private readonly IAuthenticationManager _authManager;
         private readonly AppDbContext _context;
         private readonly IResetPasswordService _resetPasswordService;
-        private readonly IImageService _imageService;
+        private readonly IFIleUploadService _fileUploadService;
 
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService, IImageService imageService)
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService, IFIleUploadService fileUploadService)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -47,7 +36,7 @@ namespace Web.Api.Controllers
             _authManager = authManager;
             _context = context;
             _resetPasswordService = resetPasswordService;
-            _imageService = imageService;
+            _fileUploadService = fileUploadService;
         }
         /// <summary>
         /// Create a user.
@@ -79,7 +68,7 @@ namespace Web.Api.Controllers
                 var user = _mapper.Map<User>(userForRegistration);
                 if (userForRegistration.File != null)
                 {
-                    var imageResult = await _imageService.UploadFileAsync(userForRegistration.File);
+                    var imageResult = await _fileUploadService.UploadImageAsync(userForRegistration.File);
 
                     if (imageResult.Error != null)
                         return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });

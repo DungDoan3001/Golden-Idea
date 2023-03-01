@@ -12,7 +12,7 @@ using System.Data;
 using System.Web.Http.Results;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Web.Api.Services.ImageService;
+using Web.Api.Services.FileUploadService;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
