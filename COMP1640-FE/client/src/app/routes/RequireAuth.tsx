@@ -11,7 +11,7 @@ export default function RequireAuth({ roles }: Props) {
     const { user } = useAppSelector(state => state.account);
     const location = useLocation();
     useEffect(() => {
-        toast.error('Login to access this area');
+        if (!user) toast.error('Login to access this area');
     }, []);
     if (!user) {
         return <Navigate to='/login' state={{ from: location }} />
