@@ -2,37 +2,39 @@ import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { FieldValues } from "react-hook-form";
 import { toast } from "react-toastify";
 import agent from "../../app/api/agent";
-import { User } from "../../app/models/User";
+import { UserLogin } from "../../app/models/User";
 import { router } from "../../app/routes/Routers";
 
 
 interface AccountState {
-    user: User | null
+    user: UserLogin | null
 }
 
 const initialState: AccountState = {
     user: null
 }
-export const signInUser = createAsyncThunk<User, FieldValues>(
+export const signInUser = createAsyncThunk<UserLogin, FieldValues>(
     'account/signInUser',
     async (data, thunkAPI) => {
         try {
             const userDto = await agent.Account.login(data);
-            const { ...user} = userDto;
+            console.log(userDto)
+            const { ...user } = userDto;
             sessionStorage.setItem('user', JSON.stringify(user));
-            return user;
+            return user.token;
         } catch (error: any) {
-            return thunkAPI.rejectWithValue({error: error.data})
+            toast.error(`Make sure your username and password is correct`);
+            return thunkAPI.rejectWithValue({ error: error.data })
         }
     }
 )
-export const fetchCurrentUser = createAsyncThunk<User>(
+export const fetchCurrentUser = createAsyncThunk<UserLogin>(
     'account/fetchCurrentUser',
     async (_, thunkAPI) => {
         thunkAPI.dispatch(setUser(JSON.parse(sessionStorage.getItem('user')!)))
         try {
             const userDto = await agent.Account.currentUser();
-            const { ...user} = userDto;
+            const { ...user } = userDto;
             sessionStorage.setItem('user', JSON.stringify(user));
             return user;
         } catch (error) {
@@ -55,9 +57,18 @@ export const accountSlice = createSlice({
             router.navigate('/login');
         },
         setUser: (state, action) => {
-            let claims = JSON.parse((action.payload.token.split('.')[1])); 
+            let tokenString = action.payload.toString();
+            let claims = JSON.parse(
+                atob(sessionStorage.getItem("user")!.split(".")[1])
+            );
             let role = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-            state.user = {...action.payload, role: typeof(role) === 'string' ? [role] : role}; 
+            state.user = {
+                name: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+                emailaddress: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+                Avatar: claims.Avatar,
+                role: typeof (role) === 'string' ? [role] : role,
+                token: tokenString
+            };
         }
     },
     extraReducers: (builder => {
@@ -68,9 +79,18 @@ export const accountSlice = createSlice({
             router.navigate('/login');
         })
         builder.addMatcher(isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled), (state, action) => {
-            let claims = JSON.parse((action.payload.token.split('.')[1])); 
+            let tokenString = action.payload.toString();
+            let claims = JSON.parse(
+                atob(sessionStorage.getItem("user")!.split(".")[1])
+            );
             let role = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-            state.user = {...action.payload, role: typeof(role) === 'string' ? [role] : role};  
+            state.user = {
+                name: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+                emailaddress: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+                Avatar: claims.Avatar,
+                role: typeof (role) === 'string' ? [role] : role,
+                token: tokenString
+            };
         });
         builder.addMatcher(isAnyOf(signInUser.rejected), (state, action) => {
             throw action.payload;
@@ -78,4 +98,4 @@ export const accountSlice = createSlice({
     })
 })
 
-export const {signOut, setUser} = accountSlice.actions;
+export const { signOut, setUser } = accountSlice.actions;

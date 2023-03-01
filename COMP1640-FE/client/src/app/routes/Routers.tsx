@@ -18,6 +18,7 @@ import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 import ForgotPassword from "../../pages/account/forgotpassword";
 import ResetPass from "../../pages/account/resetpassword";
+import Login from "../../pages/account/login";
 
 export const router = createBrowserRouter([
     {
@@ -27,11 +28,32 @@ export const router = createBrowserRouter([
             // User authenticated routes
             {
                 element: <RequireAuth />, children: [
+                    {
+                        element: <Layout />, children: [
+                            { path: 'home', element: <Home /> },
+                        ]
+                    },
                 ]
             },
             // Admin routes
             {
                 element: <RequireAuth roles={['Administrator']} />, children: [
+                    {
+                        element: <Layout />, children: [
+                            { path: 'home', element: <Home /> },
+                            { path: 'dashboard', element: <Dashboard /> },
+                            { path: 'staffs', element: <Staffs /> },
+                            { path: 'categories', element: <Category /> },
+                            { path: 'topics', element: <Topic /> },
+                            { path: 'departments', element: <Department /> },
+                            { path: 'comments', element: <Comment /> },
+                            { path: 'overview', element: <Overview /> },
+                            { path: 'breakdown', element: <Breakdown /> },
+                            { path: 'contributors', element: <Contributors /> },
+                            { path: 'dailyreport', element: <DailyReport /> },
+                            { path: 'exception', element: <Exception /> },
+                        ]
+                    },
                 ]
             },
             // QA manager routes
@@ -41,29 +63,13 @@ export const router = createBrowserRouter([
             },
             // QA coordinator routes
             {
-                element: <RequireAuth roles={[' QA Coordinator']} />, children: [
-                ]
-            },
-            {
-                element: <Layout />, children: [
-                    { path: 'home', element: <Home /> },
-                    { path: 'dashboard', element: <Dashboard /> },
-                    { path: 'staffs', element: <Staffs /> },
-                    { path: 'categories', element: <Category /> },
-                    { path: 'topics', element: <Topic /> },
-                    { path: 'departments', element: <Department /> },
-                    { path: 'comments', element: <Comment /> },
-                    { path: 'overview', element: <Overview /> },
-                    { path: 'breakdown', element: <Breakdown /> },
-                    { path: 'contributors', element: <Contributors /> },
-                    { path: 'dailyreport', element: <DailyReport /> },
-                    { path: 'exception', element: <Exception /> },
+                element: <RequireAuth roles={['QA Coordinator']} />, children: [
                 ]
             },
             { path: 'server-error', element: <ServerError /> },
+            { path: 'login', element: <Login /> },
             { path: 'not-found', element: <NotFound /> },
             { path: 'forgot', element: <ForgotPassword /> },
-            { path: 'test', element: <ForgotPassword /> },
             { path: 'change-password/:resetCode', element: <ResetPass /> },
             { path: '*', element: <Navigate replace to='/not-found' /> }
         ]

@@ -6,13 +6,13 @@ import { store } from "../store/configureStore";
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-axios.defaults.withCredentials = true;
 
-const responseBody = (response: AxiosResponse) => response.data;
+const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 //Login here (Bearer token)
 axios.interceptors.request.use(config => {
     const token: any = store.getState().account.user?.token;
+    console.log(token)
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 })
@@ -86,9 +86,9 @@ const User = {
 }
 const Account = {
     login: (values: any) => requests.post('authentication/login', values),
-    currentUser: () => requests.get('account/currentUser'),
-    forgotpassword: (input: any) => requests.postForm('account/forgotpassword',createFormData(input)),
-    resetpassword: (input: any, resetCode: any) => requests.putForm(`authentication/change-password/${resetCode}`,createFormData(input))
+    currentUser: () => requests.get('authentication/currentUser'),
+    forgotpassword: (values: any) => requests.post('authentication/change-password', values),
+    resetpassword: ( resetCode: string, values: any) => requests.put(`authentication/change-password/${resetCode}`,values)
 }
 const agent = {
     User,

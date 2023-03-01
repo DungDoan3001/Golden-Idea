@@ -16,6 +16,7 @@ export default function Login() {
     });
 
     async function submitForm(data: FieldValues) {
+        console.log(data);
         try {
             await dispatch(signInUser(data));
             navigate(location.state?.from || '/home');
@@ -37,10 +38,10 @@ export default function Login() {
                             margin="normal"
                             required
                             fullWidth
-                            placeholder="Username"
-                            {...register('username', { required: 'Username is required' })}
-                            error={!!errors.username}
-                            helperText={errors?.username?.message as string}
+                            placeholder="Email"
+                            {...register('email', { required: 'Email is required' })}
+                            error={!!errors.email}
+                            helperText={errors?.email?.message as string}
                             sx={{
                                 "& fieldset": { border: 'none' },
                             }}
