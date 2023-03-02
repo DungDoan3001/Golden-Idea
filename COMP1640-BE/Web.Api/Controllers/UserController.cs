@@ -153,7 +153,7 @@ namespace Web.Api.Controllers
         /// Update a user 
         /// </summary>
         /// <param name="id">Id of the user will be updated.</param>
-        /// <param name="userUpdate">New name of the user for update</param>
+        /// <param name="user">User request model</param>
         /// <returns>A user updated</returns>
         /// <response code="200">Successfully updated the user</response>
         /// <response code="400">There is something wrong while execute.</response>

@@ -38,7 +38,7 @@ namespace Web.Api.Services.Authentication
                 _user = await _userManager.FindByEmailAsync(userForAuth.Email);
                 return (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
