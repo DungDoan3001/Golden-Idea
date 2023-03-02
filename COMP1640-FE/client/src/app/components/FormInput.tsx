@@ -10,7 +10,7 @@ type FormInputProps = {
 const FormInput: React.FC<FormInputProps> = ({
     placeholder,
     name,
-    type = 'text',
+    type,
 }) => {
     const {
         register,
@@ -22,7 +22,7 @@ const FormInput: React.FC<FormInputProps> = ({
                 type={type}
                 placeholder={placeholder}
                 style={{
-                    marginTop: '11px',
+                    marginTop: '14px',
                     background: 'none',
                     outline: 'none',
                     border: 'none',

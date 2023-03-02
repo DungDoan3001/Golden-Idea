@@ -11,7 +11,6 @@ input {
   font-family: "Inter", sans-serif;
 }
 
-
 .container {
   position: relative;
   width: 100%;
@@ -86,6 +85,7 @@ form.sign-in-form {
   color: #acacac;
   transition: 0.5s;
   font-size: 1.1rem;
+  margin-top: 3px;
 }
 
 .input-field input {
@@ -170,7 +170,7 @@ form.sign-in-form {
   top: -10%;
   right: 48%;
   transform: translateY(-50%);
-  background-image: linear-gradient(-45deg, #FAF7E4 0%, #FFDE59 100%);
+  background-image: linear-gradient(-45deg, #faf7e4 0%, #ffde59 100%);
   transition: 1.8s ease-in-out;
   border-radius: 50%;
   z-index: 6;

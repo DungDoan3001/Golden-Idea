@@ -49,8 +49,8 @@ axios.interceptors.response.use(async response => {
             toast.error('You are not allowed to do that!');
             break;
         case 500:
-            navigate('/server-error',{
-                state: {error: data}
+            navigate('/server-error', {
+                state: { error: data }
             });
             break;
         default:
@@ -60,18 +60,18 @@ axios.interceptors.response.use(async response => {
 })
 
 const requests = {
-    get: (url: string, params?: URLSearchParams) => axios.get(url, {params}).then(responseBody),
+    get: (url: string, params?: URLSearchParams) => axios.get(url, { params }).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
     put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
     delete: (url: string) => axios.delete(url).then(responseBody),
     postForm: (url: string, data: FormData) => axios.post(url, data, {
-        headers: {'Content-type': 'multipart/form-data'}
+        headers: { 'Content-type': 'multipart/form-data' }
     }).then(responseBody),
     putForm: (url: string, data: FormData) => axios.put(url, data, {
-        headers: {'Content-type': 'multipart/form-data'}
+        headers: { 'Content-type': 'multipart/form-data' }
     }).then(responseBody)
 }
-const createFormData = (item: any) =>{
+const createFormData = (item: any) => {
     let formData = new FormData();
     for (const key in item) {
         formData.append(key, item[key])
@@ -86,9 +86,8 @@ const User = {
 }
 const Account = {
     login: (values: any) => requests.post('authentication/login', values),
-    currentUser: () => requests.get('authentication/currentUser'),
     forgotpassword: (values: any) => requests.post('authentication/change-password', values),
-    resetpassword: ( resetCode: string, values: any) => requests.put(`authentication/change-password/${resetCode}`,values)
+    resetpassword: (resetCode: string, values: any) => requests.put(`authentication/change-password/${resetCode}`, values)
 }
 const agent = {
     User,

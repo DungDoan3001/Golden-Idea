@@ -33,8 +33,8 @@ export const fetchCurrentUser = createAsyncThunk<UserLogin>(
     async (_, thunkAPI) => {
         thunkAPI.dispatch(setUser(JSON.parse(sessionStorage.getItem('user')!)))
         try {
-            const userDto = await agent.Account.currentUser();
-            const { ...user } = userDto;
+            const userDto = sessionStorage.getItem('user');
+            const user = JSON.parse(userDto!);
             sessionStorage.setItem('user', JSON.stringify(user));
             return user;
         } catch (error) {
