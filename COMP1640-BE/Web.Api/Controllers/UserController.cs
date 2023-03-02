@@ -62,16 +62,16 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
-        /// Get all users EXCEPT Admin.
+        /// Get all users with Staff role.
         /// </summary>
-        /// <response code="200">Successfully get all the users</response>
+        /// <response code="200">Successfully get all the users with Staff role</response>
         /// <response code="400">There is something wrong while execute.</response>
-        [HttpGet("getallstaffQA")]
-        public async Task<ActionResult<List<UserResponseModel>>> GetAllStaffQA()
+        [HttpGet("getallstaff")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllStaff()
         {
             try
             {
-                var users = await _userService.GetAllStaffQA();
+                var users = await _userService.GetAllStaff();
                 var result = _mapper.Map<List<UserResponseModel>>(users);
                 //Get role for all user
                 for (int i = 0; i < users.Count; i++)
@@ -90,16 +90,16 @@ namespace Web.Api.Controllers
             }
         }
         /// <summary>
-        /// Get all users with Admin role.
+        /// Get all users with Admin and QA role.
         /// </summary>
-        /// <response code="200">Successfully get all the users with Admin role</response>
+        /// <response code="200">Successfully get all the users with Admin and QA role</response>
         /// <response code="400">There is something wrong while execute.</response>
-        [HttpGet("getalladmin")]
-        public async Task<ActionResult<List<UserResponseModel>>> GetAllAdmin()
+        [HttpGet("getalladminQA")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllAdminQA()
         {
             try
             {
-                var users = await _userService.GetAllAdmin();
+                var users = await _userService.GetAllAdminQA();
                 var result = _mapper.Map<List<UserResponseModel>>(users);
                 //Get role for all user
                 for (int i = 0; i < users.Count; i++)

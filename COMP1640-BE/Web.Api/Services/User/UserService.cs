@@ -44,11 +44,11 @@ namespace Web.Api.Services.User
                 throw;
             }
         }
-        public async Task<List<Entities.User>> GetAllAdmin()
+        public async Task<List<Entities.User>> GetAllStaff()
         {
             try
             {
-                var users = await _userManager.GetUsersInRoleAsync("Administrator");
+                var users = await _userManager.GetUsersInRoleAsync("Staff");
                 return users.ToList();
             }
             catch (Exception)
@@ -56,12 +56,12 @@ namespace Web.Api.Services.User
                 throw;
             }
         }
-        public async Task<List<Entities.User>> GetAllStaffQA()
+        public async Task<List<Entities.User>> GetAllAdminQA()
         {
             try
             {
                 var roles = _roleManager.Roles.ToList();
-                roles.Remove(roles.Single(r => r.Name == "Administrator"));
+                roles.Remove(roles.Single(r => r.Name == "Staff"));
                 List<Entities.User> result = new List<Entities.User>();
                 foreach(var role in roles)
                 {
