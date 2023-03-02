@@ -62,6 +62,62 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
+        /// Get all users EXCEPT Admin.
+        /// </summary>
+        /// <response code="200">Successfully get all the users</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("getallstaffQA")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllStaffQA()
+        {
+            try
+            {
+                var users = await _userService.GetAllStaffQA();
+                var result = _mapper.Map<List<UserResponseModel>>(users);
+                //Get role for all user
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var role = await _userManager.GetRolesAsync(users[i]);
+                    foreach (var r in role)
+                    {
+                        result[i].Role = r;
+                    }
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+            }
+        }
+        /// <summary>
+        /// Get all users with Admin role.
+        /// </summary>
+        /// <response code="200">Successfully get all the users with Admin role</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("getalladmin")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllAdmin()
+        {
+            try
+            {
+                var users = await _userService.GetAllAdmin();
+                var result = _mapper.Map<List<UserResponseModel>>(users);
+                //Get role for all user
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var role = await _userManager.GetRolesAsync(users[i]);
+                    foreach (var r in role)
+                    {
+                        result[i].Role = r;
+                    }
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+            }
+        }
+        /// <summary>
         /// Get user information by id.
         /// </summary>
         /// <param name="id">Id of the user</param>
@@ -94,7 +150,7 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
-        /// Update a user
+        /// Update a user 
         /// </summary>
         /// <param name="id">Id of the user will be updated.</param>
         /// <param name="userUpdate">New name of the user for update</param>

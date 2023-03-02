@@ -21,13 +21,15 @@ namespace Web.Api.Services.User
         protected AppDbContext context;
         private IPasswordHasher<Entities.User> _passwordHasher;
         private readonly IFileUploadService _fileUploadService;
+        private RoleManager<Entities.Role> _roleManager;
 
-        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IFileUploadService fileUploadService)
+        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IFileUploadService fileUploadService, RoleManager<Entities.Role> roleManager)
         {
             _userManager = userManager;
             this.context = context;
             this._passwordHasher = passwordHasher;
             _fileUploadService = fileUploadService;
+            _roleManager = roleManager;
         }
 
         public async Task<List<Entities.User>> GetAll()
@@ -36,6 +38,37 @@ namespace Web.Api.Services.User
             {
                 var users = await _userManager.Users.ToListAsync();
                 return users;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<List<Entities.User>> GetAllAdmin()
+        {
+            try
+            {
+                var users = await _userManager.GetUsersInRoleAsync("Administrator");
+                return users.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<List<Entities.User>> GetAllStaffQA()
+        {
+            try
+            {
+                var roles = _roleManager.Roles.ToList();
+                roles.Remove(roles.Single(r => r.Name == "Administrator"));
+                List<Entities.User> result = new List<Entities.User>();
+                foreach(var role in roles)
+                {
+                    var users = await _userManager.GetUsersInRoleAsync(role.Name);
+                    result.AddRange(users);
+                }
+                return result;
             }
             catch (Exception)
             {
