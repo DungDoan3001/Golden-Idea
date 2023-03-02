@@ -38,7 +38,9 @@ namespace Web.Api.Extensions
             CreateMap<UserRequestModel, User>();
             CreateMap<User, UserRequestModel>();
             CreateMap<User, UserResponseModel>();
-            
+
+            //Reaction
+            CreateMap<Reaction, ReactionResponseModel>();
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Web.Api.Controllers
         /// <summary>
         /// Create a role.
         /// </summary>
-        /// <param name="roleName">Name of role</param>
+        /// <param name="requestModel">Role request model</param>
         /// <returns>Add new role with roleName</returns>
         /// <response code="200">Successfully add the role with the given roleName</response>
         /// <response code="400">There is something wrong while execute.</response>
@@ -71,7 +71,7 @@ namespace Web.Api.Controllers
         /// Update a role
         /// </summary>
         /// <param name="id">Id of the role will be updated.</param>
-        /// <param name="roleUpdate">New name of the role for update</param>
+        /// <param name="requestModel">Role request model</param>
         /// <returns>A role just updated</returns>
         /// <response code="200">Successfully updated the role</response>
         /// <response code="400">There is something wrong while execute.</response>
@@ -93,7 +93,7 @@ namespace Web.Api.Controllers
         /// <summary>
         /// Delete a role by name
         /// </summary>
-        /// <param name="roleName">Name of the role to be deleted.</param>
+        /// <param name="requestModel">Role request model.</param>
         /// <returns>null</returns>
         /// <response code="200">Successfully deleted the role</response>
         /// <response code="204">Successfully deleted the role</response>
