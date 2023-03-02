@@ -1,4 +1,4 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery, Zoom } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Navbar from "../../app/components/Navbar";
 import Sidebar from "../../app/components/Sidebar";
@@ -15,7 +15,7 @@ const Layout = () => {
       <Box flexGrow={1}>
         <Navbar
         />
-        <Outlet />
+        <Zoom style={{ zoom: isNonMobile ? '100%' : '70%' }}><Outlet /></Zoom>
       </Box>
     </Box>
   );

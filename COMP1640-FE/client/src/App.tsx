@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./app/components/Loading";
 import Login from "./pages/account/login";
+import { fetchCurrentUser } from "./pages/account/accountSlice";
 
 const App = () => {
   const mode = useSelector((state: any) => state.global.mode);
@@ -18,8 +19,7 @@ const App = () => {
 
   const initApp = useCallback(async () => {
     try {
-      // await dispatch(fetchCurrentUser());
-      // await dispatch(fetchBasketAsync());
+      await dispatch(fetchCurrentUser());
       console.log('dispatch Current User');
     } catch (error) {
       console.log(error);
