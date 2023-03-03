@@ -38,7 +38,12 @@ namespace Web.Api.Extensions
             CreateMap<UserRequestModel, User>();
             CreateMap<User, UserRequestModel>();
             CreateMap<User, UserResponseModel>();
-            
+
+            // Idea
+            CreateMap<IdeaResponeModel, Idea>();
+            CreateMap<IdeaResponeModel_Topic, Topic>();
+            CreateMap<IdeaResponeModel_User, User>();
+            CreateMap<IdeaResponeModel_Category, Category>();
         }
     }
 }
