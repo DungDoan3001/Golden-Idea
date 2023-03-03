@@ -62,6 +62,62 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
+        /// Get all users with Staff role.
+        /// </summary>
+        /// <response code="200">Successfully get all the users with Staff role</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("getallstaff")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllStaff()
+        {
+            try
+            {
+                var users = await _userService.GetAllStaff();
+                var result = _mapper.Map<List<UserResponseModel>>(users);
+                //Get role for all user
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var role = await _userManager.GetRolesAsync(users[i]);
+                    foreach (var r in role)
+                    {
+                        result[i].Role = r;
+                    }
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+            }
+        }
+        /// <summary>
+        /// Get all users with Admin and QA role.
+        /// </summary>
+        /// <response code="200">Successfully get all the users with Admin and QA role</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("getalladminQA")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllAdminQA()
+        {
+            try
+            {
+                var users = await _userService.GetAllAdminQA();
+                var result = _mapper.Map<List<UserResponseModel>>(users);
+                //Get role for all user
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var role = await _userManager.GetRolesAsync(users[i]);
+                    foreach (var r in role)
+                    {
+                        result[i].Role = r;
+                    }
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+            }
+        }
+        /// <summary>
         /// Get user information by id.
         /// </summary>
         /// <param name="id">Id of the user</param>
@@ -94,10 +150,10 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
-        /// Update a user
+        /// Update a user 
         /// </summary>
         /// <param name="id">Id of the user will be updated.</param>
-        /// <param name="userUpdate">New name of the user for update</param>
+        /// <param name="user">User request model</param>
         /// <returns>A user updated</returns>
         /// <response code="200">Successfully updated the user</response>
         /// <response code="400">There is something wrong while execute.</response>

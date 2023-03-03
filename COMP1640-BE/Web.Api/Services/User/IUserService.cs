@@ -10,6 +10,8 @@ namespace Web.Api.Services.User
     public interface IUserService
     {
         Task<List<Entities.User>> GetAll();
+        Task<List<Entities.User>> GetAllStaff();
+        Task<List<Entities.User>> GetAllAdminQA();
         Task<Entities.User> GetById(Guid id);
         Task<Entities.User> UpdateAsync(Guid id, UserRequestModel user);
         Task<IdentityResult> Delete(Guid id);
