@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using System;
+using Web.Api.DTOs;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
@@ -41,6 +42,9 @@ namespace Web.Api.Extensions
 
             //Reaction
             CreateMap<Reaction, ReactionResponseModel>();
+
+            //Comment
+            CreateMap<Comment, CommentResponseModel>();
         }
     }
 }

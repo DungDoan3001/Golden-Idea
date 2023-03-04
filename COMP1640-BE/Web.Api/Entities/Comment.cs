@@ -9,7 +9,7 @@ namespace Web.Api.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Content { get; set; }
         public bool IsAnonymous { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         public Guid UserId { get; set; }
         public Guid IdeaId { get; set; }

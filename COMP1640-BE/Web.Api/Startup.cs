@@ -29,6 +29,9 @@ using Web.Api.Services.ResetPassword;
 using Web.Api.Data.Queries;
 using Web.Api.Services.FileUploadService;
 using Web.Api.Services.ReactionService;
+using Web.Api.Services.Comment;
+using Web.Api.SignalR;
+using System.Threading.Tasks;
 
 namespace Web.Api
 {
@@ -97,6 +100,19 @@ namespace Web.Api
                     ValidIssuer = Configuration["JwtSettings:Issuer"],
                     ValidAudience = Configuration["JwtSettings:Audience"]
                 };
+                jwt.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
     
             services.Configure<JwtConfig>(Configuration.GetSection("JwtSettings"));
@@ -132,9 +148,12 @@ namespace Web.Api
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IReactionService, ReactionService>();
+            services.AddScoped<ICommentService, CommentService>();
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
-            
+
+            //SignalR
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -167,6 +186,7 @@ namespace Web.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }
