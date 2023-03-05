@@ -40,14 +40,14 @@ namespace Web.Api.Services.Comment
                 {
                     throw new Exception("Can not find idea!");
                 }
-                var user = await _userManager.FindByIdAsync(comment.UserId.ToString());
+                var user = await _userManager.FindByNameAsync(comment.Username);
                 if (user == null)
                 {
                     throw new Exception("Can not find the user!");
                 }
                 var addComment = _commentRepo.Add(new Entities.Comment
                 {
-                    UserId = comment.UserId,
+                    UserId = user.Id,
                     IdeaId = comment.IdeaId,
                     Content = comment.Content,
                     IsAnonymous = comment.IsAnonymous
