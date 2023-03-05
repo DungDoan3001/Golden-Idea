@@ -131,6 +131,8 @@ namespace Web.Api
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
+            services.AddScoped<IIdeaService, IdeaService>();
+            services.AddScoped<IReactionService, ReactionService>();
             
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
