@@ -1,23 +1,26 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Web.Api.Extensions
-{
-    public class MaxFileSizeAttribute : ValidationAttribute
+{ 
+    public class AllowedNumberOfFileAttribute : ValidationAttribute
     {
-        private readonly int _maxFileSize;
-        public MaxFileSizeAttribute(int maxFileSize)
+        private readonly int _numberOfFile;
+        public AllowedNumberOfFileAttribute(int numberOfFile)
         {
-            _maxFileSize = maxFileSize;
+            _numberOfFile = numberOfFile;
         }
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var file = value as IFormFile;
+            var file = value as List<IFormFile>;
             if (file != null)
             {
-                if (file.Length > _maxFileSize)
+                if (file.Count() > _numberOfFile)
                 {
                     return new ValidationResult(GetErrorMessage());
                 }
@@ -27,7 +30,8 @@ namespace Web.Api.Extensions
 
         public string GetErrorMessage()
         {
-            return $"Maximum allowed file size is {_maxFileSize} bytes.";
+            return $"Maximum allowed number of file is {_numberOfFile}.";
         }
+
     }
 }

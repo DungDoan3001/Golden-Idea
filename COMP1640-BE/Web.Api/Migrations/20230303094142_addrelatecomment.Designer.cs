@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Web.Api.Data.Context;
@@ -9,9 +10,10 @@ using Web.Api.Data.Context;
 namespace Web.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230303094142_addrelatecomment")]
+    partial class addrelatecomment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,20 +192,11 @@ namespace Web.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("FileName")
-                        .HasColumnType("text");
-
                     b.Property<string>("FilePath")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Format")
                         .HasColumnType("text");
 
                     b.Property<Guid>("IdeaId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -232,12 +225,6 @@ namespace Web.Api.Migrations
 
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Slug")
-                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
