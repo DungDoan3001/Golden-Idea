@@ -2,36 +2,36 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Web.Api.Extensions
 { 
-    [AttributeUsage(AttributeTargets.Method)]
-    public class AllowedNumberOfFileAttribute : Attribute, IActionFilter
+    public class AllowedNumberOfFileAttribute : ValidationAttribute
     {
         private readonly int _numberOfFile;
         public AllowedNumberOfFileAttribute(int numberOfFile)
         {
             _numberOfFile = numberOfFile;
         }
-
-        public void OnActionExecuting(ActionExecutingContext context)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (context.HttpContext.Request.Form != null)
+            var file = value as List<IFormFile>;
+            if (file != null)
             {
-                if(context.HttpContext.Request.Form.Files.Count > _numberOfFile)
+                if (file.Count() > _numberOfFile)
                 {
-                    context.Result = new ObjectResult($"Maximum allowed number of file is {_numberOfFile}")
-                    {
-                        StatusCode = 413 //Payload Too Large
-                    };
+                    return new ValidationResult(GetErrorMessage());
                 }
             }
-            
+            return ValidationResult.Success;
         }
-        public void OnActionExecuted(ActionExecutedContext context) { }
+
+        public string GetErrorMessage()
+        {
+            return $"Maximum allowed number of file is {_numberOfFile}.";
+        }
 
     }
 }

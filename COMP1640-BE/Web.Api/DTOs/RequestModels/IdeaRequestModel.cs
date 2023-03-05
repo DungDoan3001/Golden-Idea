@@ -14,6 +14,7 @@ namespace Web.Api.DTOs.RequestModels
         public string Content { get; set; }
 
         [DataType(DataType.Upload)]
+        [AllowedExtensions(new string[] { ".jpg", ".png" })]
         [MaxFileSize(5 * 1024 * 1024)]
         public IFormFile Image { get; set; }
 
@@ -29,6 +30,10 @@ namespace Web.Api.DTOs.RequestModels
         [Required(ErrorMessage = "Must provide a topic identity")]
         public Guid? TopicId { get; set; }
 
+        [DataType(DataType.Upload)]
+        [AllowedNumberOfFile(5)]
+        [MaxFileSize(5 * 1024 * 1024)]
+        [AllowedExtensions(new string[] { ".txt", ".png", ".jpg", ".doc", ".pdf" })]
         public List<IFormFile> UploadFiles { get; set; }
     }
 }
