@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Slugify;
 using System.Threading.Tasks;
 
 namespace Web.Api.Services.FileUploadService
@@ -9,6 +10,7 @@ namespace Web.Api.Services.FileUploadService
     public class FileUploadService : IFileUploadService
     {
         private readonly Cloudinary _cloudinary;
+        private SlugHelper slugHelper = new SlugHelper();
         public FileUploadService(IConfiguration _configuration)
         {
             var acc = new Account
@@ -28,15 +30,12 @@ namespace Web.Api.Services.FileUploadService
                 if (file.Length > 0)
                 {
                     using var stream = file.OpenReadStream();
-                    //var uploadParams = new ImageUploadParams
-                    //{
-                    //    File = new FileDescription(file.FileName, stream)
-                    //};
                     var uploadParams = new ImageUploadParams
                     {
-                        File = new FileDescription(file.FileName, stream),
-                        PublicId = "GoldenIdeaImg/" + file.FileName,
-                        UniqueFilename = true
+                        File = new FileDescription(slugHelper.GenerateSlug(file.FileName.Trim().Split(".")[0]), stream),
+                        PublicId = "GoldenIdeaImg/" + slugHelper.GenerateSlug(file.FileName.Trim()),
+                        UniqueFilename = true,
+                        UseFilenameAsDisplayName= true,
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -58,15 +57,12 @@ namespace Web.Api.Services.FileUploadService
                 if (file.Length > 0)
                 {
                     using var stream = file.OpenReadStream();
-                    //var uploadParams = new ImageUploadParams
-                    //{
-                    //    File = new FileDescription(file.FileName, stream)
-                    //};
                     var uploadParams = new RawUploadParams
                     {
-                        File = new FileDescription(file.FileName, stream),
-                        PublicId = "GoldenIdeaRaw/" + file.FileName,
-                        UniqueFilename = true
+                        File = new FileDescription(slugHelper.GenerateSlug(file.FileName.Trim().Split(".")[0]), stream),
+                        PublicId = "GoldenIdeaRaw/" + slugHelper.GenerateSlug(file.FileName.Trim()),
+                        UniqueFilename = true,
+                        UseFilenameAsDisplayName = true,
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);

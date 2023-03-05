@@ -44,6 +44,18 @@ namespace Web.Api.Services.Topic
             }
         }
 
+        public async Task<IEnumerable<Entities.Topic>> GetAllByUserId(Guid userId)
+        {
+            try
+            {
+                return await _topicQuery.GetByUserId(userId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Entities.Topic> CreateAsync(Entities.Topic topic)
         {
             try
