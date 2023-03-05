@@ -133,7 +133,7 @@ namespace Web.Api.Services.User
                         throw new Exception(imageUploadResult.Error.Message);
 
                     if (!string.IsNullOrEmpty(userUpdate.PublicId))
-                        await _fileUploadService.DeleteMediaAsync(userUpdate.PublicId);
+                        await _fileUploadService.DeleteMediaAsync(userUpdate.PublicId, true);
 
                     userUpdate.Avatar = imageUploadResult.SecureUrl.ToString();
                     userUpdate.PublicId = imageUploadResult.PublicId;
@@ -179,7 +179,7 @@ namespace Web.Api.Services.User
                     throw new Exception("Can not find the user!");
                 }
                 if (!string.IsNullOrEmpty(user.PublicId))
-                    await _fileUploadService.DeleteMediaAsync(user.PublicId);
+                    await _fileUploadService.DeleteMediaAsync(user.PublicId, true);
 
                 var result = await _userManager.DeleteAsync(user);
                 return result;

@@ -147,7 +147,12 @@ namespace Web.Api.Controllers
                 var user = await _userService.GetById(id);
                 if(user == null)
                 {
-                    return NotFound(new MessageResponseModel { Message = "Can not find the user", StatusCode = (int)HttpStatusCode.BadRequest });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not Found", 
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Errors = new List<string> { "Can not find the user" }
+                    });
                 }
                 var result = _mapper.Map<UserResponseModel>(user);
                 //Get role
@@ -187,7 +192,12 @@ namespace Web.Api.Controllers
                 var updateUser = await _userService.UpdateAsync(id, user);
                 if (updateUser == null)
                 {
-                    return NotFound(new MessageResponseModel { Message = "Update error! Can not find the user to update!", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not Found", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Update error! Can not find the user to update!" }
+                    });
                 }
                 var result = _mapper.Map<UserResponseModel>(updateUser);
                 result.Role = user.Role;

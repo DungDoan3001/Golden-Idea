@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using Web.Api.Extensions;
 
 namespace Web.Api.DTOs.RequestModels
 {
@@ -12,6 +13,8 @@ namespace Web.Api.DTOs.RequestModels
 
         public string Content { get; set; }
 
+        [DataType(DataType.Upload)]
+        [MaxFileSize(5 * 1024 * 1024)]
         public IFormFile Image { get; set; }
 
         [Required(ErrorMessage = "Must choose if the idea is anonymous.")]

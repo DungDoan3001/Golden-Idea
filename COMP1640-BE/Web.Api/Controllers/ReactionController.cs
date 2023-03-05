@@ -42,7 +42,12 @@ namespace Web.Api.Controllers
             {
                 if (reactionType == null) 
                 { 
-                    return Conflict(new MessageResponseModel { Message = "No reaction type provided!", StatusCode = (int)HttpStatusCode.Conflict});
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors= new List<string> { "No reaction type provided!" }
+                    });
                 }
                 var reaction = await _reactionService.Reaction(userReact.userId, userReact.ideaId, reactionType);
                 var result = _mapper.Map<ReactionResponseModel>(reaction);
