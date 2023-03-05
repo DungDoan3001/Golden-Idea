@@ -8,6 +8,7 @@ namespace Web.Api.Data.Repository
     public interface IGenericRepository<T> where T : class
     {
         T Add(T entity);
+        IEnumerable<T> AddRange(IEnumerable<T> entities);
         Task<IEnumerable<T>> All();
         bool Delete(Guid id);
         Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);

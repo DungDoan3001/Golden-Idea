@@ -2,9 +2,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web.Http.Results;
 using Web.Api.Data.Context;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
@@ -94,7 +96,12 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
         /// <summary>

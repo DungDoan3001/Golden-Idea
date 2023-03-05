@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
-using Web.Api.DTOs.RequestModels;
 using Web.Api.Entities;
 
 namespace Web.Api.Services.IdeaService
@@ -34,6 +33,30 @@ namespace Web.Api.Services.IdeaService
             }
         }
 
+        public async Task<Idea> GetByIdAsync(Guid id)
+        {
+            try
+            {
+                return await _ideaQuery.GetByIdAsync(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Idea> GetBySlugAsync(string slug)
+        {
+            try
+            {
+                return await _ideaQuery.GetBySlugAsync(slug);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Idea> CreateAsync(Idea idea)
         {
             try
@@ -41,6 +64,18 @@ namespace Web.Api.Services.IdeaService
                 Idea createdIdea = _ideaRepo.Add(idea);
                 await _unitOfWork.CompleteAsync();
                 return createdIdea;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> CheckSlugExitAsync(string slug)
+        {
+            try
+            {
+                return await _ideaQuery.CheckSlugExitAsync(slug);
             }
             catch (Exception)
             {

@@ -7,6 +7,7 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.DTOs.RequestModels;
 using CloudinaryDotNet.Actions;
 using Web.Api.Services.FileUploadService;
+using System.Collections.Generic;
 
 namespace Web.Api.Controllers
 {
@@ -32,7 +33,12 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
@@ -47,7 +53,12 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
     }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using Web.Api.DTOs.ResponseModels;
+using System.Net;
+using CloudinaryDotNet.Actions;
 
 namespace Web.Api.Extensions
 {
@@ -15,14 +17,17 @@ namespace Web.Api.Extensions
                 var errorModel = new MessageResponseModel
                 {
                     Message = "Validation Error",
-                    StatusCode = 400,
+                    StatusCode = (int)HttpStatusCode.BadRequest,
                     Errors = new List<string>()
                 };
 
                 foreach (var state in context.ModelState)
                 {
-                    var Error = state.Value.Errors.Select(e => e.ErrorMessage);
-                    errorModel.Errors = Error.ToList();
+                    if (state.Value.Errors.Select(e => e.ErrorMessage).Any())
+                    {
+                        var err = state.Value.Errors.Select(e => e.ErrorMessage);
+                        errorModel.Errors.AddRange(err);
+                    }
                 }
 
                 context.Result = new BadRequestObjectResult(errorModel);

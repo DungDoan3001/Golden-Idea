@@ -30,6 +30,8 @@ using Web.Api.Data.Queries;
 using Web.Api.Services.FileUploadService;
 using Web.Api.Services.IdeaService;
 using Web.Api.Services.ReactionService;
+using Web.Api.Services.FileService;
+
 namespace Web.Api
 {
     public class Startup
@@ -133,6 +135,7 @@ namespace Web.Api
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IIdeaService, IdeaService>();
             services.AddScoped<IReactionService, ReactionService>();
+            services.AddScoped<IFileService, FileService>();
             
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
