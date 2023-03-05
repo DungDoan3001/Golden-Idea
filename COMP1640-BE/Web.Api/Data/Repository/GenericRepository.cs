@@ -54,6 +54,12 @@ namespace Web.Api.Data.Repository
             return true;
         }
 
+        public virtual bool DeleteRange(IEnumerable<T> entities)
+        {
+            dbSet.RemoveRange(entities);
+            return true;
+        }
+
         public virtual async Task<IEnumerable<T>> All()
         {
             return await dbSet.ToListAsync();

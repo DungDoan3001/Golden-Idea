@@ -54,9 +54,14 @@ namespace Web.Api.Data.Queries
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<bool> CheckSlugExitAsync(string slug)
+        public async Task<bool> CheckSlugExistedAsync(string slug)
         {
             return await dbSet.AnyAsync(x => x.Slug == slug);
+        }
+
+        public async Task<bool> CheckIdeaExistedAsync(Guid id)
+        {
+            return await dbSet.AnyAsync(x => x.Id == id);
         }
     }
 }

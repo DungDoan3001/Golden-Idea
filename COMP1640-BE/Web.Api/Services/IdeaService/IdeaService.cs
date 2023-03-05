@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
@@ -71,16 +72,50 @@ namespace Web.Api.Services.IdeaService
             }
         }
 
-        public async Task<bool> CheckSlugExitAsync(string slug)
+        public async Task<Idea> UpdateAsync(Idea idea)
         {
             try
             {
-                return await _ideaQuery.CheckSlugExitAsync(slug);
+                Idea updatedIdea = _ideaRepo.Update(idea);
+                await _unitOfWork.CompleteAsync();
+                return updatedIdea;
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+
+        public async Task<bool> CheckSlugExistedAsync(string slug)
+        {
+            try
+            {
+                return await _ideaQuery.CheckSlugExistedAsync(slug);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> CheckIdeaExisted(Guid id)
+        {
+            try
+            {
+                return await _ideaQuery.CheckIdeaExistedAsync(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> CheckExistedImageContainDuplicateAsync(string image)
+        {
+            var files = await _ideaRepo.Find(x => x.Image == image);
+            if (files.Count() > 1)
+                return true;
+            return false;
         }
     }
 }

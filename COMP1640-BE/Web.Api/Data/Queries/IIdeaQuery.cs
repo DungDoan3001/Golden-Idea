@@ -10,6 +10,7 @@ namespace Web.Api.Data.Queries
         Task<List<Idea>> GetAllAsync();
         Task<Idea> GetByIdAsync(Guid id);
         Task<Idea> GetBySlugAsync(string slug);
-        Task<bool> CheckSlugExitAsync(string slug);
+        Task<bool> CheckSlugExistedAsync(string slug);
+        Task<bool> CheckIdeaExistedAsync(Guid id);
     }
 }

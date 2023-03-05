@@ -11,6 +11,7 @@ namespace Web.Api.Data.Repository
         IEnumerable<T> AddRange(IEnumerable<T> entities);
         Task<IEnumerable<T>> All();
         bool Delete(Guid id);
+        bool DeleteRange(IEnumerable<T> entities);
         Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);
         Task<T> GetById(Guid id);
         T Update(T entity);
