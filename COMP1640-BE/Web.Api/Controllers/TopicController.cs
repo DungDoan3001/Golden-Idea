@@ -196,7 +196,7 @@ namespace Web.Api.Controllers
                 if (topic == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
                 bool isDelete = await _topicService.DeleteAsync(id);
                 if (!isDelete)
-                    return NotFound(new MessageResponseModel { Message = "Error while update.", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel { Message = "Error while delete.", StatusCode = (int)HttpStatusCode.NotFound });
                 return NoContent();
             }
             catch (Exception ex)

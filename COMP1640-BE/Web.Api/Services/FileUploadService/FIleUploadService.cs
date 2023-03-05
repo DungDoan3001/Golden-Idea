@@ -32,9 +32,11 @@ namespace Web.Api.Services.FileUploadService
                     using var stream = file.OpenReadStream();
                     var uploadParams = new ImageUploadParams
                     {
-                        File = new FileDescription(slugHelper.GenerateSlug(file.FileName.Trim().Split(".")[0]), stream),
-                        PublicId = "GoldenIdeaImg/" + slugHelper.GenerateSlug(file.FileName.Trim()),
+                        File = new FileDescription(file.FileName, stream),
+                        //PublicId = "GoldenIdeaImg/" + slugHelper.GenerateSlug(file.FileName.Trim().ToLower()),
                         UniqueFilename = true,
+                        AssetFolder = "GoldenIdeaImg",
+                        UseAssetFolderAsPublicIdPrefix = true,
                         UseFilenameAsDisplayName= true,
                     };
 
@@ -59,10 +61,13 @@ namespace Web.Api.Services.FileUploadService
                     using var stream = file.OpenReadStream();
                     var uploadParams = new RawUploadParams
                     {
-                        File = new FileDescription(slugHelper.GenerateSlug(file.FileName.Trim().Split(".")[0]), stream),
-                        PublicId = "GoldenIdeaRaw/" + slugHelper.GenerateSlug(file.FileName.Trim()),
+                        File = new FileDescription(file.FileName, stream),
                         UniqueFilename = true,
-                        UseFilenameAsDisplayName = true,
+                        AssetFolder = "GoldenIdeaRaw",
+                        UseAssetFolderAsPublicIdPrefix = true,
+                        UseFilename = true,
+                        UseFilenameAsDisplayName= true,
+
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -76,11 +81,21 @@ namespace Web.Api.Services.FileUploadService
             }
         }
 
-        public async Task<DeletionResult> DeleteMediaAsync(string publicId)
+        public async Task<DeletionResult> DeleteMediaAsync(string publicId, bool isImage)
         {
             try
             {
                 var deleteParams = new DeletionParams(publicId);
+
+                // Check if the param is img or raw.
+                if (isImage)
+                {
+                    deleteParams.ResourceType = ResourceType.Image;
+                } else
+                {
+                    deleteParams.ResourceType = ResourceType.Raw;
+                }
+                
                 var result = await _cloudinary.DestroyAsync(deleteParams);
                 return result;
             }
