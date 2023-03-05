@@ -12,7 +12,6 @@ namespace Web.Api.Services.IdeaService
         Task<Idea> GetBySlugAsync(string slug);
         Task<Idea> CreateAsync(Idea idea);
         Task<Idea> UpdateAsync(Idea idea);
-        Task<bool> DeleteAsync(Guid ideaId);
         Task<bool> CheckSlugExistedAsync(string slug);
         Task<bool> CheckIdeaExisted(Guid id);
         Task<bool> CheckExistedImageContainDuplicateAsync(string image);

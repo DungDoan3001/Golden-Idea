@@ -67,6 +67,7 @@ namespace Web.Api.Services.FileUploadService
                         UseAssetFolderAsPublicIdPrefix = true,
                         UseFilename = true,
                         UseFilenameAsDisplayName= true,
+
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);

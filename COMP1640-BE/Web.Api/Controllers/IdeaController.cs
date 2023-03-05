@@ -198,6 +198,7 @@ namespace Web.Api.Controllers
                 }
                 await _fileService.DeleteRangeAsync(idea.Files);
 
+
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);
                 // Upload thumbnail.
@@ -327,6 +328,7 @@ namespace Web.Api.Controllers
                 });
             }
         }
+
 
         private async Task UploadImage(IFormFile image, Idea idea)
         {
