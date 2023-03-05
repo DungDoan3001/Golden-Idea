@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using System;
+using Web.Api.DTOs;
 using System.Linq;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
