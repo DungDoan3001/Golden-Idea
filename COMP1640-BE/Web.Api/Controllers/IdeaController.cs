@@ -187,21 +187,17 @@ namespace Web.Api.Controllers
                 // Delete old media
                 if(requestModel.Image != null)
                 {
-                    var isFileExisted = await _ideaService.CheckExistedImageContainDuplicateAsync(idea.Image);
-                    if (!isFileExisted)
-                    {
-                        await _fileUploadService.DeleteMediaAsync(idea.PublicId);
-                    }
+                    await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
                 }
                 foreach(var file in idea.Files)
                 {
-                    var isFileExisted = await _fileService.CheckExistedFilePathContainDuplicateAsync(file.FilePath);
-                    if(!isFileExisted)
+                    if(file.Format == null)
                     {
-                        await _fileUploadService.DeleteMediaAsync(file.PublicId);
-                    }
-                    await _fileService.DeleteAsync(file.Id);
+                        await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
+                    } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
                 }
+                await _fileService.DeleteRangeAsync(idea.Files);
+
 
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);
@@ -260,10 +256,12 @@ namespace Web.Api.Controllers
                 foreach (var file in uploadFile)
                 {
                     var uploadFileResult = await _fileUploadService.UploadFileAsync(file);
-                    File fileEntity = new File
+                   File fileEntity = new File
                     {
                         FilePath = uploadFileResult.SecureUrl.ToString(),
                         PublicId = uploadFileResult.PublicId,
+                        FileName = uploadFileResult.OriginalFilename,
+                        Format = uploadFileResult.Format,
                         IdeaId = idea.Id
                     };
                     files.Add(fileEntity);
@@ -271,6 +269,66 @@ namespace Web.Api.Controllers
             }
             return files;
         }
+
+        /// <summary>
+        /// Delete a idea
+        /// </summary>
+        /// <param name="id">Id of the idea to be deleted.</param>
+        /// <returns>null</returns>
+        /// <response code="200">Successfully deleted the idea</response>
+        /// <response code="204">Successfully deleted the idea</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="404">There is no idea with the given Id</response>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            try
+            {
+                Idea idea = await _ideaService.GetByIdAsync(id);
+                if(idea == null)
+                {
+                    return NotFound(new MessageResponseModel
+                    {
+                        Message = "Not Found",
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors= new List<string> {"Can not find the idea with the given id"}
+                    });
+                }
+
+                if(idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
+                foreach (var file in idea.Files)
+                {
+                    if(file.Format == null)
+                    {
+                        await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
+                    } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                }
+                await _fileService.DeleteRangeAsync(idea.Files);
+                bool isDelete = await _ideaService.DeleteAsync(id);
+                if (!isDelete)
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Not found",
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors= new List<string> { "Can not detele an idea with the given id." }
+                    });
+                return Ok(new MessageResponseModel
+                {
+                    Message = "Deleted",
+                    StatusCode = (int)HttpStatusCode.OK
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
 
         private async Task UploadImage(IFormFile image, Idea idea)
         {

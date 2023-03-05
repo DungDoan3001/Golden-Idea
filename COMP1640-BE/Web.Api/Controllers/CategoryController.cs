@@ -106,16 +106,31 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "The name already existed" }
+                    });
                 Entities.Category category = _mapper.Map<Entities.Category>(requestModel);
                 Entities.Category createdCategory = await _categoryService.CreateAsync(category);
                 if (createdCategory == null)
-                    return Conflict(new MessageResponseModel { Message = "Error while create new.", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Conflict",
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Error while create new." }
+                    });
                 return Created(createdCategory.Id.ToString(), _mapper.Map<CategoryResponseModel>(createdCategory));
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
@@ -136,9 +151,20 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel 
+                    {
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict, 
+                        Errors = new List<string> { "The name already existed" } 
+                    });
                 Entities.Category category = await _categoryService.GetByIdAsync(id);
-                if (category == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
+                if (category == null) 
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors= new List<string> {"Can not find category with the given id"}
+                    });
                 _mapper.Map<CategoryRequestModel, Entities.Category>(requestModel, category);
                 Entities.Category updatedCategory = await _categoryService.UpdateAsync(category);
                 return Ok(_mapper.Map<CategoryResponseModel>(updatedCategory));
@@ -168,11 +194,22 @@ namespace Web.Api.Controllers
         {
             try
             {
-                Entities.Category department = await _categoryService.GetByIdAsync(id);
-                if (department == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
+                Entities.Category category = await _categoryService.GetByIdAsync(id);
+                if (category == null) 
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find category with the given id" }
+                    });
                 bool isDelete = await _categoryService.DeleteAsync(id);
                 if (!isDelete)
-                    return NotFound(new MessageResponseModel { Message = "Error while update.", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not Found", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Error while update." }
+                    });
                 return NoContent();
             }
             catch (Exception ex)
