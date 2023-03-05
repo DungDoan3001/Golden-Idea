@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
@@ -46,11 +47,13 @@ namespace Web.Api.Extensions
             CreateMap<Category, IdeaResponeModel_Category>();
             CreateMap<File, IdeaResponeModel_File>()
                 .ForMember(dest => dest.FilePath, opt => opt.MapFrom(src => src.FilePath))
+                .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.FileName))
                 .AfterMap((src, dto) =>
                 {
-                    string file = src.PublicId.Split("GoldenIdeaRaw/")[1];
-                    dto.FileName = file.Split('.')[0];
-                    dto.FileExtention= file.Split(".")[1];
+                    if(src.Format== null)
+                    {
+                        dto.FileExtention = src.PublicId.Split(".").Last();
+                    } else { dto.FileExtention = src.Format; }
                 });
             CreateMap<IdeaRequestModel, Idea>();
 

@@ -86,6 +86,24 @@ namespace Web.Api.Services.IdeaService
             }
         }
 
+        public async Task<bool> DeleteAsync(Guid ideaId)
+        {
+            try
+            {
+                bool isDelete = _ideaRepo.Delete(ideaId);
+                if (isDelete)
+                {
+                    await _unitOfWork.CompleteAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> CheckSlugExistedAsync(string slug)
         {
             try
