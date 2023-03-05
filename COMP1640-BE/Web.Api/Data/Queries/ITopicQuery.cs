@@ -9,5 +9,6 @@ namespace Web.Api.Data.Queries
     {
         Task<List<Topic>> GetAllAsync();
         Task<Topic> GetByIdAsync(Guid id);
+        Task<List<Topic>> GetByUserId(Guid id);
     }
 }

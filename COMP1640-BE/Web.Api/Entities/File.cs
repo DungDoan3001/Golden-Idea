@@ -8,9 +8,9 @@ namespace Web.Api.Entities
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string FilePath { get; set; }
+        public string PublicId { get; set; }
 
         public Guid IdeaId { get; set; }
-
         public Idea Idea { get; set; }
 
     }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Web.Api.Data.Context;
@@ -9,9 +10,10 @@ using Web.Api.Data.Context;
 namespace Web.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230305071456_add-publicId-to-File")]
+    partial class addpublicIdtoFile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,9 +230,6 @@ namespace Web.Api.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("PublicId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Slug")
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -536,7 +535,7 @@ namespace Web.Api.Migrations
                     b.HasOne("Web.Api.Entities.Idea", "Idea")
                         .WithMany("Comments")
                         .HasForeignKey("IdeaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Web.Api.Entities.User", "User")

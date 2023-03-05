@@ -27,5 +27,13 @@ namespace Web.Api.Data.Queries
                 .Where(x => x.Id == id)
                 .SingleOrDefaultAsync();
         }
+
+        public async Task<List<Topic>> GetByUserId(Guid id)
+        {
+            return await dbSet
+                .Include(x => x.User)
+                .Where(x => x.UserId == id)
+                .ToListAsync();
+        }
     }
 }

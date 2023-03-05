@@ -28,10 +28,12 @@ using Web.Api.Services.EmailService;
 using Web.Api.Services.ResetPassword;
 using Web.Api.Data.Queries;
 using Web.Api.Services.FileUploadService;
+using Web.Api.Services.IdeaService;
 using Web.Api.Services.ReactionService;
 using Web.Api.Services.Comment;
 using Web.Api.SignalR;
 using System.Threading.Tasks;
+using Web.Api.Services.FileService;
 
 namespace Web.Api
 {
@@ -147,13 +149,17 @@ namespace Web.Api
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
             services.AddScoped<IFileUploadService, FileUploadService>();
+            services.AddScoped<IIdeaService, IdeaService>();
             services.AddScoped<IReactionService, ReactionService>();
             services.AddScoped<ICommentService, CommentService>();
-            // Queries
-            services.AddScoped<ITopicQuery, TopicQuery>();
-
+            services.AddScoped<IFileService, FileService>();
+            
             //SignalR
             services.AddSignalR();
+            
+            // Queries
+            services.AddScoped<ITopicQuery, TopicQuery>();
+            services.AddScoped<IIdeaQuery, IdeaQuery>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

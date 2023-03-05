@@ -9,6 +9,7 @@ namespace Web.Api.Services.Topic
         Task<Entities.Topic> CreateAsync(Entities.Topic topic);
         Task<bool> DeleteAsync(Guid topicId);
         Task<IEnumerable<Entities.Topic>> GetAllAsync();
+        Task<IEnumerable<Entities.Topic>> GetAllByUserId(Guid userId);
         Task<Entities.Topic> GetByIdAsync(Guid topicId);
         Task<IEnumerable<Entities.Topic>> GetByNameAsync(string name);
         Task<Entities.Topic> UpdateAsync(Entities.Topic topic);

@@ -39,7 +39,22 @@ namespace Web.Api.Extensions
             CreateMap<User, UserRequestModel>();
             CreateMap<User, UserResponseModel>();
 
-            //Reaction
+            // Idea
+            CreateMap<Idea, IdeaResponeModel>();
+            CreateMap<Topic, IdeaResponeModel_Topic>();
+            CreateMap<User, IdeaResponeModel_User>();
+            CreateMap<Category, IdeaResponeModel_Category>();
+            CreateMap<File, IdeaResponeModel_File>()
+                .ForMember(dest => dest.FilePath, opt => opt.MapFrom(src => src.FilePath))
+                .AfterMap((src, dto) =>
+                {
+                    string file = src.PublicId.Split("GoldenIdeaRaw/")[1];
+                    dto.FileName = file.Split('.')[0];
+                    dto.FileExtention= file.Split(".")[1];
+                });
+            CreateMap<IdeaRequestModel, Idea>();
+
+            // Reaction
             CreateMap<Reaction, ReactionResponseModel>();
 
             //Comment
