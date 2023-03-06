@@ -35,7 +35,9 @@ namespace Web.Api.Services.Role
         {
             try
             {
-                var role = await roleManager.Roles.ToListAsync();
+                var role = await roleManager.Roles
+                    .OrderBy(x => x.Name)
+                    .ToListAsync();
                 var result = _mapper.Map<List<RoleResponseModel>>(role);
                 return result;
             }
