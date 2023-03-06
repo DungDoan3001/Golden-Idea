@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using Web.Api.Extensions;
 
 namespace Web.Api.DTOs.RequestModels
 {
@@ -12,6 +13,9 @@ namespace Web.Api.DTOs.RequestModels
 
         public string Content { get; set; }
 
+        [DataType(DataType.Upload)]
+        [AllowedExtensions(new string[] { ".jpg", ".png" })]
+        [MaxFileSize(2 * 1024 * 1024)]
         public IFormFile Image { get; set; }
 
         [Required(ErrorMessage = "Must choose if the idea is anonymous.")]
@@ -26,6 +30,10 @@ namespace Web.Api.DTOs.RequestModels
         [Required(ErrorMessage = "Must provide a topic identity")]
         public Guid? TopicId { get; set; }
 
+        [DataType(DataType.Upload)]
+        [AllowedNumberOfFile(5)]
+        [MaxFileSize(2 * 1024 * 1024)]
+        [AllowedExtensions(new string[] { ".txt", ".png", ".jpg", ".doc", ".pdf" })]
         public List<IFormFile> UploadFiles { get; set; }
     }
 }

@@ -9,6 +9,8 @@ using Web.Api.DTOs.ResponseModels;
 using Web.Api.Services.Topic;
 using System.Linq;
 using Web.Api.Extensions;
+using Web.Api.Services.User;
+using Web.Api.Entities;
 
 namespace Web.Api.Controllers
 {
@@ -18,11 +20,13 @@ namespace Web.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ITopicService _topicService;
+        private readonly IUserService _userService;
 
-        public TopicController(IMapper mapper, ITopicService topicService)
+        public TopicController(IMapper mapper, ITopicService topicService, IUserService userService)
         {
             _mapper = mapper;
             _topicService = topicService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -38,7 +42,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Entities.Topic> topics = await _topicService.GetAllAsync();
                 IEnumerable<TopicResponseModel> TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
-                return Ok(TopicResponses);
+                return Ok(TopicResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -64,7 +68,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserId(userId);
                 IEnumerable<TopicResponseModel> TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
-                return Ok(TopicResponses);
+                return Ok(TopicResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -93,7 +97,12 @@ namespace Web.Api.Controllers
                 Entities.Topic topic = await _topicService.GetByIdAsync(id);
                 if (topic == null)
                 {
-                    return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find the topic with the given id."}
+                    });
                 }
                 TopicResponseModel topicRespone = _mapper.Map<TopicResponseModel>(topic);
                 return Ok(topicRespone);
@@ -125,11 +134,37 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "The name already existed." }
+                    });
+
                 Entities.Topic topic = _mapper.Map<Entities.Topic>(requestModel);
+
+                // Get User
+                User user = await _userService.GetByUserName(requestModel.UserName);
+                if(user == null)
+                {
+                    return NotFound(new MessageResponseModel
+                    {
+                        Message= "Error",
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find user with given user name"}
+                    });
+                } else topic.UserId = user.Id;
+
                 Entities.Topic createdTopic = await _topicService.CreateAsync(topic);
+
                 if (createdTopic == null)
-                    return Conflict(new MessageResponseModel { Message = "Error while create new.", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors= new List<string> { "Error while create new." }
+                    });
+
                 return Created(createdTopic.Id.ToString(), _mapper.Map<TopicResponseModel>(createdTopic));
             }
             catch (Exception ex)
@@ -160,10 +195,37 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "The name already existed." }
+                    });
+
                 Entities.Topic topic = await _topicService.GetByIdAsync(id);
-                if (topic == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
+                if (topic == null) 
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find the topic with the given Id."}
+                    });
+
                 _mapper.Map<TopicRequestModel, Entities.Topic>(requestModel, topic);
+
+                // Get User
+                User user = await _userService.GetByUserName(requestModel.UserName);
+                if (user == null)
+                {
+                    return NotFound(new MessageResponseModel
+                    {
+                        Message = "Error",
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find user with given user name" }
+                    });
+                }
+                else topic.UserId = user.Id;
+
                 Entities.Topic updatedTopic = await _topicService.UpdateAsync(topic);
                 return Ok(_mapper.Map<TopicResponseModel>(updatedTopic));
             }
@@ -193,10 +255,34 @@ namespace Web.Api.Controllers
             try
             {
                 Entities.Topic topic = await _topicService.GetByIdAsync(id);
-                if (topic == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
+
+                if (topic == null)
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find the topic with the given id."}
+                    });
+
+                if(topic.Ideas.Count() > 0)
+                {
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Conflict",
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Can not delete this topic due to its contained other ideas."}
+                    });
+                }
+
                 bool isDelete = await _topicService.DeleteAsync(id);
                 if (!isDelete)
-                    return NotFound(new MessageResponseModel { Message = "Error while delete.", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not Found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors= new List<string> { "Error while delete." }
+                    });
+
                 return NoContent();
             }
             catch (Exception ex)

@@ -45,7 +45,7 @@ namespace Web.Api.Controllers
                 _logger.LogInformation("Called");
                 IEnumerable<Entities.Category> categories = await _categoryService.GetAllAsync();
                 IEnumerable<CategoryResponseModel> categoryResponses = _mapper.Map<IEnumerable<CategoryResponseModel>>(categories);
-                return Ok(categoryResponses);
+                return Ok(categoryResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -74,7 +74,12 @@ namespace Web.Api.Controllers
                 Entities.Category category = await _categoryService.GetByIdAsync(id);
                 if (category == null)
                 {
-                    return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find the category with the given id" }
+                    });
                 }
                 CategoryResponseModel departmentRespone = _mapper.Map<CategoryResponseModel>(category);
                 return Ok(departmentRespone);
@@ -195,6 +200,7 @@ namespace Web.Api.Controllers
             try
             {
                 Entities.Category category = await _categoryService.GetByIdAsync(id);
+
                 if (category == null) 
                     return NotFound(new MessageResponseModel 
                     { 
@@ -202,6 +208,17 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Can not find category with the given id" }
                     });
+
+                if(category.Ideas.Count() > 0)
+                {
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Conflict",
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Can not delete category due to its contained other ideas."}
+                    });
+                }
+
                 bool isDelete = await _categoryService.DeleteAsync(id);
                 if (!isDelete)
                     return NotFound(new MessageResponseModel 
@@ -210,6 +227,7 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Error while update." }
                     });
+
                 return NoContent();
             }
             catch (Exception ex)

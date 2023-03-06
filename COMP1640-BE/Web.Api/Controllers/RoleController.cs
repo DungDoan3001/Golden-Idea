@@ -38,7 +38,7 @@ namespace Web.Api.Controllers
             try
             {
                 var roles = await _roleService.GetAll();
-                return Ok(roles);
+                return Ok(roles.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {

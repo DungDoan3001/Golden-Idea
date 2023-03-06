@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, IconButton, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { categoryData } from '../../dataTest';
@@ -10,15 +10,27 @@ import { toast } from 'react-toastify';
 import { Category } from "../../app/models/Category";
 import CategoryForm from './CategoryForm';
 import Popup from '../../app/components/Popup';
+import { RootState, useAppDispatch } from '../../app/store/configureStore';
+import { useSelector } from 'react-redux';
+import { deleteCategory, getCategories } from './categorySlice';
 const CategoryPage = () => {
     const theme: any = useTheme();
-    const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [data, setData] = useState(categoryData);
     const [editMode, setEditMode] = useState(false);
     const [recordForEdit, setRecordForEdit] = useState<Category | undefined>(undefined);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
-
+    const { categories, loading } = useSelector((state: RootState) => state.category);
+    const dispatch = useAppDispatch();
+    let fetchMount = true;
+    useEffect(() => {
+        if (fetchMount) {
+            dispatch(getCategories());
+        }
+        return () => {
+            fetchMount = false;
+        };
+    }, []);
     function handleSelectProduct(category: Category) {
         setRecordForEdit(category);
         setEditMode(true);
@@ -35,7 +47,7 @@ const CategoryPage = () => {
             flex: 0.2,
             valueGetter: (params: GridValueGetterParams) => {
                 const { row } = params;
-                const index = data.findIndex((r) => r.id === row.id);
+                const index = categories.findIndex((r) => r.id === row.id);
                 return index + 1;
             }
         },
@@ -76,26 +88,21 @@ const CategoryPage = () => {
             },
         },
     ];
-    const handleDelete = (id: any) => {
-        //Integrate BE to use this functionality
-        // setLoading(true);
-        // agent.User.deleteUser(id)
-        //   .then(() => setData(data.filter((item: { _id: any; }) => item._id !== id)))
-        //   .catch(error => toast.error(error.toString(), {style: { marginTop: '50px' }, position: toast.POSITION.TOP_RIGHT}))
-        //   .finally(() => setLoading(false))
-        setData(data.filter((item: { id: any; }) => item.id !== id))
+    const handleDelete = (id: string) => {
+        dispatch(deleteCategory(id))
+            .catch((error: any) => {
+                // handle error
+                toast.error(error.toString(), {
+                    style: { marginTop: '50px' },
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            });
+
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
-        })
-        toast.success('Delete Record Success !', {
-            style: { marginTop: '50px' },
-            position: toast.POSITION.TOP_RIGHT
         });
-    }
-    if (!data) {
-        setLoading(true);
-    }
+    };
     return (
         <>
             {loading ? (<Loading />) : (
@@ -111,11 +118,17 @@ const CategoryPage = () => {
                         sx={{
                             "& .MuiDataGrid-root": {
                                 border: "none",
+                                [theme.breakpoints.up('md')]: {
+                                    width: '100%',
+                                    height: '60vh'
+                                },
                                 [theme.breakpoints.up('sm')]: {
                                     width: '100%',
+                                    height: '40vh'
                                 },
                                 [theme.breakpoints.down('sm')]: {
                                     width: '130%',
+                                    height: '50vh'
                                 },
                             },
                             "& .MuiDataGrid-cell": {
@@ -141,9 +154,9 @@ const CategoryPage = () => {
                     >
 
                         <DataGrid
-                            loading={loading || !data}
-                            getRowId={(row) => row.id}
-                            rows={data || []}
+                            loading={loading || !categories}
+                            getRowId={(row) => row.id ?? ''}
+                            rows={categories || []}
                             pageSize={pageSize}
                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                             rowsPerPageOptions={[5, 10, 20]}

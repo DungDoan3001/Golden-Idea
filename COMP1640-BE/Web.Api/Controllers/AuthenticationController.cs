@@ -90,7 +90,7 @@ namespace Web.Api.Controllers
                 await _userManager.AddToRoleAsync(user, userForRegistration.Role);
                 //Get user data (id + role) to response
                 var data = await _userManager.FindByNameAsync(user.UserName);
-                var result = _mapper.Map<UserForRegistrationResponseModel>(data);
+                var result = _mapper.Map<UserResponseModel>(data);
                 result.Role = userForRegistration.Role;
                 return Ok(result);
             }

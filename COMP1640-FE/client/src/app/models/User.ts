@@ -6,10 +6,9 @@ export interface User {
     password: string;
     address: string;
     phoneNumber: string,
-    avatarURL: string;
+    file: string;
     departmentId: string;
     role: string;
-    token: string;
 }
 export interface UserLogin {
     name: string;

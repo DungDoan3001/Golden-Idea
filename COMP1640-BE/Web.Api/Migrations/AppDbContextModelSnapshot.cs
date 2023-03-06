@@ -542,7 +542,7 @@ namespace Web.Api.Migrations
                     b.HasOne("Web.Api.Entities.Idea", "Idea")
                         .WithMany("Comments")
                         .HasForeignKey("IdeaId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Web.Api.Entities.User", "User")

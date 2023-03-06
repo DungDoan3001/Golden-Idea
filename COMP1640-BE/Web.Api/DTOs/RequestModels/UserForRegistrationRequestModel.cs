@@ -19,6 +19,7 @@ namespace Web.Api.DTOs.RequestModels
         public string Password { get; set; }
 
         [DataType(DataType.Upload)]
+        [AllowedExtensions(new string[] { ".jpg", ".png" })]
         [MaxFileSize(10 * 1024 * 1024)]
         public IFormFile File { get; set; }
         public string Address { get; set; }

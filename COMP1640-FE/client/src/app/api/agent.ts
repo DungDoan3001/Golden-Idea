@@ -78,11 +78,23 @@ const createFormData = (item: any) => {
     }
     return formData;
 }
+const Department = {
+    listDepartment: () => requests.get('departments'),
+    createDepartment: (values: any) => requests.post('departments', values),
+    updateDepartment: (values: any, id: string) => requests.put(`departments/${id}`, values),
+    deleteDepartment: (id: string) => requests.delete(`departments/${id}`)
+}
+const Category = {
+    listCategory: () => requests.get('categories'),
+    createCategory: (values: any) => requests.post('categories', values),
+    updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
+    deleteCategory: (id: string) => requests.delete(`categories/${id}`)
+}
 const User = {
     listUser: () => requests.get('users'),
     createUser: (user: any) => requests.postForm('users', createFormData(user)),
     updateUser: (user: any) => requests.putForm('users', createFormData(user)),
-    deleteUser: (id: number) => requests.delete(`users/${id}`)
+    deleteUser: (id: string) => requests.delete(`users/${id}`)
 }
 const Account = {
     login: (values: any) => requests.post('authentication/login', values),
@@ -90,6 +102,8 @@ const Account = {
     resetpassword: (resetCode: string, values: any) => requests.put(`authentication/change-password/${resetCode}`, values)
 }
 const agent = {
+    Department,
+    Category,
     User,
     Account
 }

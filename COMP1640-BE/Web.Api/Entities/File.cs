@@ -10,6 +10,7 @@ namespace Web.Api.Entities
         public string FilePath { get; set; }
         public string FileName { get; set; }
         public string Format { get; set; }
+
         public string PublicId { get; set; }
 
         public Guid IdeaId { get; set; }

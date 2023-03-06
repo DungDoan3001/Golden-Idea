@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.Api.Extensions
@@ -12,12 +14,30 @@ namespace Web.Api.Extensions
         }
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var file = value as IFormFile;
-            if (file != null)
+
+            if (value != null)
             {
-                if (file.Length > _maxFileSize)
+                if (value.GetType() == typeof(FormFile))
                 {
-                    return new ValidationResult(GetErrorMessage());
+                    var file = value as IFormFile;
+                    if (file != null)
+                    {
+                        if (file.Length > _maxFileSize)
+                        {
+                            return new ValidationResult(GetErrorMessage());
+                        }
+                    }
+                }
+                else if (value.GetType() == typeof(List<IFormFile>))
+                {
+                    var files = value as List<IFormFile>;
+                    foreach (var file in files)
+                    {
+                        if (file.Length > _maxFileSize)
+                        {
+                            return new ValidationResult(GetErrorMessage());
+                        }
+                    }
                 }
             }
             return ValidationResult.Success;

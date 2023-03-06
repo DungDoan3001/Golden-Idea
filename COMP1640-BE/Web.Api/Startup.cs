@@ -30,6 +30,9 @@ using Web.Api.Data.Queries;
 using Web.Api.Services.FileUploadService;
 using Web.Api.Services.IdeaService;
 using Web.Api.Services.ReactionService;
+using Web.Api.Services.Comment;
+using Web.Api.SignalR;
+using System.Threading.Tasks;
 using Web.Api.Services.FileService;
 
 namespace Web.Api
@@ -75,7 +78,16 @@ namespace Web.Api
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             // CORS
-            services.AddCors();
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
 
             //Authentication + JWT
             services.AddAuthentication(options =>
@@ -98,6 +110,19 @@ namespace Web.Api
 
                     ValidIssuer = Configuration["JwtSettings:Issuer"],
                     ValidAudience = Configuration["JwtSettings:Audience"]
+                };
+                jwt.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
     
@@ -135,12 +160,17 @@ namespace Web.Api
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IIdeaService, IdeaService>();
             services.AddScoped<IReactionService, ReactionService>();
+            services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IFileService, FileService>();
+            
+            //SignalR
+            services.AddSignalR();
             
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
             services.AddScoped<IIdeaQuery, IdeaQuery>();
-            
+            services.AddScoped<ICategoryQuery, CategoryQuery>();
+            services.AddScoped<IDepartmentQuery, DepartmentQuery>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -173,6 +203,7 @@ namespace Web.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }

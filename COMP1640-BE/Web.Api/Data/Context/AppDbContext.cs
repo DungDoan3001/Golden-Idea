@@ -109,7 +109,7 @@ namespace Web.Api.Data.Context
                 .HasOne(x => x.Idea)
                 .WithMany(x => x.Comments)
                 .HasForeignKey(x => x.IdeaId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Link Many-One || User - Reaction
             builder.Entity<Reaction>()
