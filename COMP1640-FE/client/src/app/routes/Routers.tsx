@@ -19,6 +19,7 @@ import ServerError from "../errors/ServerError";
 import ForgotPassword from "../../pages/account/forgotpassword";
 import ResetPass from "../../pages/account/resetpassword";
 import Login from "../../pages/account/login";
+import AdminPage from "../../pages/staffs/index.admin";
 
 export const router = createBrowserRouter([
     {
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
                             { path: 'home', element: <Home /> },
                             { path: 'dashboard', element: <Dashboard /> },
                             { path: 'staffs', element: <Staffs /> },
+                            { path: 'admin', element: <AdminPage /> },
                             { path: 'categories', element: <Category /> },
                             { path: 'topics', element: <Topic /> },
                             { path: 'departments', element: <Department /> },

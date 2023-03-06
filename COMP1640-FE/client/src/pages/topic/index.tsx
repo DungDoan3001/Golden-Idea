@@ -129,11 +129,17 @@ const TopicPage = () => {
                         sx={{
                             "& .MuiDataGrid-root": {
                                 border: "none",
+                                [theme.breakpoints.up('md')]: {
+                                    width: '100%',
+                                    height: '60vh'
+                                },
                                 [theme.breakpoints.up('sm')]: {
                                     width: '100%',
+                                    height: '40vh'
                                 },
                                 [theme.breakpoints.down('sm')]: {
                                     width: '130%',
+                                    height: '50vh'
                                 },
                             },
                             "& .MuiDataGrid-cell": {

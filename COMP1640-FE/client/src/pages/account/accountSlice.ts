@@ -18,7 +18,6 @@ export const signInUser = createAsyncThunk<UserLogin, FieldValues>(
     async (data, thunkAPI) => {
         try {
             const userDto = await agent.Account.login(data);
-            console.log(userDto)
             const { ...user } = userDto;
             sessionStorage.setItem('user', JSON.stringify(user));
             return user.token;

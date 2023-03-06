@@ -1,4 +1,4 @@
 export interface Department {
-    id: string;
+    id?: string;
     name: string;
 }
