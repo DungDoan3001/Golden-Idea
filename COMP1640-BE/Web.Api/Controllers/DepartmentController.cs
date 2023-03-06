@@ -201,6 +201,17 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Can not find department with the given id" }
                     });
+
+                if(department.Users.Count() > 0)
+                {
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Conflict",
+                        StatusCode= (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Can not delete department due to its contained other users."}
+                    });
+                }
+
                 bool isDelete = await _departmentService.DeleteAsync(id);
                 if (!isDelete)
                     return NotFound(new MessageResponseModel 
@@ -209,6 +220,7 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Error while delete." }
                     });
+
                 return NoContent();
             }
             catch (Exception ex)

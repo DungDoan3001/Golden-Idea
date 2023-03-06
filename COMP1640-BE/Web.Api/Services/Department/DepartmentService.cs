@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.Entities;
@@ -11,18 +12,20 @@ namespace Web.Api.Services.DepartmentService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Department> _departmentRepo;
+        private readonly IDepartmentQuery _departmentQuery;
 
-        public DepartmentService(IUnitOfWork unitOfWork)
+        public DepartmentService(IUnitOfWork unitOfWork, IDepartmentQuery departmentQuery)
         {
             _unitOfWork = unitOfWork;
             _departmentRepo = unitOfWork.GetBaseRepo<Department>();
+            _departmentQuery = departmentQuery
         }
 
         public async Task<IEnumerable<Department>> GetAllAsync()
         {
             try
             {
-                return await _departmentRepo.All();
+                return await _departmentQuery.GetAllAsync();
             }
             catch (Exception)
             {
@@ -34,7 +37,7 @@ namespace Web.Api.Services.DepartmentService
         {
             try
             {
-                return await _departmentRepo.GetById(departmentId);
+                return await _departmentQuery.GetByIdAsync(departmentId);
             }
             catch (Exception)
             {

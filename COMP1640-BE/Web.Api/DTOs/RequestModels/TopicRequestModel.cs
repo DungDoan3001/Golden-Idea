@@ -9,6 +9,6 @@ namespace Web.Api.DTOs.RequestModels
         public string Name { get; set; }
         public DateTime ClosureDate { get; set; }
         public DateTime FinalClosureDate { get; set; }
-        public Guid UserId { get; set; }
+        public string UserName { get; set; }
     }
 }

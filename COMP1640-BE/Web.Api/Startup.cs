@@ -169,6 +169,8 @@ namespace Web.Api
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
             services.AddScoped<IIdeaQuery, IdeaQuery>();
+            services.AddScoped<ICategoryQuery, CategoryQuery>();
+            services.AddScoped<IDepartmentQuery, DepartmentQuery>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

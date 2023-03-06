@@ -24,7 +24,7 @@ namespace Web.Api.Extensions
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
             CreateMap<TopicRequestModel, Entities.Topic>();
 
-            // Topic
+            // Category
             CreateMap<Entities.Category, CategoryResponseModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
             CreateMap<CategoryRequestModel, Entities.Category>();

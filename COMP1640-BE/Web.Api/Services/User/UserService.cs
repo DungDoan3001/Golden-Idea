@@ -1,17 +1,12 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using Web.Api.Data.Context;
-using Web.Api.DTOs.ResponseModels;
-using Web.Api.Entities;
 using System.Linq;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.Services.FileUploadService;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Services.User
 {
@@ -86,8 +81,20 @@ namespace Web.Api.Services.User
             catch(Exception)
             {
                 throw;
+            }           
+        }
+
+        public async Task<Entities.User> GetByUserName(string userName)
+        {
+            try
+            {
+                var user = await _userManager.FindByNameAsync(userName);
+                return user;
             }
-            
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<Entities.User> UpdateAsync(Guid id, UserRequestModel user)

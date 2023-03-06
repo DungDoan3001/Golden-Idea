@@ -4,6 +4,7 @@ using System;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.Entities;
+using Web.Api.Data.Queries;
 
 namespace Web.Api.Services.Category
 {
@@ -11,18 +12,20 @@ namespace Web.Api.Services.Category
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Entities.Category> _categoryRepo;
+        private readonly ICategoryQuery _categoryQuery;
 
-        public CategoryService(IUnitOfWork unitOfWork)
+        public CategoryService(IUnitOfWork unitOfWork, ICategoryQuery categoryQuery)
         {
             _unitOfWork = unitOfWork;
             _categoryRepo = unitOfWork.GetBaseRepo<Entities.Category>();
+            _categoryQuery = categoryQuery
         }
 
         public async Task<IEnumerable<Entities.Category>> GetAllAsync()
         {
             try
             {
-                return await _categoryRepo.All();
+                return await _categoryQuery.GetAllAsync();
             }
             catch (Exception)
             {
@@ -34,7 +37,7 @@ namespace Web.Api.Services.Category
         {
             try
             {
-                return await _categoryRepo.GetById(categoryId);
+                return await _categoryQuery.GetByIdAsync(categoryId);
             }
             catch (Exception)
             {
