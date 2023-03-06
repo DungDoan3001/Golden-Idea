@@ -19,8 +19,9 @@ interface Props {
     children: any,
     openPopup: any,
     setOpenPopup: (popup: any) => any,
+    cancelEdit: () => void,
 }
-export default function Popup({ title, children, openPopup, setOpenPopup }: Props) {
+export default function Popup({ title, children, openPopup, setOpenPopup, cancelEdit }: Props) {
     const classes = useStyles();
 
     return (
@@ -32,7 +33,7 @@ export default function Popup({ title, children, openPopup, setOpenPopup }: Prop
                     </Typography>
                     <IconButton
                         color="secondary"
-                        onClick={() => { setOpenPopup(false) }}>
+                        onClick={() => { setOpenPopup(false); cancelEdit() }}>
                         <Close />
                     </IconButton>
                 </div>

@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, IconButton, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
-import { topicData } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
 import Moment from 'moment';
@@ -11,18 +10,35 @@ import Popup from '../../app/components/Popup';
 import TopicForm from './topicForm';
 import { Topic } from '../../app/models/Topic';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../app/store/configureStore';
+import { getTopics } from './topicSlice';
 const TopicPage = () => {
     const theme: any = useTheme();
-    const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
-    const [data, setData] = useState(topicData);
     const [editMode, setEditMode] = useState(false);
     const [recordForEdit, setRecordForEdit] = useState<Topic | undefined>(undefined);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
-    function handleSelectProduct(topic: Topic) {
+    const { topics, loading } = useSelector((state: RootState) => state.topic);
+    const dispatch = useAppDispatch();
+    let fetchMount = true;
+    useEffect(() => {
+        if (fetchMount) {
+            dispatch(getTopics());
+        }
+        return () => {
+            fetchMount = false;
+        };
+    }, []);
+
+    function handleSelect(topic: Topic) {
         setRecordForEdit(topic);
-        console.log(topic);
         setEditMode(true);
+    }
+
+    function cancelEdit() {
+        if (recordForEdit) setRecordForEdit(undefined);
+        setEditMode(false);
     }
     const handleDelete = (id: any) => {
         //Integrate BE to use this functionality
@@ -39,11 +55,6 @@ const TopicPage = () => {
             style: { marginTop: '50px' },
             position: toast.POSITION.TOP_RIGHT
         });
-        setData(data.filter((item: { id: any; }) => item.id !== id))
-    }
-    function cancelEdit() {
-        if (recordForEdit) setRecordForEdit(undefined);
-        setEditMode(false);
     }
     const columns: any = [
         {
@@ -52,7 +63,7 @@ const TopicPage = () => {
             flex: 0.2,
             valueGetter: (params: GridValueGetterParams) => {
                 const { row } = params;
-                const index = data.findIndex((r) => r.id === row.id);
+                const index = topics.findIndex((r) => r.id === row.id);
                 return index + 1;
             }
         },
@@ -81,7 +92,7 @@ const TopicPage = () => {
             },
         },
         {
-            field: "userName",
+            field: "username",
             headerName: "User Name",
             flex: 1,
             minWidth: 50,
@@ -92,10 +103,10 @@ const TopicPage = () => {
             field: "action",
             headerName: "Action",
             width: 200,
-            renderCell: (params: { row: { id: any; name: any, closureDate: any, finalClosureDate: any, userName: any }; }) => {
+            renderCell: (params: { row: { id: any; name: any, username: any, closureDate: any, finalClosureDate: any, }; }) => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
-                        <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelectProduct(params.row)} >
+                        <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
                             <Edit fontSize="inherit" />
                         </IconButton>
                         <IconButton aria-label="delete" size="large" color="error" onClick={() => setConfirmDialog({
@@ -111,9 +122,6 @@ const TopicPage = () => {
             },
         },
     ];
-    if (!data) {
-        setLoading(true);
-    }
     return (
         <>
             {loading ? (<Loading />) : (
@@ -165,9 +173,9 @@ const TopicPage = () => {
                     >
 
                         <DataGrid
-                            loading={loading || !data}
-                            getRowId={(row) => row.id}
-                            rows={data || []}
+                            loading={loading || !topics}
+                            getRowId={(row) => row.id ?? ''}
+                            rows={topics || []}
                             pageSize={pageSize}
                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                             rowsPerPageOptions={[5, 10, 20]}
@@ -189,6 +197,7 @@ const TopicPage = () => {
                         title="Topic Details"
                         openPopup={editMode}
                         setOpenPopup={setEditMode}
+                        cancelEdit={cancelEdit}
                     >
                         <TopicForm topic={recordForEdit} cancelEdit={cancelEdit} />
                     </Popup>

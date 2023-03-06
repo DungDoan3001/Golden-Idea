@@ -120,11 +120,10 @@ const Staffs = () => {
     if (user.id === 0)
       agent.User.createUser(user)
     else
-      agent.User.updateUser(user)
-    resetForm()
+      // agent.User.updateUser(user)
+      resetForm()
     setRecordForEdit(undefined)
     setOpenPopup(false)
-    setData(await agent.User.listUser())
     setNotify({
       isOpen: true,
       message: 'Submitted Successfully',
@@ -217,6 +216,7 @@ const Staffs = () => {
         title="Staff Details"
         openPopup={editMode}
         setOpenPopup={setEditMode}
+        cancelEdit={cancelEdit}
       >
         <StaffForm user={recordForEdit} cancelEdit={cancelEdit} />
       </Popup>
