@@ -7,6 +7,9 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAppDispatch } from '../../app/store/configureStore'
 import { object, string } from "zod";
+import './style.scss'
+import { addCategory, getCategories, updateCategory } from './categorySlice'
+import { toast } from 'react-toastify'
 
 interface Props {
     category?: Category;
@@ -28,29 +31,34 @@ const CategoryForm = ({ category, cancelEdit }: Props) => {
         try {
             let response: Category;
             if (category) {
-                //response = await agent.Admin.updateCategory(data);
-                console.log(data);
-                console.log(category);
+                const updatedCategory: Category = {
+                    id: category.id,
+                    name: data.name,
+                };
+                response = await dispatch(updateCategory(updatedCategory)).unwrap();
             } else {
-                //response = await agent.Admin.createCategory(data);
-                console.log(data);
-                console.log(category);
+                const newCategory: Category = {
+                    name: data.name,
+                };
+                response = await dispatch(addCategory(newCategory)).unwrap();
             }
-            //dispatch(setCategory(response));
             cancelEdit();
-        } catch (error) {
-            console.log(error);
+            await dispatch(getCategories()).unwrap();
+        } catch (error: any) {
+            toast.error('Failed to load resource: the server responded with a status of 409 (Conflict)', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
         }
     }
     return (
-        <Box sx={{ p: 4 }}>
+        <Box>
             <form onSubmit={handleSubmit(handleSubmitData)}>
-                <Grid container sx={{ [theme.breakpoints.up('md')]: { width: '140%' } }}>
+                <Grid container sx={{ [theme.breakpoints.up('sm')]: { marginLeft: '17rem', marginTop: '12px', width: '150%' }, [theme.breakpoints.down('sm')]: { mt: 3 } }}>
                     <Grid item xs={12} sm={8}>
-                        <AppTextInput control={control} name='name' label='Category name' />
+                        <AppTextInput control={control} name='name' label='Category name' multiline={true} />
                     </Grid>
                 </Grid>
-                <Box display='flex' justifyContent='space-between' sx={{ ml: 10, mt: 5, mb: 1, [theme.breakpoints.up('md')]: { ml: 25 } }}>
+                <Box display='flex' justifyContent='space-between' sx={{ ml: 10, mt: 5, mb: 1, [theme.breakpoints.up('sm')]: { ml: 25 } }}>
                     <Button onClick={cancelEdit} variant='contained' color='inherit' sx={{ marginRight: '0.5rem' }}>Cancel</Button>
                     <LoadingButton loading={isSubmitting} type='submit' variant='contained' color='success'>Submit</LoadingButton>
                 </Box>
