@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 import { object, string, date } from 'zod';
+import './style.scss';
 
 interface Props {
     topic?: Topic;
@@ -25,7 +26,7 @@ const TopicForm = ({ topic, cancelEdit }: Props) => {
     });
     const theme = useTheme();
     const dispatch = useAppDispatch();
-    //   const userName = useAppSelector(state => state.auth.user?.name);
+    const userName = useAppSelector(state => state.account.user?.name);
     useEffect(() => {
         if (topic && !isDirty) reset(topic);
     }, [topic, reset, isDirty]);
@@ -49,16 +50,16 @@ const TopicForm = ({ topic, cancelEdit }: Props) => {
         }
     }
     return (
-        <Box sx={{ p: 4 }}>
+        <Box>
             <form onSubmit={handleSubmit(handleSubmitData)}>
-                <Grid container sx={{ [theme.breakpoints.up('md')]: { width: '120%' } }}>
+                <Grid container sx={{ [theme.breakpoints.up('sm')]: { marginLeft: '17rem', marginTop: '12px', width: '150%' }, [theme.breakpoints.down('sm')]: { mt: 3 } }}>
                     <Grid item xs={12} sm={8}>
-                        <AppTextInput control={control} name='name' label='Topic name' />
+                        <AppTextInput control={control} name='name' label='Topic name' rows={2} multiline={true} />
                         <AppTextInput control={control} name='closureDate' label='Closure date' type='date' />
                         <AppTextInput control={control} name='finalClosureDate' label='Final closure date' type='date' />
                     </Grid>
                 </Grid>
-                <Box display='flex' justifyContent='space-between' sx={{ ml: 10, mt: 5, mb: 1, [theme.breakpoints.up('md')]: { ml: 25 } }}>
+                <Box display='flex' justifyContent='space-between' sx={{ ml: 10, mt: 5, mb: 1, [theme.breakpoints.up('sm')]: { ml: 25 } }}>
                     <Button onClick={cancelEdit} variant='contained' color='inherit' sx={{ marginRight: '0.5rem' }}>Cancel</Button>
                     <LoadingButton loading={isSubmitting} type='submit' variant='contained' color='success'>Submit</LoadingButton>
                 </Box>
