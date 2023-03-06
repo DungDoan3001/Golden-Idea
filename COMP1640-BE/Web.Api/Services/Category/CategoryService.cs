@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
-using Web.Api.Entities;
 using Web.Api.Data.Queries;
 
 namespace Web.Api.Services.Category
@@ -18,7 +17,7 @@ namespace Web.Api.Services.Category
         {
             _unitOfWork = unitOfWork;
             _categoryRepo = unitOfWork.GetBaseRepo<Entities.Category>();
-            _categoryQuery = categoryQuery
+            _categoryQuery = categoryQuery;
         }
 
         public async Task<IEnumerable<Entities.Category>> GetAllAsync()

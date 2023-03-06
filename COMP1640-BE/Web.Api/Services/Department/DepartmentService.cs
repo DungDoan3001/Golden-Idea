@@ -18,7 +18,7 @@ namespace Web.Api.Services.DepartmentService
         {
             _unitOfWork = unitOfWork;
             _departmentRepo = unitOfWork.GetBaseRepo<Department>();
-            _departmentQuery = departmentQuery
+            _departmentQuery = departmentQuery;
         }
 
         public async Task<IEnumerable<Department>> GetAllAsync()
