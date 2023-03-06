@@ -36,7 +36,9 @@ namespace Web.Api.Services.User
         {
             try
             {
-                var users = await _userManager.Users.ToListAsync();
+                var users = await _userManager.Users
+                    .OrderBy(x => x.Name)
+                    .ToListAsync();
                 return users;
             }
             catch (Exception)
@@ -49,7 +51,7 @@ namespace Web.Api.Services.User
             try
             {
                 var users = await _userManager.GetUsersInRoleAsync("Staff");
-                return users.ToList();
+                return users.OrderBy(x => x.Name).ToList();
             }
             catch (Exception)
             {
@@ -68,7 +70,7 @@ namespace Web.Api.Services.User
                     var users = await _userManager.GetUsersInRoleAsync(role.Name);
                     result.AddRange(users);
                 }
-                return result;
+                return result.OrderBy(x => x.Name).ToList();
             }
             catch (Exception)
             {
