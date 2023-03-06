@@ -8,6 +8,7 @@ namespace Web.Api.Data.Queries
     public interface IIdeaQuery
     {
         Task<List<Idea>> GetAllAsync();
+        Task<List<Idea>> GetAllByAuthorAsync(Guid userId);
         Task<Idea> GetByIdAsync(Guid id);
         Task<Idea> GetBySlugAsync(string slug);
         Task<bool> CheckSlugExistedAsync(string slug);
