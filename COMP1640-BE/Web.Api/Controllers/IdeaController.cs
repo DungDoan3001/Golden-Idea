@@ -61,6 +61,32 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
+        /// Get all ideas by user identitication.
+        /// </summary>
+        /// <returns>List of idea objects</returns>
+        /// <response code="200">Successfully get all ideas</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<IdeaResponeModel>>> GetAllByAuthor([FromRoute] Guid userId)
+        {
+            try
+            {
+                IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userId);
+                IEnumerable<IdeaResponeModel> TopicResponses = _mapper.Map<IEnumerable<IdeaResponeModel>>(ideas);
+                return Ok(TopicResponses.OrderBy(x => x.Title));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        /// <summary>
         /// Get idea by Id
         /// </summary>
         /// <returns>an idea</returns>

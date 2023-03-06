@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +21,20 @@ namespace Web.Api.Data.Queries
                 .Include(x => x.Files)
                 .Include(x => x.Views)
                 .Include(x => x.Reactions)
+                .AsSplitQuery()
+                .ToListAsync();
+        }
+
+        public async Task<List<Idea>> GetAllByAuthorAsync(Guid userId)
+        {
+            return await dbSet
+                .Include(x => x.User)
+                .Include(x => x.Topic)
+                .Include(x => x.Category)
+                .Include(x => x.Files)
+                .Include(x => x.Views)
+                .Include(x => x.Reactions)
+                .Where(x => x.UserId == userId)
                 .AsSplitQuery()
                 .ToListAsync();
         }
