@@ -90,10 +90,18 @@ const Category = {
     updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
     deleteCategory: (id: string) => requests.delete(`categories/${id}`)
 }
+
+const Topic = {
+    listTopics: () => requests.get('topics'),
+    createTopic: (values: any) => requests.post('topics', values),
+    updateTopic: (values: any, id: string) => requests.put(`topics/${id}`, values),
+    deleteTopic: (id: string) => requests.delete(`topics/${id}`)
+}
+
 const User = {
-    listUser: () => requests.get('users'),
+    listUsers: () => requests.get('users'),
     createUser: (user: any) => requests.postForm('users', createFormData(user)),
-    updateUser: (user: any) => requests.putForm('users', createFormData(user)),
+    updateUser: (user: any, id: any) => requests.putForm(`users/${id}`, createFormData(user)),
     deleteUser: (id: string) => requests.delete(`users/${id}`)
 }
 const Account = {
@@ -104,6 +112,7 @@ const Account = {
 const agent = {
     Department,
     Category,
+    Topic,
     User,
     Account
 }

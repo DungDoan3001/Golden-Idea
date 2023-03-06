@@ -4,6 +4,7 @@ import { globalSlice } from "../utils/AppSlice";
 import { accountSlice } from "../../pages/account/accountSlice";
 import { departmentSlice } from "../../pages/department/departmentSlice";
 import { categorySlice } from "../../pages/category/categorySlice";
+import { topicSlice } from "../../pages/topic/topicSlice";
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         account: accountSlice.reducer,
         department: departmentSlice.reducer,
         category: categorySlice.reducer,
+        topic: topicSlice.reducer,
     }
 })
 
