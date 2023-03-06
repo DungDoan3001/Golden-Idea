@@ -1,5 +1,4 @@
-﻿using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -17,13 +16,30 @@ namespace Web.Api.Extensions
         }
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var file = value as IFormFile;
-            if (file != null)
+            if(value != null)
             {
-                var extension = Path.GetExtension(file.FileName);
-                if (!_extensions.Contains(extension.ToLower()))
+                if(value.GetType() == typeof(FormFile))
                 {
-                    return new ValidationResult(GetErrorMessage());
+                    var file = value as IFormFile;
+                    if (file != null)
+                    {
+                        var extension = Path.GetExtension(file.FileName);
+                        if (!_extensions.Contains(extension.ToLower()))
+                        {
+                            return new ValidationResult(GetErrorMessage());
+                        }
+                    }
+                } else if (value.GetType() == typeof(List<IFormFile>))
+                {
+                    var files = value as List<IFormFile>;
+                    foreach (var file in files)
+                    {
+                        var extension = Path.GetExtension(file.FileName);
+                        if (!_extensions.Contains(extension.ToLower()))
+                        {
+                            return new ValidationResult(GetErrorMessage());
+                        }
+                    }
                 }
             }
             return ValidationResult.Success;
