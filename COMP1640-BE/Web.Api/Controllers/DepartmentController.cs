@@ -39,7 +39,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Department> departments = await _departmentService.GetAllAsync();
                 IEnumerable<DepartmentResponseModel> departmentRespones = _mapper.Map<IEnumerable<DepartmentResponseModel>>(departments);
-                return Ok(departmentRespones);
+                return Ok(departmentRespones.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {

@@ -42,7 +42,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Entities.Topic> topics = await _topicService.GetAllAsync();
                 IEnumerable<TopicResponseModel> TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
-                return Ok(TopicResponses);
+                return Ok(TopicResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserId(userId);
                 IEnumerable<TopicResponseModel> TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
-                return Ok(TopicResponses);
+                return Ok(TopicResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {

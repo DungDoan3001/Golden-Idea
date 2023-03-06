@@ -45,7 +45,7 @@ namespace Web.Api.Controllers
                 _logger.LogInformation("Called");
                 IEnumerable<Entities.Category> categories = await _categoryService.GetAllAsync();
                 IEnumerable<CategoryResponseModel> categoryResponses = _mapper.Map<IEnumerable<CategoryResponseModel>>(categories);
-                return Ok(categoryResponses);
+                return Ok(categoryResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {

@@ -13,6 +13,7 @@ using Web.Api.Services.FileUploadService;
 using Web.Api.Services.FileService;
 using Slugify;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace Web.Api.Controllers
 {
@@ -46,7 +47,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Idea> ideas = await _ideaService.GetAllAsync();
                 IEnumerable<IdeaResponeModel> TopicResponses = _mapper.Map<IEnumerable<IdeaResponeModel>>(ideas);
-                return Ok(TopicResponses);
+                return Ok(TopicResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
