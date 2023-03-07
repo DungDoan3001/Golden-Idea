@@ -41,13 +41,13 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all ideas</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("")]
-        public async Task<ActionResult<IEnumerable<IdeaResponeModel>>> GetAll()
+        public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAll()
         {
             try
             {
                 IEnumerable<Idea> ideas = await _ideaService.GetAllAsync();
-                IEnumerable<IdeaResponeModel> TopicResponses = _mapper.Map<IEnumerable<IdeaResponeModel>>(ideas);
-                return Ok(TopicResponses.OrderBy(x => x.Title));
+                IEnumerable<IdeaResponseModel> IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
+                return Ok(IdeaResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
@@ -67,13 +67,13 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all ideas</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<IdeaResponeModel>>> GetAllByAuthor([FromRoute] Guid userId)
+        public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAllByAuthor([FromRoute] Guid userId)
         {
             try
             {
                 IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userId);
-                IEnumerable<IdeaResponeModel> TopicResponses = _mapper.Map<IEnumerable<IdeaResponeModel>>(ideas);
-                return Ok(TopicResponses.OrderBy(x => x.Title));
+                IEnumerable<IdeaResponseModel> IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
+                return Ok(IdeaResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
@@ -93,13 +93,13 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("id/{ideaId}")]
-        public async Task<ActionResult<IdeaResponeModel>> GetById([FromRoute] Guid ideaId)
+        public async Task<ActionResult<IdeaResponseModel>> GetById([FromRoute] Guid ideaId)
         {
             try
             {
                 Idea idea = await _ideaService.GetByIdAsync(ideaId);
-                IdeaResponeModel TopicResponses = _mapper.Map<IdeaResponeModel>(idea);
-                return Ok(TopicResponses);
+                IdeaResponseModel IdeaResponse = _mapper.Map<IdeaResponseModel>(idea);
+                return Ok(IdeaResponse);
             }
             catch (Exception ex)
             {
@@ -119,13 +119,13 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("slug/{slug}")]
-        public async Task<ActionResult<IdeaResponeModel>> GetBySlug([FromRoute] string slug)
+        public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string slug)
         {
             try
             {
                 Idea idea = await _ideaService.GetBySlugAsync(slug);
-                IdeaResponeModel TopicResponses = _mapper.Map<IdeaResponeModel>(idea);
-                return Ok(TopicResponses);
+                IdeaResponseModel IdeaResponse = _mapper.Map<IdeaResponseModel>(idea);
+                return Ok(IdeaResponse);
             }
             catch (Exception ex)
             {

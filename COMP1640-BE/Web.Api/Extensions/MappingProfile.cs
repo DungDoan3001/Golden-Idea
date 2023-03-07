@@ -39,19 +39,28 @@ namespace Web.Api.Extensions
             CreateMap<User, UserResponseModel>();
 
             // Idea
-            CreateMap<Idea, IdeaResponeModel>();
-            CreateMap<Topic, IdeaResponeModel_Topic>();
-            CreateMap<User, IdeaResponeModel_User>();
-            CreateMap<Category, IdeaResponeModel_Category>();
-            CreateMap<File, IdeaResponeModel_File>()
+            CreateMap<Idea, IdeaResponseModel>()
+                .AfterMap((src, dest) =>
+                {
+                    // Map view
+                    dest.View = src.Views.Count();
+                    // Map Upvote
+                    dest.UpVote = src.Reactions.Where(x => x.React == 1).Count();
+                    // Map Downvote
+                    dest.DownVote = src.Reactions.Where(x => x.React == -1).Count();
+                });
+            CreateMap<Topic, IdeaResponseModel_Topic>();
+            CreateMap<User, IdeaResponseModel_User>();
+            CreateMap<Category, IdeaResponseModel_Category>();
+            CreateMap<File, IdeaResponseModel_File>()
                 .ForMember(dest => dest.FilePath, opt => opt.MapFrom(src => src.FilePath))
                 .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.FileName))
-                .AfterMap((src, dto) =>
+                .AfterMap((src, dest) =>
                 {
                     if(src.Format== null)
                     {
-                        dto.FileExtention = src.PublicId.Split(".").Last();
-                    } else { dto.FileExtention = src.Format; }
+                        dest.FileExtention = src.PublicId.Split(".").Last();
+                    } else { dest.FileExtention = src.Format; }
                 });
             CreateMap<IdeaRequestModel, Idea>();
 

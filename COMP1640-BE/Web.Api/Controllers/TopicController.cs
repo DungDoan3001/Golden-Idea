@@ -270,17 +270,7 @@ namespace Web.Api.Controllers
                     {
                         Message = "Conflict",
                         StatusCode = (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "Sorry! We cannot delete the department because it contains some users." }
-                    });
-                }
-
-                if (topic.User != null)
-                {
-                    return Conflict(new MessageResponseModel
-                    {
-                        Message = "Conflict",
-                        StatusCode = (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "Sorry! We cannot delete the topic because it contains author." }
+                        Errors = new List<string> { "Sorry! We cannot delete the department because it contains some ideas." }
                     });
                 }
 
