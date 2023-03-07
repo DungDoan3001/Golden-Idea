@@ -23,12 +23,12 @@ namespace Web.Api.Services.ReactionService
             try
             {
                 var react = new Reaction();
-                if (reactionType.Trim().ToLower() == "like")
+                if (reactionType.Trim().ToLower() == "upvote")
                 {
                     react = await CheckReact(1, ideaId, userId);
                     return react;
                 }
-                else if (reactionType.Trim().ToLower() == "dislike")
+                else if (reactionType.Trim().ToLower() == "downvote")
                 {
                     react = await CheckReact(-1, ideaId, userId);
                     return react;

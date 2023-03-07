@@ -28,7 +28,7 @@ namespace Web.Api.Controllers
         /// <summary>
         /// Create a reaction
         /// </summary>
-        /// <param name="reactionType">Reaction type</param>
+        /// <param name="reactionType">Reaction type (upvote, downvote)</param>
         /// <param name="userReact">Reaction request model</param>
         /// <returns>A reaction just created</returns>
         /// <response code="201">Successfully created the reaction</response>
