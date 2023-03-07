@@ -21,7 +21,7 @@ namespace Web.Api.DTOs.RequestModels
         [DataType(DataType.Upload)]
         [AllowedExtensions(new string[] { ".jpg", ".png" })]
         [MaxFileSize(10 * 1024 * 1024)]
-        public IFormFile File { get; set; }
+        public IFormFile Avatar { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Department is required")]

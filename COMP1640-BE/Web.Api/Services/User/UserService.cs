@@ -135,9 +135,9 @@ namespace Web.Api.Services.User
                 userUpdate.DepartmentId = user.DepartmentId;
                 userUpdate.PhoneNumber = user.PhoneNumber;
                 
-                if (user.File != null)
+                if (user.Avatar != null)
                 {
-                    var imageUploadResult = await _fileUploadService.UploadImageAsync(user.File);
+                    var imageUploadResult = await _fileUploadService.UploadImageAsync(user.Avatar);
                     if (imageUploadResult.Error != null)
                         throw new Exception(imageUploadResult.Error.Message);
 

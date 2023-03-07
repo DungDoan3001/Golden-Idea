@@ -32,8 +32,6 @@ namespace Web.Api.Extensions
             // Role
             CreateMap<IdentityRole<Guid>, RoleResponseModel>();
 
-            // Authentication
-            CreateMap<UserForRegistrationRequestModel, User>();
 
             //User
             CreateMap<UserRequestModel, User>();
