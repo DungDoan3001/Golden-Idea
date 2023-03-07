@@ -43,10 +43,15 @@ namespace Web.Api.Controllers
                 }
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
