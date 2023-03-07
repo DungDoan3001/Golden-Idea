@@ -50,7 +50,7 @@ namespace Web.Api.Controllers
         /// <response code="404">There is a conflict while creating</response>
         [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> RegisterUser([FromForm] UserForRegistrationRequestModel userForRegistration)
+        public async Task<IActionResult> RegisterUser([FromForm] UserRequestModel userForRegistration)
         {
             try
             {
@@ -68,9 +68,9 @@ namespace Web.Api.Controllers
                 }
 
                 var user = _mapper.Map<User>(userForRegistration);
-                if (userForRegistration.File != null)
+                if (userForRegistration.Avatar != null)
                 {
-                    var imageResult = await _fileUploadService.UploadImageAsync(userForRegistration.File);
+                    var imageResult = await _fileUploadService.UploadImageAsync(userForRegistration.Avatar);
 
                     if (imageResult.Error != null)
                         return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
