@@ -3,8 +3,10 @@ import { Box, Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import Service from "../utils/Service";
 
-const AppPagination = ({setPost}:any) => {
-  const pageSize = 6;
+// import { postData } from "../../dataTest.js"
+
+const AppPagination = ({ setItem, data, size }: any) => {
+  const pageSize = size;
   const [pagination, setPagination] = useState({
     count: 0,
     from: 0,
@@ -12,11 +14,12 @@ const AppPagination = ({setPost}:any) => {
   });
 
   useEffect(() => {
-    Service.getData(pagination.from,pagination.to).then((response: any) => {
+    Service.getData(data, pagination.from, pagination.to).then((response: any) => {
       setPagination({ ...pagination, count: response.count })
 
-      setPost(response.data);
+      setItem(response.data);
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.from, pagination.to]);
 
   const HandlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {

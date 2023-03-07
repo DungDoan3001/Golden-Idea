@@ -4,6 +4,8 @@ import RequireAuth from "./RequireAuth";
 import Dashboard from "../../pages/dashboard";
 import Exception from "../../pages/exception";
 import Home from "../../pages/home";
+import MyIdeas from "../../pages/myIdeas";
+import IdeaDetail from "../../pages/ideaDetail";
 import Staffs from "../../pages/staffs";
 import Category from "../../pages/category";
 import Layout from "../../pages/layout";
@@ -47,6 +49,8 @@ export const router = createBrowserRouter([
             {
                 element: <Layout />, children: [
                     { path: 'home', element: <Home /> },
+                    { path: 'myIdeas', element: <MyIdeas /> },
+                    { path: 'ideaDetail', element: <IdeaDetail /> },
                     { path: 'dashboard', element: <Dashboard /> },
                     { path: 'staffs', element: <Staffs /> },
                     { path: 'categories', element: <Category /> },

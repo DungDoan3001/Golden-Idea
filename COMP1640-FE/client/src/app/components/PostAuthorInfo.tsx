@@ -3,11 +3,11 @@ import { Box } from '@mui/system';
 import React from 'react';
 
 interface PostAuthorInfoProps {
-  post: any
+  data: any
   top: any
 }
 
-const PostAuthorInfo = ({ post,top }: PostAuthorInfoProps) => {
+const PostAuthorInfo = ({ data,top }: PostAuthorInfoProps) => {
 
   return (
     <Grid container mt="1rem">
@@ -15,7 +15,7 @@ const PostAuthorInfo = ({ post,top }: PostAuthorInfoProps) => {
         <Box
           component="img"
           alt="profile"
-          src={post.userImg}
+          src={data.userImg}
           height="2.5rem"
           width="2.5rem"
           borderRadius="50%"
@@ -23,8 +23,8 @@ const PostAuthorInfo = ({ post,top }: PostAuthorInfoProps) => {
         />
       </Grid>
       <Grid pl="1rem" item xs={10} md={(top)?11:10}>
-        <Box component="h5" m="0rem">By: {post.userId}</Box>
-        <Box component="small">{post.lastUpdate}</Box>
+        <Box component="h4" m="0rem">By: {data.userName}</Box>
+        <Box component="small">{data.lastUpdate}</Box>
       </Grid>
     </Grid>
   )

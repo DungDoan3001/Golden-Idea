@@ -7,20 +7,20 @@ import AppPagination from '../../app/components/AppPagination';
 import Service from '../../app/utils/Service';
 import CategoryButton from '../../app/components/CategoryButton';
 
+import { postData } from "../../dataTest.js"
+
 import { categoryData } from '../../dataTest.js';
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@emotion/react';  
 
 const Home = () => {
   const theme: any = useTheme();
 
-  const [post, setPost] = useState([]);
+  const [idea, setIdea] = useState([]);
   const [topPost, setTopPost] = useState([]);
 
   useEffect(() => {
-    Service.getData(0, 1).then((response: any) => {
+    Service.getData(postData,0, 1).then((response: any) => {
       setTopPost(response.data);
-
-      console.log(categoryData);
     })
   }, []);
 
@@ -39,18 +39,20 @@ const Home = () => {
       }}
     >
       {topPost.map((topPost: any) => (
-        <HomePageTopItem post={topPost} />
+        <HomePageTopItem data={topPost} />
       )
       )}
-      <Box mt="10%" alignItems="center" justifyContent="center">
+      <Box mt="5%" alignItems="center" justifyContent="center">
         <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
-          {post.map((post: any) => (
-            <HomePageItem post={post} />
+          {idea.map((item: any) => (
+            <HomePageItem data={item} />
           )
           )}
         </Grid>
         <AppPagination
-          setPost={(p: any) => setPost(p)}
+          setItem={(p: any) => setIdea(p)}
+          data={postData}
+          size={6}
         />
       </Box>
       <Box sx={{

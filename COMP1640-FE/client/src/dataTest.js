@@ -1,6 +1,6 @@
 export const dataIdeas = [
   {
-    id: "63701cc1f03239c72c00017f14",
+    id: "username14",
     title: " I overcome the hard time",
     content:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
@@ -12,7 +12,7 @@ export const dataIdeas = [
     topicID: "637451c21c4203239c72c00017f",
   },
   {
-    id: "63701cc1f03239c72c00017f1",
+    id: "username1",
     title: "What I have done to overcome the hard time",
     content:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
@@ -24,7 +24,7 @@ export const dataIdeas = [
     topicID: "637451c21c4203239c72c00017f",
   },
   {
-    id: "63701cc1f03239c72c00017f",
+    id: "username",
     title: "How I overcome the hard time",
     content:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
@@ -36,7 +36,7 @@ export const dataIdeas = [
     topicID: "637451c21c4203239c72c00017f",
   },
   {
-    id: "63701cc1f03239c72c00017f",
+    id: "username",
     title: "How I overcome the hard time",
     content:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
@@ -48,7 +48,7 @@ export const dataIdeas = [
     topicID: "637451c21c4203239c72c00017f",
   },
   {
-    id: "63701cc1f03239c72c00017f",
+    id: "username",
     title: "How I overcome the hard time",
     content:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
@@ -60,7 +60,7 @@ export const dataIdeas = [
     topicID: "637451c21c4203239c72c00017f",
   },
   {
-    id: "63701cc1f03239c72c00017f",
+    id: "username",
     title: "How I overcome the hard time",
     content:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
@@ -254,70 +254,68 @@ export const rawData = {
   HR: 30,
   Marketing: 40,
 };
-
 export const postData = [
   {
     _id: 1,
     title: "I don't know what to post 1",
-    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
-    userId: "63701cc1f03239c72c00017f",
+    userName: "username",
     userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 2",
-    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
-    userId: "63701cc1f03239c72c00017f",
+    userName: "username",
     userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 3",
-    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
-    userId: "63701cc1f03239c72c00017f",
+    userName: "username",
     userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 4",
-    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
-    userId: "63701cc1f03239c72c00017f",
+    userName: "username",
     userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 5",
-    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
-    userId: "63701cc1f03239c72c00017f",
+    userName: "username",
     userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 6",
-    content: "asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awd asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdwwdw asdaskhxkcjb kdcjqbkbkqjka slnjoasduh voudhodcld ncuadohcaj scoasjcboasjbc oajcbadjcnkscjk du sczxcascasca aszxcasc asdazxcaqf wascaw ascafqw asawd awsdasqw ascawqwd awdwdw",
+    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
-    userId: "63701cc1f03239c72c00017f",
+    userName: "username",
     userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
 ];
-
 export const getDepartmentCollection = () => [
   { id: "83e5a1ca-47e2-4bf8-a3c3-3d76c1d4645e", name: "Computer Science" },
   {
@@ -349,10 +347,9 @@ export const getDepartmentCollection = () => [
   },
   { id: "7f26dbb8-f974-4a27-89a4-835bb8b72a4a", name: "Physics" },
 ];
-
 export const userData = [
   {
-    _id: "63701cc1f03239c72c00017f",
+    _id: "username",
     name: "Konstantine",
     email: "kranstead0@narod.ru",
     password: "omMDCh",
@@ -6414,8 +6411,10 @@ export const dataOverall = [
 export const commentData = [
   {
     id: "1122f440-3f86-4af3-a053-9cef88bb5f5a",
-    content: "This is a great idea!",
+    content: "This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! ",
     createdDate: "2020-06-15T08:00:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 1234,
     ideaID: 5678,
   },
@@ -6423,6 +6422,8 @@ export const commentData = [
     id: "26184eae-23ba-48f2-8d51-25261cf15896",
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-21T08:45:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 2345,
     ideaID: 6789,
   },
@@ -6430,6 +6431,8 @@ export const commentData = [
     id: "bc51bff7-c127-46ce-941f-3a8a62faebe2",
     content: "This is a great idea!",
     createdDate: "2020-06-22T09:15:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 3456,
     ideaID: 7890,
   },
@@ -6437,6 +6440,8 @@ export const commentData = [
     id: "f51ceabd-ebac-447c-b647-18df7da4e4f8",
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-23T09:30:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 4567,
     ideaID: 8901,
   },
@@ -6444,6 +6449,8 @@ export const commentData = [
     id: "6cc2b6e7-6c90-47d1-b43f-0cf56074117c",
     content: "This is a great idea!",
     createdDate: "2020-06-24T10:00:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 5678,
     ideaID: 9012,
   },
@@ -6451,6 +6458,8 @@ export const commentData = [
     id: "7bd8b0f9-764f-444c-808c-ba8e76f37f4b",
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-25T10:30:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 6789,
     ideaID: 1523,
   },
@@ -6458,6 +6467,8 @@ export const commentData = [
     id: "e1d7941d-6590-4e3e-bc29-d88fdb81c272",
     content: "This is a great idea!",
     createdDate: "2020-06-26T11:00:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 7801,
     ideaID: 1234,
   },
@@ -6465,6 +6476,8 @@ export const commentData = [
     id: "16cf3fb3-de75-496b-9f2a-a17604c6eb16",
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-27T11:30:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 8912,
     ideaID: 2345,
   },
@@ -6472,6 +6485,8 @@ export const commentData = [
     id: "7acb75e9-231a-44cf-b905-7be8c2b441e7",
     content: "This is a great idea!",
     createdDate: "2020-06-28T12:00:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 9123,
     ideaID: 3456,
   },
@@ -6479,6 +6494,8 @@ export const commentData = [
     id: "4774203a-bc0e-4709-935f-1d288fe80146",
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-29T12:30:00.000Z",
+    userName: "userName",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 1346,
     ideaID: 4567,
   },
@@ -6532,6 +6549,8 @@ export const topicData = [
     closureDate: "2020-11-23",
     finalClousureDate: "2020-12-23",
     userName: "UserName-001",
+    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    lastUpdate: "00:00:00 | 12/02/2023",
   },
   {
     id: "559a6dcc-2668-46f1-a6cb-18c3d3fdd216",
