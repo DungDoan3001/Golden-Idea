@@ -188,12 +188,12 @@ namespace Web.Api.Controllers
 
         [HttpPost("search")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult<IdeaResponeModel>> SearchByTitle([FromBody] string searchTerm)
+        public async Task<ActionResult<IdeaResponseModel>> SearchByTitle([FromBody] string searchTerm)
         {
             try
             {
                 var search = await _ideaService.SearchByTitle(searchTerm);
-                var result = _mapper.Map<List<IdeaResponeModel>>(search);
+                var result = _mapper.Map<List<IdeaResponseModel>>(search);
                 return Ok(result);
             }
             catch (Exception ex)
