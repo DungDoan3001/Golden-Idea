@@ -17,5 +17,6 @@ namespace Web.Api.Services.IdeaService
         Task<bool> CheckSlugExistedAsync(string slug);
         Task<bool> CheckIdeaExisted(Guid id);
         Task<bool> CheckExistedImageContainDuplicateAsync(string image);
+        Task<List<Idea>> SearchByTitle(string searchTerm);
     }
 }

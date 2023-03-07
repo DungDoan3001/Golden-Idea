@@ -14,6 +14,7 @@ using Web.Api.Services.FileService;
 using Slugify;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using Org.BouncyCastle.Crypto;
 
 namespace Web.Api.Controllers
 {
@@ -185,6 +186,26 @@ namespace Web.Api.Controllers
             }
         }
 
+        [HttpPost("search")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<ActionResult<IdeaResponeModel>> SearchByTitle([FromBody] string searchTerm)
+        {
+            try
+            {
+                var search = await _ideaService.SearchByTitle(searchTerm);
+                var result = _mapper.Map<List<IdeaResponeModel>>(search);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
         /// <summary>
         /// Update a idea
         /// </summary>
@@ -355,6 +376,7 @@ namespace Web.Api.Controllers
                 });
             }
         }
+
 
 
         private async Task UploadImage(IFormFile image, Idea idea)

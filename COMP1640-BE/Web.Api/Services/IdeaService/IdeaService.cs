@@ -6,6 +6,7 @@ using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.Entities;
+using static Dropbox.Api.Files.ListRevisionsMode;
 
 namespace Web.Api.Services.IdeaService
 {
@@ -146,6 +147,10 @@ namespace Web.Api.Services.IdeaService
             if (files.Count() > 1)
                 return true;
             return false;
+        }
+        public async Task<List<Idea>> SearchByTitle(string searchTerm)
+        {
+            return await _ideaQuery.Search(searchTerm);
         }
     }
 }

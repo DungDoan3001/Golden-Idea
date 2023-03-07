@@ -76,5 +76,27 @@ namespace Web.Api.Data.Queries
         {
             return await dbSet.AnyAsync(x => x.Id == id);
         }
+
+        public async Task<List<Idea>> Search(string searchTerm)
+        {
+            var ideas = await dbSet
+                .Include(x => x.User)
+                .Include(x => x.Topic)
+                .Include(x => x.Category)
+                .Include(x => x.Files)
+                .Include(x => x.Views)
+                .Include(x => x.Reactions)
+                .AsSplitQuery()
+                .ToListAsync();
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return ideas.Take(10).ToList();
+            }
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return ideas
+                .Where(x => x.Title.ToLower().Contains(lowerCaseTerm))
+                .OrderBy(x => x.Title)
+                .ToList();
+        }
     }
 }
