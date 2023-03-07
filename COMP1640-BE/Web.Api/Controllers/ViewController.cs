@@ -23,7 +23,14 @@ namespace Web.Api.Controllers
             _viewService = viewService;
             _mapper = mapper;
         }
-
+        /// <summary>
+        /// Create a view for idea
+        /// </summary>
+        /// <param name="userView">Request username of the user</param>
+        /// <returns>A view just created on the idea</returns>
+        /// <response code="201">Successfully created the view</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="409">There is a conflict while create a view</response>
         [HttpPost("")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<ViewResponseModel>> Create([FromQuery] Guid ideaId, [FromBody] ViewRequestModel userView)
