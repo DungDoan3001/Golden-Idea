@@ -322,7 +322,7 @@ namespace Web.Api.Controllers
                     });
                 }
 
-                if(idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
+                if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
                 foreach (var file in idea.Files)
                 {
                     if(file.Format == null)

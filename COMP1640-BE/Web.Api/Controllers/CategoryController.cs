@@ -215,7 +215,7 @@ namespace Web.Api.Controllers
                     {
                         Message = "Conflict",
                         StatusCode = (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "Can not delete category due to its contained other ideas."}
+                        Errors = new List<string> { "Sorry! We cannot delete the category because it contains some ideas." }
                     });
                 }
 
