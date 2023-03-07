@@ -34,6 +34,7 @@ using Web.Api.Services.Comment;
 using Web.Api.SignalR;
 using System.Threading.Tasks;
 using Web.Api.Services.FileService;
+using Web.Api.Services.View;
 
 namespace Web.Api
 {
@@ -162,7 +163,7 @@ namespace Web.Api
             services.AddScoped<IReactionService, ReactionService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IFileService, FileService>();
-            
+            services.AddScoped<IViewService, ViewService>();
             //SignalR
             services.AddSignalR();
             

@@ -55,7 +55,7 @@ namespace Web.Api.Controllers
                 {
                     return Ok(new MessageResponseModel
                     {
-                        Message = "Successful delete a reaction",
+                        Message = "Successfull delete a reaction",
                         StatusCode = (int)HttpStatusCode.OK
                     });
                 }

@@ -62,6 +62,9 @@ namespace Web.Api.Extensions
 
             //Comment
             CreateMap<Comment, CommentResponseModel>();
+
+            //View
+            CreateMap<View, ViewResponseModel>();
         }
     }
 }
