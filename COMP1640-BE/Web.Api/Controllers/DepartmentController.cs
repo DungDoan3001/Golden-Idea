@@ -39,7 +39,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Department> departments = await _departmentService.GetAllAsync();
                 IEnumerable<DepartmentResponseModel> departmentRespones = _mapper.Map<IEnumerable<DepartmentResponseModel>>(departments);
-                return Ok(departmentRespones);
+                return Ok(departmentRespones.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -201,6 +201,17 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Can not find department with the given id" }
                     });
+
+                if(department.Users.Count() > 0)
+                {
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Conflict",
+                        StatusCode= (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Sorry! We cannot delete the department because it contains some users." }
+                    });
+                }
+
                 bool isDelete = await _departmentService.DeleteAsync(id);
                 if (!isDelete)
                     return NotFound(new MessageResponseModel 
@@ -209,6 +220,7 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Error while delete." }
                     });
+
                 return NoContent();
             }
             catch (Exception ex)

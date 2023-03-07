@@ -34,6 +34,18 @@ namespace Web.Api.Services.IdeaService
             }
         }
 
+        public async Task<IEnumerable<Idea>> GetAllByAuthorAsync(Guid userId)
+        {
+            try
+            {
+                return await _ideaQuery.GetAllByAuthorAsync(userId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Idea> GetByIdAsync(Guid id)
         {
             try

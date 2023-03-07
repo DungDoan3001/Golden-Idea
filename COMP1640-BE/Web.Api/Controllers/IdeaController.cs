@@ -13,6 +13,7 @@ using Web.Api.Services.FileUploadService;
 using Web.Api.Services.FileService;
 using Slugify;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace Web.Api.Controllers
 {
@@ -46,7 +47,33 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Idea> ideas = await _ideaService.GetAllAsync();
                 IEnumerable<IdeaResponeModel> TopicResponses = _mapper.Map<IEnumerable<IdeaResponeModel>>(ideas);
-                return Ok(TopicResponses);
+                return Ok(TopicResponses.OrderBy(x => x.Title));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Get all ideas by user identitication.
+        /// </summary>
+        /// <returns>List of idea objects</returns>
+        /// <response code="200">Successfully get all ideas</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<IdeaResponeModel>>> GetAllByAuthor([FromRoute] Guid userId)
+        {
+            try
+            {
+                IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userId);
+                IEnumerable<IdeaResponeModel> TopicResponses = _mapper.Map<IEnumerable<IdeaResponeModel>>(ideas);
+                return Ok(TopicResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
@@ -295,7 +322,7 @@ namespace Web.Api.Controllers
                     });
                 }
 
-                if(idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
+                if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
                 foreach (var file in idea.Files)
                 {
                     if(file.Format == null)

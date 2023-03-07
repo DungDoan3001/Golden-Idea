@@ -53,7 +53,6 @@ const Navbar = () => {
   const isOpen = Boolean(anchorEl);
   const handleClick = (event: any) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  const profileImage = require("../assets/profile.jpeg");
   const Root = styled('div')(({ theme }) => ({
     padding: theme.spacing(1),
     [theme.breakpoints.up('lg')]: {

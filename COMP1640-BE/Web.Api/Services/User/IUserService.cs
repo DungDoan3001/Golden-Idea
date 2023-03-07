@@ -13,6 +13,7 @@ namespace Web.Api.Services.User
         Task<List<Entities.User>> GetAllStaff();
         Task<List<Entities.User>> GetAllAdminQA();
         Task<Entities.User> GetById(Guid id);
+        Task<Entities.User> GetByUserName(string userName);
         Task<Entities.User> UpdateAsync(Guid id, UserRequestModel user);
         Task<IdentityResult> Delete(Guid id);
     }

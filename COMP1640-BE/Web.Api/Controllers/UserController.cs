@@ -13,6 +13,7 @@ using System.Web.Http.Results;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Web.Api.Services.FileUploadService;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -53,7 +54,7 @@ namespace Web.Api.Controllers
                         result[i].Role = r;
                     }
                 }                
-                return Ok(result);
+                return Ok(result.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -87,7 +88,7 @@ namespace Web.Api.Controllers
                         result[i].Role = r;
                     }
                 }
-                return Ok(result);
+                return Ok(result.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -120,7 +121,7 @@ namespace Web.Api.Controllers
                         result[i].Role = r;
                     }
                 }
-                return Ok(result);
+                return Ok(result.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {

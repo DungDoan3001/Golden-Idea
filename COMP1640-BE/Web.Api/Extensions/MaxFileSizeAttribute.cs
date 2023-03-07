@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Web.Api.Extensions
 {
@@ -18,8 +17,6 @@ namespace Web.Api.Extensions
 
             if (value != null)
             {
-                Console.WriteLine(value.GetType());
-                Console.WriteLine(typeof(FormFile));
                 if (value.GetType() == typeof(FormFile))
                 {
                     var file = value as IFormFile;
