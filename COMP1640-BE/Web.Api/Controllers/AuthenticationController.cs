@@ -1,27 +1,19 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
-using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
-using System.Xml.Linq;
 using Web.Api.Data.Context;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
 using Web.Api.Extensions;
 using Web.Api.Services.Authentication;
-using Web.Api.Services.DepartmentService;
+using Web.Api.Services.FileUploadService;
 using Web.Api.Services.ResetPassword;
 
 namespace Web.Api.Controllers
@@ -36,7 +28,9 @@ namespace Web.Api.Controllers
         private readonly IAuthenticationManager _authManager;
         private readonly AppDbContext _context;
         private readonly IResetPasswordService _resetPasswordService;
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService)
+        private readonly IFileUploadService _fileUploadService;
+
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -44,6 +38,7 @@ namespace Web.Api.Controllers
             _authManager = authManager;
             _context = context;
             _resetPasswordService = resetPasswordService;
+            _fileUploadService = fileUploadService;
         }
         /// <summary>
         /// Create a user.
@@ -55,7 +50,7 @@ namespace Web.Api.Controllers
         /// <response code="404">There is a conflict while creating</response>
         [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationRequestModel userForRegistration)
+        public async Task<IActionResult> RegisterUser([FromForm] UserRequestModel userForRegistration)
         {
             try
             {
@@ -71,7 +66,19 @@ namespace Web.Api.Controllers
                 {
                     return NotFound(new MessageResponseModel { Message = "The email is not valid!", StatusCode = (int)HttpStatusCode.NotFound });
                 }
+
                 var user = _mapper.Map<User>(userForRegistration);
+                if (userForRegistration.Avatar != null)
+                {
+                    var imageResult = await _fileUploadService.UploadImageAsync(userForRegistration.Avatar);
+
+                    if (imageResult.Error != null)
+                        return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
+
+                    user.Avatar = imageResult.SecureUrl.ToString();
+                    user.PublicId = imageResult.PublicId;
+                }
+
                 var create = await _userManager.CreateAsync(user, userForRegistration.Password);
                 if (!create.Succeeded)
                 {
@@ -83,13 +90,18 @@ namespace Web.Api.Controllers
                 await _userManager.AddToRoleAsync(user, userForRegistration.Role);
                 //Get user data (id + role) to response
                 var data = await _userManager.FindByNameAsync(user.UserName);
-                var result = _mapper.Map<UserForRegistrationResponseModel>(data);
+                var result = _mapper.Map<UserResponseModel>(data);
                 result.Role = userForRegistration.Role;
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
         /// <summary>

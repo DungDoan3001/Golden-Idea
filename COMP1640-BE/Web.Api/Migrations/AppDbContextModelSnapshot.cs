@@ -190,11 +190,20 @@ namespace Web.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
                     b.Property<string>("FilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Format")
                         .HasColumnType("text");
 
                     b.Property<Guid>("IdeaId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -218,8 +227,17 @@ namespace Web.Api.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -332,13 +350,15 @@ namespace Web.Api.Migrations
                     b.Property<DateTime>("FinalClosureDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<bool>("IsAnonymous")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Topics");
                 });
@@ -397,6 +417,9 @@ namespace Web.Api.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -519,7 +542,7 @@ namespace Web.Api.Migrations
                     b.HasOne("Web.Api.Entities.Idea", "Idea")
                         .WithMany("Comments")
                         .HasForeignKey("IdeaId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Web.Api.Entities.User", "User")
@@ -606,6 +629,17 @@ namespace Web.Api.Migrations
                     b.HasOne("Web.Api.Entities.User", null)
                         .WithMany("Roles")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Web.Api.Entities.Topic", b =>
+                {
+                    b.HasOne("Web.Api.Entities.User", "User")
+                        .WithMany("Topic")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Web.Api.Entities.User", b =>
@@ -695,6 +729,8 @@ namespace Web.Api.Migrations
                     b.Navigation("ResetPassword");
 
                     b.Navigation("Roles");
+
+                    b.Navigation("Topic");
 
                     b.Navigation("UserRoles");
 

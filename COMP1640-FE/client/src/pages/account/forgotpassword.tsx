@@ -40,27 +40,23 @@ const ForgotPassword = () => {
     const forgotPassword = async (data: ForgotPasswordInput) => {
         try {
             store.setRequestLoading(true);
-            //const response = await agent.Account.forgotpassword(data)
-            console.log('ABC');
+            const response = await agent.Account.forgotpassword(data)
             store.setRequestLoading(false);
-            // toast.success(response.data.message as string, {
-            //     position: "top-right",
-            // });
-            toast.success('Send Email success', {
+            if (response && response.data && response.data.message) {
+                toast.success(response.data.message as string, {
+                    position: "top-right",
+                });
+            }
+            toast.success('Send Email success - Open email to change password ', {
                 position: "top-right",
             });
         } catch (error: any) {
             store.setRequestLoading(false);
-            const resMessage =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            toast.error(resMessage, {
+            toast.error('Error: Bad Request - Please make sure that the email is correct!', {
                 position: "top-right",
-                type: "error"
+                type: "error",
             });
+
         }
     };
 

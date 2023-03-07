@@ -10,6 +10,8 @@ import agent from "../../app/api/agent";
 import { User } from "../../app/models/User";
 import ConfirmDialog from "../../app/components/ConfirmDialog";
 import Notification from "../../app/components/Notification";
+import Popup from "../../app/components/Popup";
+import StaffForm from "./StaffForm";
 
 const Staffs = () => {
   const theme: any = useTheme();
@@ -68,6 +70,10 @@ const Staffs = () => {
       minWidth: 130,
     },
   ];
+  function cancelEdit() {
+    if (recordForEdit) setRecordForEdit(undefined);
+    setEditMode(false);
+  }
   const actionColumn = [
     {
       field: "action",
@@ -114,11 +120,10 @@ const Staffs = () => {
     if (user.id === 0)
       agent.User.createUser(user)
     else
-      agent.User.updateUser(user)
-    resetForm()
+      // agent.User.updateUser(user)
+      resetForm()
     setRecordForEdit(undefined)
     setOpenPopup(false)
-    setData(await agent.User.listUser())
     setNotify({
       isOpen: true,
       message: 'Submitted Successfully',
@@ -134,9 +139,9 @@ const Staffs = () => {
     <>
       <Box m="1.5rem 2.5rem">
         <Header title="STAFFS" subtitle="List of Staffs" />
-        <Button variant="contained" size="medium" color="success" style={{ marginTop: 5 }}
+        <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
           startIcon={<AddCircleOutline />}>
-          Create a new staff
+          Create a new Staff
         </Button>
         <Box
           mt="40px"
@@ -146,11 +151,17 @@ const Staffs = () => {
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
+              [theme.breakpoints.up('md')]: {
+                width: '100%',
+                height: '60vh'
+              },
               [theme.breakpoints.up('sm')]: {
                 width: '100%',
+                height: '40vh'
               },
               [theme.breakpoints.down('sm')]: {
                 width: '130%',
+                height: '50vh'
               },
             },
             "& .MuiDataGrid-cell": {
@@ -201,6 +212,14 @@ const Staffs = () => {
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
       />
+      <Popup
+        title="Staff Details"
+        openPopup={editMode}
+        setOpenPopup={setEditMode}
+        cancelEdit={cancelEdit}
+      >
+        <StaffForm user={recordForEdit} cancelEdit={cancelEdit} />
+      </Popup>
     </>
   );
 };

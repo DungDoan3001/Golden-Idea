@@ -39,11 +39,16 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Department> departments = await _departmentService.GetAllAsync();
                 IEnumerable<DepartmentResponseModel> departmentRespones = _mapper.Map<IEnumerable<DepartmentResponseModel>>(departments);
-                return Ok(departmentRespones);
+                return Ok(departmentRespones.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message , StatusCode = (int)HttpStatusCode.BadRequest});
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
@@ -63,14 +68,24 @@ namespace Web.Api.Controllers
                 Department department = await _departmentService.GetByIdAsync(id);
                 if (department == null)
                 {
-                    return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound});
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find department with the given id" }
+                    });
                 }
                 DepartmentResponseModel departmentRespone = _mapper.Map<DepartmentResponseModel>(department);
                 return Ok(departmentRespone);
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest});
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
@@ -90,16 +105,31 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "The name already existed" }
+                    });
                 Department department = _mapper.Map<Department>(requestModel);
                 Department createdDepartment = await _departmentService.CreateAsync(department);
                 if (createdDepartment == null)
-                    return Conflict(new MessageResponseModel { Message = "Error while create new.", StatusCode = (int)HttpStatusCode.Conflict});
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Error while create new." }
+                    });
                 return Created(createdDepartment.Id.ToString(), _mapper.Map<DepartmentResponseModel>(createdDepartment));
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest});
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
@@ -120,16 +150,32 @@ namespace Web.Api.Controllers
             {
                 bool check = await CheckExist(requestModel.Name);
                 if (check)
-                    return Conflict(new MessageResponseModel { Message = "The name already existed", StatusCode = (int)HttpStatusCode.Conflict });
+                    return Conflict(new MessageResponseModel 
+                    { 
+                        Message = "Conflict", 
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "The name already existed" }
+                    });
                 Department department = await _departmentService.GetByIdAsync(id);
-                if (department == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound});
+                if (department == null) 
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find department with the given id" }
+                    });
                 _mapper.Map<DepartmentRequestModel, Department>(requestModel, department);
                 Department updatedDepartment = await _departmentService.UpdateAsync(department);
                 return Ok(_mapper.Map<DepartmentResponseModel>(updatedDepartment));
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest});
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
@@ -148,15 +194,43 @@ namespace Web.Api.Controllers
             try
             {
                 Department department = await _departmentService.GetByIdAsync(id);
-                if (department == null) return NotFound(new MessageResponseModel { Message = "Not found.", StatusCode = (int)HttpStatusCode.NotFound });
+                if (department == null) 
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not found.", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find department with the given id" }
+                    });
+
+                if(department.Users.Count() > 0)
+                {
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Conflict",
+                        StatusCode= (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Sorry! We cannot delete the department because it contains some users." }
+                    });
+                }
+
                 bool isDelete = await _departmentService.DeleteAsync(id);
                 if (!isDelete)
-                    return NotFound(new MessageResponseModel { Message = "Error while update.", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not Found", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Error while delete." }
+                    });
+
                 return NoContent();
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 

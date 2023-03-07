@@ -1,7 +1,6 @@
-import * as React from 'react';
 import './style.scss'
 import {
-    LockReset, Margin, Password
+    LockReset, Password
 } from "@mui/icons-material";
 import Image from '../../app/assets/GoldenIdea.svg'
 import { LoadingButton } from '@mui/lab';
@@ -10,25 +9,25 @@ import { useEffect } from "react";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useStoreContext } from '../../app/context/ContextProvider';
 import agent from '../../app/api/agent';
 import FormInput from '../../app/components/FormInput';
+import axios from 'axios';
+import { router } from '../../app/routes/Routers';
 
 const resetPasswordSchema = object({
     password: string().min(1, "Required Field!"),
-    confirm: string().min(1, "Required Field!"),
-}).refine((data) => data.password === data.confirm, {
+    confirmPassword: string().min(1, "Required Field!"),
+}).refine((data) => data.password === data.confirmPassword, {
     message: "Not match!",
-    path: ["confirm"],
+    path: ["confirmPassword"],
 });
 
 export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>;
 const ResetPass = () => {
     const store = useStoreContext();
-    const navigate = useNavigate();
     const { resetCode } = useParams();
-    console.log(resetCode);
 
     const methods = useForm<ResetPasswordInput>({
         resolver: zodResolver(resetPasswordSchema),
@@ -48,25 +47,44 @@ const ResetPass = () => {
     }, [isSubmitSuccessful]);
 
     const resetPassword = async (data: ResetPasswordInput) => {
+        if (!resetCode) {
+            toast.error("Reset code is missing", { position: "top-right" });
+            return;
+        }
         try {
             store.setRequestLoading(true);
             const response = await agent.Account.resetpassword(resetCode, data)
             store.setRequestLoading(false);
-            toast.success(response.data.message as string, {
+            if (response.data && response.data.message) {
+                toast.success(response.data.message, {
+                    position: "top-right",
+                });
+            }
+            toast.success('Change password success - Login with new password ', {
                 position: "top-right",
             });
-            navigate("/login");
+            router.navigate("/");
         } catch (error: any) {
+            if (axios.isAxiosError(error)) {
+                const response = error.response;
+                if (response && response.status === 400) {
+                    toast.error(response.data.message, { position: "top-right" });
+                }
+                else if (response && response.status === 404) {
+                    toast.error("There is a conflict while changing password", { position: "top-right" });
+                    return;
+                }
+                else {
+                    toast.error("Invalid Token. Make sure that you use a latest email link .", {
+                        position: "top-right",
+                    });
+                }
+            } else {
+                toast.error("Invalid Token. Make sure that you use a latest email link .", {
+                    position: "top-right",
+                });
+            }
             store.setRequestLoading(false);
-            const resMessage =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            toast.error(resMessage, {
-                position: "top-right",
-            });
         }
     };
 
@@ -94,7 +112,7 @@ const ResetPass = () => {
                                 <i><Password /></i>
                                 <FormInput
                                     placeholder="Confirm Password"
-                                    name="confirm"
+                                    name="confirmPassword"
                                     type="password"
                                 />
                             </div>

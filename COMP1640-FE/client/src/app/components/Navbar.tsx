@@ -23,13 +23,16 @@ import {
   useTheme,
   styled,
 } from "@mui/material";
-import { ContextProvider, useStoreContext } from "../context/ContextProvider";
+import { useStoreContext } from "../context/ContextProvider";
 import { signOut } from "../../pages/account/accountSlice";
+import { useAppSelector } from "../store/configureStore";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const theme: any = useTheme();
   const { screenSize, setScreenSize, isSidebarOpen, setIsSidebarOpen } = useStoreContext();
+  //Get user info here
+  const { user } = useAppSelector(state => state.account);
   //Handle resize screen went the website resize or use on mobile devices
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
@@ -39,7 +42,6 @@ const Navbar = () => {
 
   }, [])
   useEffect(() => {
-    console.log(screenSize);
     if ((screenSize !== undefined) && (screenSize <= 900)) {
       setIsSidebarOpen(false);
     }
@@ -51,7 +53,6 @@ const Navbar = () => {
   const isOpen = Boolean(anchorEl);
   const handleClick = (event: any) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  const profileImage = require("../assets/profile.jpeg");
   const Root = styled('div')(({ theme }) => ({
     padding: theme.spacing(1),
     [theme.breakpoints.up('lg')]: {
@@ -114,7 +115,7 @@ const Navbar = () => {
               <Box
                 component="img"
                 alt="profile"
-                src={profileImage}
+                src={user?.Avatar}
                 height="32px"
                 width="32px"
                 borderRadius="50%"
@@ -126,13 +127,13 @@ const Navbar = () => {
                   fontSize="0.85rem"
                   sx={{ color: theme.palette.secondary[100] }}
                 >
-                  {"TienTT"}
+                  {user?.name}
                 </Typography>
                 <Typography
                   fontSize="0.75rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {"QA"}
+                  {user?.role[0]}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined

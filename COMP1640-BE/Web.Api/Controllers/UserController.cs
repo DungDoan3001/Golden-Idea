@@ -12,6 +12,8 @@ using System.Data;
 using System.Web.Http.Results;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Web.Api.Services.FileUploadService;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -52,14 +54,85 @@ namespace Web.Api.Controllers
                         result[i].Role = r;
                     }
                 }                
-                return Ok(result);
+                return Ok(result.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
+        /// <summary>
+        /// Get all users with Staff role.
+        /// </summary>
+        /// <response code="200">Successfully get all the users with Staff role</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("getallstaff")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllStaff()
+        {
+            try
+            {
+                var users = await _userService.GetAllStaff();
+                var result = _mapper.Map<List<UserResponseModel>>(users);
+                //Get role for all user
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var role = await _userManager.GetRolesAsync(users[i]);
+                    foreach (var r in role)
+                    {
+                        result[i].Role = r;
+                    }
+                }
+                return Ok(result.OrderBy(x => x.Name));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+        /// <summary>
+        /// Get all users with Admin and QA role.
+        /// </summary>
+        /// <response code="200">Successfully get all the users with Admin and QA role</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("getalladminQA")]
+        public async Task<ActionResult<List<UserResponseModel>>> GetAllAdminQA()
+        {
+            try
+            {
+                var users = await _userService.GetAllAdminQA();
+                var result = _mapper.Map<List<UserResponseModel>>(users);
+                //Get role for all user
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var role = await _userManager.GetRolesAsync(users[i]);
+                    foreach (var r in role)
+                    {
+                        result[i].Role = r;
+                    }
+                }
+                return Ok(result.OrderBy(x => x.Name));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
         /// <summary>
         /// Get user information by id.
         /// </summary>
@@ -75,7 +148,12 @@ namespace Web.Api.Controllers
                 var user = await _userService.GetById(id);
                 if(user == null)
                 {
-                    return NotFound(new MessageResponseModel { Message = "Can not find the user", StatusCode = (int)HttpStatusCode.BadRequest });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not Found", 
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Errors = new List<string> { "Can not find the user" }
+                    });
                 }
                 var result = _mapper.Map<UserResponseModel>(user);
                 //Get role
@@ -88,29 +166,39 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
 
         /// <summary>
-        /// Update a user
+        /// Update a user 
         /// </summary>
         /// <param name="id">Id of the user will be updated.</param>
-        /// <param name="userUpdate">New name of the user for update</param>
+        /// <param name="user">User request model</param>
         /// <returns>A user updated</returns>
         /// <response code="200">Successfully updated the user</response>
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while update a user</response>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] UserRequestModel user)
+        public async Task<ActionResult> Update([FromRoute] Guid id, [FromForm] UserRequestModel user)
         {
             try
             { 
                 var updateUser = await _userService.UpdateAsync(id, user);
                 if (updateUser == null)
                 {
-                    return NotFound(new MessageResponseModel { Message = "Update error! Can not find the user to update!", StatusCode = (int)HttpStatusCode.NotFound });
+                    return NotFound(new MessageResponseModel 
+                    { 
+                        Message = "Not Found", 
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Update error! Can not find the user to update!" }
+                    });
                 }
                 var result = _mapper.Map<UserResponseModel>(updateUser);
                 result.Role = user.Role;
@@ -118,7 +206,12 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
         /// <summary>
@@ -141,7 +234,12 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
     }

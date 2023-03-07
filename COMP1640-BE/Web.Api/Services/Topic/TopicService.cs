@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
+using Web.Api.Data.Queries;
 
 namespace Web.Api.Services.Topic
 {
@@ -10,18 +11,20 @@ namespace Web.Api.Services.Topic
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Entities.Topic> _topicRepo;
+        private readonly ITopicQuery _topicQuery;
 
-        public TopicService(IUnitOfWork unitOfWork)
+        public TopicService(IUnitOfWork unitOfWork, ITopicQuery topicQuery)
         {
             _unitOfWork = unitOfWork;
             _topicRepo = unitOfWork.GetBaseRepo<Entities.Topic>();
+            _topicQuery = topicQuery;
         }
 
         public async Task<IEnumerable<Entities.Topic>> GetAllAsync()
         {
             try
             {
-                return await _topicRepo.All();
+                return await _topicQuery.GetAllAsync();
             }
             catch (Exception)
             {
@@ -33,7 +36,19 @@ namespace Web.Api.Services.Topic
         {
             try
             {
-                return await _topicRepo.GetById(topicId);
+                return await _topicQuery.GetByIdAsync(topicId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Entities.Topic>> GetAllByUserId(Guid userId)
+        {
+            try
+            {
+                return await _topicQuery.GetByUserId(userId);
             }
             catch (Exception)
             {

@@ -30,6 +30,18 @@ namespace Web.Api.Data.Repository
             return entity;
         }
 
+        public virtual IEnumerable<T> AddRange(IEnumerable<T> entities)
+        {
+            if(entities.Count() > 0)
+            {
+                dbSet.AddRange(entities);
+                return entities;
+            } else
+            {
+                throw new Exception(message: "An error occours when adding ranged of entities");
+            }
+        }
+
         public virtual bool Delete(Guid id)
         {
             var entity = dbSet.Find(id);
@@ -39,6 +51,12 @@ namespace Web.Api.Data.Repository
             }
             else
                 dbSet.Remove(entity);
+            return true;
+        }
+
+        public virtual bool DeleteRange(IEnumerable<T> entities)
+        {
+            dbSet.RemoveRange(entities);
             return true;
         }
 

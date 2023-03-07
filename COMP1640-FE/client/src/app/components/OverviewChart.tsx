@@ -103,7 +103,7 @@ const OverviewChart = ({ isDashboard = false, formatedData }: Props) => {
                 labelSkipHeight={12}
                 labelTextColor={{
                     from: "color",
-                    modifiers: [["darker", 1.6]],
+                    modifiers: [["darker", 10]],
                 }}
                 legends={[
                     {

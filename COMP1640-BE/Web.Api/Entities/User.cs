@@ -11,6 +11,7 @@ namespace Web.Api.Entities
         public string Avatar { get; set; }
         public string Address { get; set; }
         public Guid DepartmentId { get; set; }
+        public string PublicId { get; set; }
         public Department Department { get; set; }
 
         public ResetPassword ResetPassword { get; set; }
@@ -20,7 +21,7 @@ namespace Web.Api.Entities
         public ICollection<View> Views { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Reaction> Reactions { get; set; }
-
+        public virtual ICollection<Topic> Topic { get; set; }
     }
 
 }

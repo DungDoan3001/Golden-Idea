@@ -1,15 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using Web.Api.Data.Context;
-using Web.Api.DTOs.ResponseModels;
-using Web.Api.Entities;
 using System.Linq;
 using Web.Api.DTOs.RequestModels;
+using Web.Api.Services.FileUploadService;
+
 namespace Web.Api.Services.User
 {
     public class UserService : IUserService
@@ -17,20 +15,57 @@ namespace Web.Api.Services.User
         private readonly UserManager<Entities.User> _userManager;
         protected AppDbContext context;
         private IPasswordHasher<Entities.User> _passwordHasher;
+        private readonly IFileUploadService _fileUploadService;
+        private RoleManager<Entities.Role> _roleManager;
 
-        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher)
+        public UserService(UserManager<Entities.User> userManager, AppDbContext context, IPasswordHasher<Entities.User> passwordHasher, IFileUploadService fileUploadService, RoleManager<Entities.Role> roleManager)
         {
             _userManager = userManager;
             this.context = context;
             this._passwordHasher = passwordHasher;
+            _fileUploadService = fileUploadService;
+            _roleManager = roleManager;
         }
 
         public async Task<List<Entities.User>> GetAll()
         {
             try
             {
-                var users = await _userManager.Users.ToListAsync();
+                var users = await _userManager.Users
+                    .OrderBy(x => x.Name)
+                    .ToListAsync();
                 return users;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<List<Entities.User>> GetAllStaff()
+        {
+            try
+            {
+                var users = await _userManager.GetUsersInRoleAsync("Staff");
+                return users.OrderBy(x => x.Name).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<List<Entities.User>> GetAllAdminQA()
+        {
+            try
+            {
+                var roles = _roleManager.Roles.ToList();
+                roles.Remove(roles.Single(r => r.Name == "Staff"));
+                List<Entities.User> result = new List<Entities.User>();
+                foreach(var role in roles)
+                {
+                    var users = await _userManager.GetUsersInRoleAsync(role.Name);
+                    result.AddRange(users);
+                }
+                return result.OrderBy(x => x.Name).ToList();
             }
             catch (Exception)
             {
@@ -48,8 +83,20 @@ namespace Web.Api.Services.User
             catch(Exception)
             {
                 throw;
+            }           
+        }
+
+        public async Task<Entities.User> GetByUserName(string userName)
+        {
+            try
+            {
+                var user = await _userManager.FindByNameAsync(userName);
+                return user;
             }
-            
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<Entities.User> UpdateAsync(Guid id, UserRequestModel user)
@@ -87,6 +134,19 @@ namespace Web.Api.Services.User
                 userUpdate.Address = user.Address;
                 userUpdate.DepartmentId = user.DepartmentId;
                 userUpdate.PhoneNumber = user.PhoneNumber;
+                
+                if (user.Avatar != null)
+                {
+                    var imageUploadResult = await _fileUploadService.UploadImageAsync(user.Avatar);
+                    if (imageUploadResult.Error != null)
+                        throw new Exception(imageUploadResult.Error.Message);
+
+                    if (!string.IsNullOrEmpty(userUpdate.PublicId))
+                        await _fileUploadService.DeleteMediaAsync(userUpdate.PublicId, true);
+
+                    userUpdate.Avatar = imageUploadResult.SecureUrl.ToString();
+                    userUpdate.PublicId = imageUploadResult.PublicId;
+                }
                 //Validate and update role
                 var userRole = await _userManager.GetRolesAsync(checkUser);
                 if(user.Role != null)
@@ -127,6 +187,9 @@ namespace Web.Api.Services.User
                 {
                     throw new Exception("Can not find the user!");
                 }
+                if (!string.IsNullOrEmpty(user.PublicId))
+                    await _fileUploadService.DeleteMediaAsync(user.PublicId, true);
+
                 var result = await _userManager.DeleteAsync(user);
                 return result;
             }

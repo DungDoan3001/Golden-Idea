@@ -38,17 +38,22 @@ namespace Web.Api.Controllers
             try
             {
                 var roles = await _roleService.GetAll();
-                return Ok(roles);
+                return Ok(roles.OrderBy(x => x.Name));
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
         /// <summary>
         /// Create a role.
         /// </summary>
-        /// <param name="roleName">Name of role</param>
+        /// <param name="requestModel">Role request model</param>
         /// <returns>Add new role with roleName</returns>
         /// <response code="200">Successfully add the role with the given roleName</response>
         /// <response code="400">There is something wrong while execute.</response>
@@ -64,14 +69,19 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
         /// <summary>
         /// Update a role
         /// </summary>
         /// <param name="id">Id of the role will be updated.</param>
-        /// <param name="roleUpdate">New name of the role for update</param>
+        /// <param name="requestModel">Role request model</param>
         /// <returns>A role just updated</returns>
         /// <response code="200">Successfully updated the role</response>
         /// <response code="400">There is something wrong while execute.</response>
@@ -87,13 +97,18 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
         /// <summary>
         /// Delete a role by name
         /// </summary>
-        /// <param name="roleName">Name of the role to be deleted.</param>
+        /// <param name="requestModel">Role request model.</param>
         /// <returns>null</returns>
         /// <response code="200">Successfully deleted the role</response>
         /// <response code="204">Successfully deleted the role</response>
@@ -110,7 +125,12 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new MessageResponseModel { Message = ex.GetBaseException().Message, StatusCode = (int)HttpStatusCode.BadRequest });
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
     }

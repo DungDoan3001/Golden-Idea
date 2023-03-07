@@ -62,6 +62,13 @@ namespace Web.Api.Data.Context
                 .HasForeignKey(x => x.TopicId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Link One-One || Idea - User
+            builder.Entity<Topic>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.Topic)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Link Many-One || Idea - Category
             builder.Entity<Idea>()
                 .HasOne(x => x.Category)
@@ -102,7 +109,7 @@ namespace Web.Api.Data.Context
                 .HasOne(x => x.Idea)
                 .WithMany(x => x.Comments)
                 .HasForeignKey(x => x.IdeaId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Link Many-One || User - Reaction
             builder.Entity<Reaction>()

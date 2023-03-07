@@ -6,13 +6,13 @@ import { store } from "../store/configureStore";
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-axios.defaults.withCredentials = true;
 
-const responseBody = (response: AxiosResponse) => response.data;
+const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 //Login here (Bearer token)
 axios.interceptors.request.use(config => {
     const token: any = store.getState().account.user?.token;
+    console.log(token)
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 })
@@ -49,8 +49,8 @@ axios.interceptors.response.use(async response => {
             toast.error('You are not allowed to do that!');
             break;
         case 500:
-            navigate('/server-error',{
-                state: {error: data}
+            navigate('/server-error', {
+                state: { error: data }
             });
             break;
         default:
@@ -60,37 +60,59 @@ axios.interceptors.response.use(async response => {
 })
 
 const requests = {
-    get: (url: string, params?: URLSearchParams) => axios.get(url, {params}).then(responseBody),
+    get: (url: string, params?: URLSearchParams) => axios.get(url, { params }).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
     put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
     delete: (url: string) => axios.delete(url).then(responseBody),
     postForm: (url: string, data: FormData) => axios.post(url, data, {
-        headers: {'Content-type': 'multipart/form-data'}
+        headers: { 'Content-type': 'multipart/form-data' }
     }).then(responseBody),
     putForm: (url: string, data: FormData) => axios.put(url, data, {
-        headers: {'Content-type': 'multipart/form-data'}
+        headers: { 'Content-type': 'multipart/form-data' }
     }).then(responseBody)
 }
-const createFormData = (item: any) =>{
+const createFormData = (item: any) => {
     let formData = new FormData();
     for (const key in item) {
         formData.append(key, item[key])
     }
     return formData;
 }
+const Department = {
+    listDepartment: () => requests.get('departments'),
+    createDepartment: (values: any) => requests.post('departments', values),
+    updateDepartment: (values: any, id: string) => requests.put(`departments/${id}`, values),
+    deleteDepartment: (id: string) => requests.delete(`departments/${id}`)
+}
+const Category = {
+    listCategory: () => requests.get('categories'),
+    createCategory: (values: any) => requests.post('categories', values),
+    updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
+    deleteCategory: (id: string) => requests.delete(`categories/${id}`)
+}
+
+const Topic = {
+    listTopics: () => requests.get('topics'),
+    createTopic: (values: any) => requests.post('topics', values),
+    updateTopic: (values: any, id: string) => requests.put(`topics/${id}`, values),
+    deleteTopic: (id: string) => requests.delete(`topics/${id}`)
+}
+
 const User = {
-    listUser: () => requests.get('users'),
+    listUsers: () => requests.get('users'),
     createUser: (user: any) => requests.postForm('users', createFormData(user)),
-    updateUser: (user: any) => requests.putForm('users', createFormData(user)),
-    deleteUser: (id: number) => requests.delete(`users/${id}`)
+    updateUser: (user: any, id: any) => requests.putForm(`users/${id}`, createFormData(user)),
+    deleteUser: (id: string) => requests.delete(`users/${id}`)
 }
 const Account = {
     login: (values: any) => requests.post('authentication/login', values),
-    currentUser: () => requests.get('account/currentUser'),
-    forgotpassword: (input: any) => requests.postForm('account/forgotpassword',createFormData(input)),
-    resetpassword: (input: any, resetCode: any) => requests.putForm(`authentication/change-password/${resetCode}`,createFormData(input))
+    forgotpassword: (values: any) => requests.post('authentication/change-password', values),
+    resetpassword: (resetCode: string, values: any) => requests.put(`authentication/change-password/${resetCode}`, values)
 }
 const agent = {
+    Department,
+    Category,
+    Topic,
     User,
     Account
 }

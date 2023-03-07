@@ -1,19 +1,45 @@
-import React, { useState } from 'react'
-import { Box, IconButton, useTheme } from "@mui/material";
+import React, { useEffect, useState } from 'react'
+import { Box, Button, IconButton, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
-import { getDepartmentCollection } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
-import { Delete, Edit } from '@mui/icons-material';
+import { AddCircleOutline, Delete, Edit } from '@mui/icons-material';
 import ConfirmDialog from '../../app/components/ConfirmDialog';
 import { toast } from 'react-toastify';
+import { Department } from '../../app/models/Department';
+import Popup from '../../app/components/Popup';
+import DepartmentForm from './departmentForm';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../app/store/configureStore';
+import { deleteDepartment, getDepartments } from './departmentSlice';
 
-const Department = () => {
+const DepartmentPage = () => {
     const theme: any = useTheme();
-    const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
-    const [data, setData] = useState(getDepartmentCollection());
+    const [editMode, setEditMode] = useState(false);
+    const [recordForEdit, setRecordForEdit] = useState<Department | undefined>(undefined);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
+    const { departments, loading } = useSelector((state: RootState) => state.department);
+    const dispatch = useAppDispatch();
+    let fetchMount = true;
+    useEffect(() => {
+        if (fetchMount) {
+            dispatch(getDepartments());
+        }
+        return () => {
+            fetchMount = false;
+        };
+    }, []);
+
+    function handleSelect(department: Department) {
+        setRecordForEdit(department);
+        setEditMode(true);
+    }
+
+    function cancelEdit() {
+        if (recordForEdit) setRecordForEdit(undefined);
+        setEditMode(false);
+    }
     const columns: any = [
         {
             field: "ordinal",
@@ -21,7 +47,7 @@ const Department = () => {
             flex: 0.2,
             valueGetter: (params: GridValueGetterParams) => {
                 const { row } = params;
-                const index = data.findIndex((r) => r.id === row.id);
+                const index = departments.findIndex((r) => r.id === row.id);
                 return index + 1;
             }
         },
@@ -43,10 +69,10 @@ const Department = () => {
             field: "action",
             headerName: "Action",
             width: 200,
-            renderCell: (params: { row: { id: any; }; }) => {
+            renderCell: (params: { row: { id: any; name: any }; }) => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
-                        <IconButton aria-label="edit" size="large" color="info">
+                        <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
                             <Edit fontSize="inherit" />
                         </IconButton>
                         <IconButton aria-label="delete" size="large" color="error" onClick={() => setConfirmDialog({
@@ -62,42 +88,46 @@ const Department = () => {
             },
         },
     ];
-    const handleDelete = (id: any) => {
-        //Integrate BE to use this functionality
-        // setLoading(true);
-        // agent.User.deleteUser(id)
-        //   .then(() => setData(data.filter((item: { _id: any; }) => item._id !== id)))
-        //   .catch(error => toast.error(error.toString(), {style: { marginTop: '50px' }, position: toast.POSITION.TOP_RIGHT}))
-        //   .finally(() => setLoading(false))
+    const handleDelete = (id: string) => {
+        dispatch(deleteDepartment(id))
+            .catch((error: any) => {
+                // handle error
+                toast.error(error.toString(), {
+                    style: { marginTop: '50px' },
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            });
+
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
-        })
-        toast.success('Delete Record Success !', {
-            style: { marginTop: '50px' },
-            position: toast.POSITION.TOP_RIGHT
         });
-        setData(data.filter((item: { id: any; }) => item.id !== id))
-    }
-    if (!data) {
-        setLoading(true);
-    }
+    };
     return (
         <>
             {loading ? (<Loading />) : (
                 <Box m="1.5rem 2.5rem">
                     <Header title="DEPARTMENT" subtitle="List of Departments" />
+                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
+                        startIcon={<AddCircleOutline />}>
+                        Create a new department
+                    </Button>
                     <Box
-                        mt="40px"
-                        style={{ height: '55vh' }}
+                        mt="12px"
                         sx={{
                             "& .MuiDataGrid-root": {
                                 border: "none",
+                                [theme.breakpoints.up('md')]: {
+                                    width: '100%',
+                                    height: '60vh'
+                                },
                                 [theme.breakpoints.up('sm')]: {
                                     width: '100%',
+                                    height: '40vh'
                                 },
                                 [theme.breakpoints.down('sm')]: {
                                     width: '130%',
+                                    height: '50vh'
                                 },
                             },
                             "& .MuiDataGrid-cell": {
@@ -123,9 +153,9 @@ const Department = () => {
                     >
 
                         <DataGrid
-                            loading={loading || !data}
-                            getRowId={(row) => row.id}
-                            rows={data || []}
+                            loading={loading || !departments}
+                            getRowId={(row) => row.id ?? ''}
+                            rows={departments || []}
                             pageSize={pageSize}
                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                             rowsPerPageOptions={[5, 10, 20]}
@@ -146,8 +176,16 @@ const Department = () => {
                 confirmDialog={confirmDialog}
                 setConfirmDialog={setConfirmDialog}
             />
+            <Popup
+                title="Department Details"
+                openPopup={editMode}
+                setOpenPopup={setEditMode}
+                cancelEdit={cancelEdit}
+            >
+                <DepartmentForm department={recordForEdit} cancelEdit={cancelEdit} />
+            </Popup>
         </>
     )
 }
 
-export default Department;
+export default DepartmentPage;

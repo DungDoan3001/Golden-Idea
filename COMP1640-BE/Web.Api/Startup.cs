@@ -26,6 +26,17 @@ using Web.Api.Services.Authentication;
 using Web.Api.Services.User;
 using Web.Api.Services.EmailService;
 using Web.Api.Services.ResetPassword;
+using Web.Api.Data.Queries;
+using Web.Api.Services.FileUploadService;
+using Web.Api.Services.IdeaService;
+using Web.Api.Services.ReactionService;
+using Web.Api.Services.Comment;
+using Web.Api.SignalR;
+using System.Threading.Tasks;
+using Web.Api.Services.FileService;
+using Web.Api.Services.View;
+using static Dropbox.Api.TeamLog.EventCategory;
+using Web.Api.Services.Chart;
 
 namespace Web.Api
 {
@@ -70,7 +81,16 @@ namespace Web.Api
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             // CORS
-            services.AddCors();
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
 
             //Authentication + JWT
             services.AddAuthentication(options =>
@@ -93,6 +113,19 @@ namespace Web.Api
 
                     ValidIssuer = Configuration["JwtSettings:Issuer"],
                     ValidAudience = Configuration["JwtSettings:Audience"]
+                };
+                jwt.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
     
@@ -118,6 +151,7 @@ namespace Web.Api
             services.AddScoped<IAppDbContext, AppDbContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            // Services
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -126,6 +160,21 @@ namespace Web.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
+            services.AddScoped<IFileUploadService, FileUploadService>();
+            services.AddScoped<IIdeaService, IdeaService>();
+            services.AddScoped<IReactionService, ReactionService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IViewService, ViewService>();
+            services.AddScoped<IChartService, ChartService>();
+            //SignalR
+            services.AddSignalR();
+            
+            // Queries
+            services.AddScoped<ITopicQuery, TopicQuery>();
+            services.AddScoped<IIdeaQuery, IdeaQuery>();
+            services.AddScoped<ICategoryQuery, CategoryQuery>();
+            services.AddScoped<IDepartmentQuery, DepartmentQuery>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -143,13 +192,10 @@ namespace Web.Api
                 c.DefaultModelsExpandDepth(-1);
             });
 
-            app.UseCors(option =>
-            {
-                option.AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials()
-                .WithOrigins("http://localhost:5000");
-            });
+            app.UseCors(x => x
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 
@@ -161,6 +207,7 @@ namespace Web.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }
