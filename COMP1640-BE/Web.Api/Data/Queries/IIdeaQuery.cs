@@ -13,5 +13,6 @@ namespace Web.Api.Data.Queries
         Task<Idea> GetBySlugAsync(string slug);
         Task<bool> CheckSlugExistedAsync(string slug);
         Task<bool> CheckIdeaExistedAsync(Guid id);
+        Task<List<Idea>> Search(string searchTerm);
     }
 }
