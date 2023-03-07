@@ -31,7 +31,7 @@ const CategoryPage = () => {
             fetchMount = false;
         };
     }, []);
-    function handleSelectProduct(category: Category) {
+    function handleSelect(category: Category) {
         setRecordForEdit(category);
         setEditMode(true);
     }
@@ -72,7 +72,7 @@ const CategoryPage = () => {
             renderCell: (params: { row: { id: any; name: any }; }) => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
-                        <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelectProduct(params.row)} >
+                        <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
                             <Edit fontSize="inherit" />
                         </IconButton>
                         <IconButton aria-label="delete" size="large" color="error" onClick={() => setConfirmDialog({
@@ -181,6 +181,7 @@ const CategoryPage = () => {
                 title="Category Details"
                 openPopup={editMode}
                 setOpenPopup={setEditMode}
+                cancelEdit={cancelEdit}
             >
                 <CategoryForm category={recordForEdit} cancelEdit={cancelEdit} />
             </Popup>

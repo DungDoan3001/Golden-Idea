@@ -1,10 +1,13 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { RegisterOptions, useFormContext } from 'react-hook-form';
 
 type FormInputProps = {
     placeholder: string;
     name: string;
     type?: string;
+};
+type CustomRegisterOptions = RegisterOptions & {
+    dateFormat?: string;
 };
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -16,6 +19,8 @@ const FormInput: React.FC<FormInputProps> = ({
         register,
         formState: { errors },
     } = useFormContext();
+    // Set the dateFormat to 'MMMM d, yyyy h:mm aa' when the type is 'date'
+    const dateFormat = type === 'date' ? 'MMMM d, yyyy h:mm aa' : undefined;
     return (
         <div>
             <input
@@ -31,7 +36,7 @@ const FormInput: React.FC<FormInputProps> = ({
                     fontSize: '1.1rem',
                     color: '#333',
                 }}
-                {...register(name)}
+                {...register(name, { dateFormat } as CustomRegisterOptions)}
             />
             {errors[name] && (
                 <span style={{

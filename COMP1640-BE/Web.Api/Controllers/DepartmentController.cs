@@ -208,7 +208,7 @@ namespace Web.Api.Controllers
                     {
                         Message = "Conflict",
                         StatusCode= (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "Can not delete department due to its contained other users."}
+                        Errors = new List<string> { "Sorry! We cannot delete the department because it contains some users." }
                     });
                 }
 
