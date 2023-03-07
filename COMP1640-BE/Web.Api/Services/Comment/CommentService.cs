@@ -55,6 +55,7 @@ namespace Web.Api.Services.Comment
                 await _unitOfWork.CompleteAsync();
                 var result = _mapper.Map<CommentResponseModel>(addComment);
                 result.Username = user.UserName;
+                result.Avatar = user.Avatar;
                 return result;
             }
             catch (Exception)
@@ -84,10 +85,10 @@ namespace Web.Api.Services.Comment
                     if(i < result.Count)
                     {
                         result[i].Username = user.UserName;
+                        result[i].Avatar = user.Avatar;
                         i++;
                     }
-                }
-                
+                }           
                 return result;
             }
             catch (Exception)
