@@ -68,9 +68,9 @@ namespace Web.Api.Controllers
                 }
 
                 var user = _mapper.Map<User>(userForRegistration);
-                if (userForRegistration.Avatar != null)
+                if (userForRegistration.File != null)
                 {
-                    var imageResult = await _fileUploadService.UploadImageAsync(userForRegistration.Avatar);
+                    var imageResult = await _fileUploadService.UploadImageAsync(userForRegistration.File);
 
                     if (imageResult.Error != null)
                         return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
@@ -88,6 +88,8 @@ namespace Web.Api.Controllers
                     }
                 }
                 await _userManager.AddToRoleAsync(user, userForRegistration.Role);
+                //Send email to user
+                await _authManager.SendEmailRegister(userForRegistration);
                 //Get user data (id + role) to response
                 var data = await _userManager.FindByNameAsync(user.UserName);
                 var result = _mapper.Map<UserResponseModel>(data);

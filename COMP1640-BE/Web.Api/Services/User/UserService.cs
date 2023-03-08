@@ -99,7 +99,7 @@ namespace Web.Api.Services.User
             }
         }
 
-        public async Task<Entities.User> UpdateAsync(Guid id, UserRequestModel user)
+        public async Task<Entities.User> UpdateAsync(Guid id, UserForUpdateRequestModel user)
         {
             try
             {
@@ -130,14 +130,13 @@ namespace Web.Api.Services.User
                 userUpdate.UserName = user.UserName;
                 userUpdate.Email = user.Email;
                 userUpdate.Name = user.Name;
-                userUpdate.PasswordHash = _passwordHasher.HashPassword(userUpdate, user.Password);
                 userUpdate.Address = user.Address;
                 userUpdate.DepartmentId = user.DepartmentId;
                 userUpdate.PhoneNumber = user.PhoneNumber;
                 
-                if (user.Avatar != null)
+                if (user.File != null)
                 {
-                    var imageUploadResult = await _fileUploadService.UploadImageAsync(user.Avatar);
+                    var imageUploadResult = await _fileUploadService.UploadImageAsync(user.File);
                     if (imageUploadResult.Error != null)
                         throw new Exception(imageUploadResult.Error.Message);
 

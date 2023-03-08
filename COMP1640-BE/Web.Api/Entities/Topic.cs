@@ -13,7 +13,6 @@ namespace Web.Api.Entities
         public string Name { get; set; }
         public DateTime ClosureDate { get; set; }
         public DateTime FinalClosureDate { get; set; }
-
         public ICollection<Idea> Ideas { get; set; }
         public User User { get; set; }
     }

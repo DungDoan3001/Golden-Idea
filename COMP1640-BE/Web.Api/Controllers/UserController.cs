@@ -186,7 +186,7 @@ namespace Web.Api.Controllers
         /// <response code="404">There is a conflict while update a user</response>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult> Update([FromRoute] Guid id, [FromForm] UserRequestModel user)
+        public async Task<ActionResult> Update([FromRoute] Guid id, [FromForm] UserForUpdateRequestModel user)
         {
             try
             { 

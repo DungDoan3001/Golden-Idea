@@ -41,5 +41,12 @@ namespace Web.Api.Controllers
                 });
             }
         }
+
+        [HttpGet("GetNumOfIdeaAnonyByDepartment")]
+        public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyByDepartment()
+        {
+            var test = await _chartService.GetNumOfIdeaAnonyByDepartment();
+            return null;
+        }
     }
 }

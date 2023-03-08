@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,32 @@ namespace Web.Api.Services.Chart
                 throw;
             }
         }
+        public async Task<List<NumOfIdeaAnonyByDepartment>> GetNumOfIdeaAnonyByDepartment()
+        {
+            try
+            {
+                var departments = await _context.Departments.ToListAsync();
+                foreach (var department in departments)
+                {
+                    var ideasOfDepartment = await _context.Ideas
+                        .Include(x => x.Topic)
+                        .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.DepartmentId)
+                        .ToListAsync();
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        //public async Task<List<TotalCommentOfDepartmentsResponseModel>> GetTotalCommentOfDepartments()
+        //{
+
+        //}
     }
 
 }
