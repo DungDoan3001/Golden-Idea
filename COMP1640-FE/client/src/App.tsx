@@ -20,7 +20,6 @@ const App = () => {
   const initApp = useCallback(async () => {
     try {
       await dispatch(fetchCurrentUser());
-      console.log('dispatch Current User');
     } catch (error) {
       console.log(error);
     }

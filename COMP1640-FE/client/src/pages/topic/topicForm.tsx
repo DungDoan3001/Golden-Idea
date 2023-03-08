@@ -16,7 +16,8 @@ interface Props {
     topic?: Topic;
     cancelEdit: () => void;
 }
-const validationSchema = z.object({
+const validationSchema: any = z.object({
+    name: z.string().min(1, 'Required Field!'),
     closureDate: z.string().min(1, 'Closure date is required').regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/),
     finalClosureDate: z.string().min(1, 'Final closure date is required').regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/),
 }).refine((data) => {

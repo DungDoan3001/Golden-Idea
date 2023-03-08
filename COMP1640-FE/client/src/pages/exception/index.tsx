@@ -8,7 +8,7 @@ import { dataComment, dataExceptions } from '../../dataTest'
 
 const Exception = () => {
     const theme = useTheme();
-    const [view, setView] = useState("units");
+    const [view, setView] = useState("ideas");
     return (
         <Box m="1.5rem 2.5rem" >
             <Box sx={{
@@ -16,7 +16,7 @@ const Exception = () => {
                     width: "150%"
                 }
             }}>
-                <Header title="EXCEPTION REPORT" subtitle="Ideas Without a Comment & Anonymous Ideas and Comments Chart" />
+                <Header title="EXCEPTION REPORT" subtitle={view === 'ideas' ? "Ideas Without Any Comment & Anonymous Ideas Bar Chart" : "Comments by Department Bar Chart"} />
             </Box>
             <Box height="2vh">
                 <FormControl sx={{ mt: "1rem" }}>
@@ -25,6 +25,7 @@ const Exception = () => {
                         value={view}
                         label="View"
                         onChange={(e) => setView(e.target.value)}
+                        defaultValue="{{ideas}}"
                     >
                         <MenuItem value="ideas">Ideas</MenuItem>
                         <MenuItem value="comments">Comments</MenuItem>

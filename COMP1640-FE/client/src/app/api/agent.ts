@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { store } from "../store/configureStore";
 // import { PaginatedResponse } from "../models/pagination";
-const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
+const sleep = () => new Promise(resolve => setTimeout(resolve, 8000));
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
@@ -12,19 +12,12 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 //Login here (Bearer token)
 axios.interceptors.request.use(config => {
     const token: any = store.getState().account.user?.token;
-    console.log(token)
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 })
 
 axios.interceptors.response.use(async response => {
     if (process.env.NODE_ENV === 'development') await sleep();
-    const pagination = response.headers['pagination'];
-    if (pagination) {
-        //Pagination here!!!
-        //response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
-        return response;
-    }
     return response;
 }, (error: AxiosError) => {
     const { data, status }: any = error.response!;
@@ -99,10 +92,11 @@ const Topic = {
 }
 
 const User = {
-    listUsers: () => requests.get('users'),
-    createUser: (user: any) => requests.postForm('users', createFormData(user)),
-    updateUser: (user: any, id: any) => requests.putForm(`users/${id}`, createFormData(user)),
-    deleteUser: (id: string) => requests.delete(`users/${id}`)
+    listUsers: () => requests.get('User'),
+    listRoles: () => requests.get('roles'),
+    createUser: (user: any) => requests.postForm('authentication/register', createFormData(user)),
+    updateUser: (user: any, id: any) => requests.putForm(`User/${id}`, createFormData(user)),
+    deleteUser: (id: string) => requests.delete(`User/${id}`)
 }
 const Account = {
     login: (values: any) => requests.post('authentication/login', values),
