@@ -9,7 +9,6 @@ namespace Web.Api.Entities
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
-
         public virtual ICollection<User> Users { get; set; }
     }
 }

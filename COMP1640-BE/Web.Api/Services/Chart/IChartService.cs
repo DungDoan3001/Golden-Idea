@@ -6,6 +6,8 @@ namespace Web.Api.Services.Chart
 {
     public interface IChartService
     {
-        Task<List<ContributorResponseModel>> GetContributor();
+        Task<List<ContributorResponseModel>> GetContributorByDepart();
+        Task<List<NumOfIdeaAnonyByDepartment>> GetNumOfIdeaAnonyAndNoCommentByDepart();
+        Task<List<NumOfCommentResponseModel>> GetNumOfCommentByDepart();
     }
 }
