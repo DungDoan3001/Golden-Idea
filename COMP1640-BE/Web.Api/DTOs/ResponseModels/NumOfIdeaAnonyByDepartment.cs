@@ -3,8 +3,7 @@
     public class NumOfIdeaAnonyByDepartment
     {
         public string DepartmentName { get; set; }
-        public int TotalIdea { get; set; }
-        public int TotalAnonymous { get; set; }
-        public int TotalNoAnonymous { get; set; }
+        public int IdeaNoComment { get; set; }
+        public int IdeaAnonymous { get; set; }
     }
 }

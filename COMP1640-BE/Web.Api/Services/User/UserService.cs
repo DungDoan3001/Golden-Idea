@@ -33,6 +33,7 @@ namespace Web.Api.Services.User
             {
                 var users = await _userManager.Users
                     .OrderBy(x => x.Name)
+                    .AsNoTracking()
                     .ToListAsync();
                 return users;
             }
@@ -57,7 +58,7 @@ namespace Web.Api.Services.User
         {
             try
             {
-                var roles = _roleManager.Roles.ToList();
+                var roles = _roleManager.Roles.AsNoTracking().ToList();
                 roles.Remove(roles.Single(r => r.Name == "Staff"));
                 List<Entities.User> result = new List<Entities.User>();
                 foreach(var role in roles)

@@ -37,6 +37,7 @@ namespace Web.Api.Services.Role
             {
                 var role = await roleManager.Roles
                     .OrderBy(x => x.Name)
+                    .AsNoTracking()
                     .ToListAsync();
                 var result = _mapper.Map<List<RoleResponseModel>>(role);
                 return result;
@@ -46,7 +47,6 @@ namespace Web.Api.Services.Role
                 throw;
             }
         }
-
         public async Task<RoleResponseModel> Create(string roleName)
         {
             try

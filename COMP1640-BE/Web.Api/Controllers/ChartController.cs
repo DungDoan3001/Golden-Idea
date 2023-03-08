@@ -23,12 +23,12 @@ namespace Web.Api.Controllers
         /// </summary>
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
-        [HttpGet("contributors")]
-        public async Task<ActionResult<List<ContributorResponseModel>>> GetContributors() 
+        [HttpGet("ContributorsByDepart")]
+        public async Task<ActionResult<List<ContributorResponseModel>>> GetContributorsByDepart() 
         {
             try
             {
-                return await _chartService.GetContributor();
+                return await _chartService.GetContributorByDepart();
             }
             catch (Exception ex)
             {
@@ -42,11 +42,16 @@ namespace Web.Api.Controllers
             }
         }
 
-        [HttpGet("GetNumOfIdeaAnonyByDepartment")]
-        public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyByDepartment()
+        [HttpGet("NumOfIdeaAnonyByDepartment")]
+        public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyAndNoCommentByDepart()
         {
-            var test = await _chartService.GetNumOfIdeaAnonyByDepartment();
-            return null;
+            return await _chartService.GetNumOfIdeaAnonyAndNoCommentByDepart();
+        }
+
+        [HttpGet("NumOfCommentByDepartment")]
+        public async Task<ActionResult<List<NumOfCommentResponseModel>>> GetNumOfCommentByDepart()
+        {
+            return await _chartService.GetNumOfCommentByDepart();
         }
     }
 }
