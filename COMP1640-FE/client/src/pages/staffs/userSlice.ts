@@ -1,5 +1,5 @@
 import { AsyncThunk, createAsyncThunk, createSlice, Slice } from '@reduxjs/toolkit';
-import { User } from '../../app/models/User';
+import { Role, User } from '../../app/models/User';
 import agent from '../../app/api/agent';
 import { toast } from 'react-toastify';
 
@@ -9,6 +9,7 @@ interface UserState {
     loading: boolean;
     isFetchUserId: boolean;
     error: string | null;
+    roles: Role[];
 }
 
 const initialState: UserState = {
@@ -17,6 +18,7 @@ const initialState: UserState = {
     loading: false,
     isFetchUserId: false,
     error: null,
+    roles: []
 };
 
 export const getUsers: AsyncThunk<User[], void, {}> = createAsyncThunk(
@@ -26,26 +28,20 @@ export const getUsers: AsyncThunk<User[], void, {}> = createAsyncThunk(
         return response;
     }
 );
-
+export const getRoles: AsyncThunk<Role[], void, {}> = createAsyncThunk(
+    'users/getRoles',
+    async () => {
+        const response = await agent.User.listRoles();
+        return response;
+    }
+);
 export const addUser = createAsyncThunk('users/addUser', async (values: any) => {
     const response = await agent.User.createUser(values);
     return response;
 });
 
-export const updateUser = createAsyncThunk('users/updateUser', async (values: any) => {
-    const updatedUser: User = {
-        id: values.id,
-        email: values.email,
-        name: values.name,
-        username: values.username,
-        password: values.password,
-        address: values.address,
-        phoneNumber: values.phoneNumber,
-        departmentId: values.departmentId,
-        file: values.file,
-        role: values.role
-    };
-    const response = await agent.User.updateUser(updatedUser, values.id);
+export const updateUser = createAsyncThunk('users/updateUser', async (values: any, id: any) => {
+    const response = await agent.User.updateUser(values, id);
     return response;
 });
 
@@ -61,7 +57,7 @@ export const deleteUser = createAsyncThunk(
             return { id };
         } catch (error: any) {
             // handle error
-            toast.error(' Delete on table Users violates foreign key constraint on table Posts', {
+            toast.error(' Sorry! We cannot delete the user because it contains some ideas/topics.', {
                 style: { marginTop: '50px' },
                 position: toast.POSITION.TOP_RIGHT
             });
@@ -88,7 +84,10 @@ export const userSlice: Slice<UserState> = createSlice({
             .addCase(getUsers.rejected, (state) => {
                 state.loading = false;
             });
-
+        //set get all roles
+        builder.addCase(getRoles.fulfilled, (state, action) => {
+            state.roles = action.payload;
+        });
         //set add user
         builder.addCase(addUser.fulfilled, (state, action) => {
             state.users.push(action.payload);

@@ -12,7 +12,7 @@ import { Topic } from '../../app/models/Topic';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
-import { getTopics } from './topicSlice';
+import { deleteTopic, getTopics } from './topicSlice';
 const TopicPage = () => {
     const theme: any = useTheme();
     const [pageSize, setPageSize] = React.useState<number>(5);
@@ -40,22 +40,21 @@ const TopicPage = () => {
         if (recordForEdit) setRecordForEdit(undefined);
         setEditMode(false);
     }
-    const handleDelete = (id: any) => {
-        //Integrate BE to use this functionality
-        // setLoading(true);
-        // agent.User.deleteUser(id)
-        //   .then(() => setData(data.filter((item: { _id: any; }) => item._id !== id)))
-        //   .catch(error => toast.error(error.toString(), {style: { marginTop: '50px' }, position: toast.POSITION.TOP_RIGHT}))
-        //   .finally(() => setLoading(false))
+    const handleDelete = (id: string) => {
+        dispatch(deleteTopic(id))
+            .catch((error: any) => {
+                // handle error
+                toast.error(error.toString(), {
+                    style: { marginTop: '50px' },
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            });
+
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
-        })
-        toast.success('Delete Record Success !', {
-            style: { marginTop: '50px' },
-            position: toast.POSITION.TOP_RIGHT
         });
-    }
+    };
     const columns: any = [
         {
             field: "ordinal",

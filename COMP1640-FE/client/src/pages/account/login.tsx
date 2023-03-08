@@ -16,7 +16,6 @@ export default function Login() {
     });
 
     async function submitForm(data: FieldValues) {
-        console.log(data);
         try {
             await dispatch(signInUser(data));
             navigate(location.state?.from || '/home');

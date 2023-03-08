@@ -1,9 +1,13 @@
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import { useController, UseControllerProps } from "react-hook-form";
+interface Select {
+    id?: string;
+    name: string;
+}
 
 interface Props extends UseControllerProps {
     label: string;
-    items: string[];
+    items: Select[];
 }
 
 export default function AppSelect(props: Props) {
@@ -16,8 +20,8 @@ export default function AppSelect(props: Props) {
                 label={props.label}
                 onChange={field.onChange}
             >
-                {props.items.map((item, index) => (
-                    <MenuItem value={item} key={index}>{item}</MenuItem>
+                {props.items.map((department) => (
+                    <MenuItem value={department.id} key={department.id}>{department.name}</MenuItem>
                 ))}
             </Select>
             <FormHelperText>{fieldState.error?.message}</FormHelperText>

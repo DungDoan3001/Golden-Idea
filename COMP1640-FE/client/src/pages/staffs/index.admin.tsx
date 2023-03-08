@@ -212,14 +212,14 @@ const AdminPage = () => {
                 confirmDialog={confirmDialog}
                 setConfirmDialog={setConfirmDialog}
             />
-            <Popup
+            {/* <Popup
                 title="Staff Details"
                 openPopup={editMode}
                 setOpenPopup={setEditMode}
                 cancelEdit={cancelEdit}
             >
                 <StaffForm user={recordForEdit} cancelEdit={cancelEdit} />
-            </Popup>
+            </Popup> */}
         </>
     );
 };

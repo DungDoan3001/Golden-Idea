@@ -6,7 +6,7 @@ export interface User {
     password: string;
     address?: string;
     phoneNumber?: string,
-    file: any;
+    avatar: any;
     departmentId: string;
     role: string;
 }
@@ -16,4 +16,8 @@ export interface UserLogin {
     Avatar: string;
     role: string[];
     token?: string;
+}
+export interface Role {
+    id: string;
+    name: string;
 }

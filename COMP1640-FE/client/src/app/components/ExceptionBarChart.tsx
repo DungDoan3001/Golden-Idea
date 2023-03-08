@@ -51,6 +51,7 @@ const ExceptionBarChart = ({ isComment, dataChart }: Props) => {
                 }}
                 keys={isComment ? ["total comments"] : ["no comment", "anonymous",]}
                 indexBy="department"
+                groupMode={isComment ? 'stacked' : 'grouped'}
                 margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
                 padding={0.3}
                 valueScale={{ type: "linear" }}

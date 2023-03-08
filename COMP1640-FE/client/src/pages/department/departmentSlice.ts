@@ -51,7 +51,7 @@ export const deleteDepartment = createAsyncThunk(
             return { id };
         } catch (error: any) {
             // handle error
-            toast.error(' Delete on table Departments violates foreign key constraint on table Users', {
+            toast.error('Sorry! We cannot delete the department because it contains some users.', {
                 style: { marginTop: '50px' },
                 position: toast.POSITION.TOP_RIGHT
             });
