@@ -135,6 +135,20 @@ namespace Web.Api.Services.Chart
             }
             return result;
         }
+        public async Task<List<DailyReportResponseModel>> GetDailyReportInThreeMonths()
+        {
+            try
+            {
+                DateTime threeMonthPrevious = DateTime.Now.AddMonths(-3);
+                int totalDays = threeMonthPrevious.Month + threeMonthPrevious.AddMonths(1).Month + threeMonthPrevious.AddMonths(2).Month;
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 
 }

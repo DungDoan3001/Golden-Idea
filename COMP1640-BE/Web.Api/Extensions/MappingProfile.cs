@@ -38,7 +38,7 @@ namespace Web.Api.Extensions
             CreateMap<User, UserRequestModel>()
                 .ForMember(dest => dest.File, opt => opt.MapFrom(src => src.Avatar));
             CreateMap<User, UserResponseModel>()
-                .ForMember(dest => dest.File, opt => opt.MapFrom(src => src.Avatar));
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar));
 
             // Idea
             CreateMap<Idea, IdeaResponseModel>()
