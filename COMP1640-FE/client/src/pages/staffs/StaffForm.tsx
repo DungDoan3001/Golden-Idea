@@ -3,7 +3,6 @@ import { LoadingButton } from '@mui/lab';
 import { Grid, Box, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, useTheme } from '@mui/material';
 import React, { useEffect } from 'react'
 import { useForm, FieldValues, Controller } from 'react-hook-form';
-import * as z from 'zod';
 import AppTextInput from '../../app/components/AppTextInput';
 import { useAppDispatch } from '../../app/store/configureStore';
 import { Role, User } from '../../app/models/User';
@@ -12,7 +11,8 @@ import AppSelect from '../../app/components/AppSelect';
 import AppImageInput from '../../app/components/AppImageInput';
 import { addUser, getUsers, updateUser } from './userSlice';
 import { toast } from 'react-toastify';
-import agent from '../../app/api/agent';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Department } from '../../app/models/Department';
 
 interface Props {
@@ -21,18 +21,26 @@ interface Props {
   roles: Role[];
   departments: Department[];
 }
-
-const validationSchema = z.object({
-  name: z.string().min(2),
-  username: z.string().min(2),
-  email: z.string().email(),
-  departmentId: z.string(),
-  role: z.string(),
-});
-
+interface FileObject extends File {
+  size: number;
+}
+export const validationSchema = yup.object({
+  name: yup.string().min(2),
+  username: yup.string().min(2),
+  email: yup.string().email(),
+  password: yup.string().min(8),
+  departmentId: yup.string(),
+  role: yup.string(),
+  file: yup.mixed()
+    .test('fileSize', 'File size too large', function (value) {
+      if (!value) return true;
+      const file = value as FileObject;
+      return file.size <= 2 * 1024 * 1024;
+    }).notRequired()
+})
 const StaffForm = ({ user, cancelEdit, departments, roles }: Props) => {
   const { control, reset, handleSubmit, formState: { isDirty, isSubmitting }, watch } = useForm({
-    resolver: zodResolver(validationSchema),
+    resolver: yupResolver<any>(validationSchema),
   });
   const theme: any = useTheme();
   const dispatch = useAppDispatch();
@@ -47,11 +55,11 @@ const StaffForm = ({ user, cancelEdit, departments, roles }: Props) => {
   async function handleSubmitData(data: FieldValues) {
     try {
       let response: User;
-      console.log(data.password);
+      console.log(data);
       if (user) {
-        response = await agent.User.updateUser(data, user.id);
+        response = await dispatch(updateUser(data)).unwrap();
       } else {
-        response = await agent.User.createUser(data);
+        response = await dispatch(addUser(data)).unwrap();
       }
       toast.success('Successfully', {
         position: toast.POSITION.TOP_RIGHT,
@@ -96,11 +104,10 @@ const StaffForm = ({ user, cancelEdit, departments, roles }: Props) => {
                 control={control}
                 defaultValue={user?.role}
                 render={({ field }) => (
-                  <RadioGroup
+                  <RadioGroup row
                     aria-label="role"
                     {...field}
                     onChange={(e) => field.onChange(e.target.value)}
-                    style={{ display: 'flex', justifyContent: 'space-around' }}
                   >
                     {roles.map((role) => (
                       <FormControlLabel

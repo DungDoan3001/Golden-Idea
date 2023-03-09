@@ -40,8 +40,8 @@ export const addUser = createAsyncThunk('users/addUser', async (values: any) => 
     return response;
 });
 
-export const updateUser = createAsyncThunk('users/updateUser', async (values: any, id: any) => {
-    const response = await agent.User.updateUser(values, id);
+export const updateUser = createAsyncThunk('users/updateUser', async (values: any) => {
+    const response = await agent.User.updateUser(values, values.id);
     return response;
 });
 
