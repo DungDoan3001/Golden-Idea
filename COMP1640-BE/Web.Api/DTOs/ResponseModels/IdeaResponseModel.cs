@@ -12,6 +12,7 @@ namespace Web.Api.DTOs.ResponseModels
         public string Image { get; set; }
         public bool IsAnonymous { get; set; }
         public DateTime LastUpdate { get; set; }
+        public DateTime CreatedAt { get; set; }
         public int UpVote { get; set; }
         public int DownVote { get; set; }
         public int View { get; set; }

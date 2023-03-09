@@ -9,6 +9,10 @@ namespace Web.Api.Services.Chart
         Task<List<ContributorResponseModel>> GetContributorByDepart();
         Task<List<NumOfIdeaAnonyByDepartment>> GetNumOfIdeaAnonyAndNoCommentByDepart();
         Task<List<NumOfCommentResponseModel>> GetNumOfCommentByDepart();
+        Task<List<TotalIdeaOfDepartmentsResponseModel>> GetTotalIdeaOfEachDepartment();
+        Task<TotalStaffAndIdeaAndTopicAndCommentResponseModel> GetTotalOfStaffAndIdeaAndTopicAndCommment();
+        Task<List<PercentageOfIdeaForEachDepartment>> GetPercentageOfIdeaForEachDepartments();
+        Task<List<IdeaForChartResponseModel>> GetIdeasForChart();
         Task<List<DailyReportResponseModel>> GetDailyReportInThreeMonths();
     }
 }

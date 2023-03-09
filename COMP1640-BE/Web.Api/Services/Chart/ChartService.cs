@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,38 +101,172 @@ namespace Web.Api.Services.Chart
         }
         public async Task<List<NumOfCommentResponseModel>> GetNumOfCommentByDepart()
         {
-            var departments = await _context.Departments.AsNoTracking().ToListAsync();
-            var comments = await _context.Comments
-                .Include(x => x.User)
-                .AsNoTracking()
-                .ToListAsync();
-            List<NumOfCommentResponseModel> result = new List<NumOfCommentResponseModel>();
-            foreach(var department in departments)
+            try
             {
-                NumOfCommentResponseModel data = new NumOfCommentResponseModel();
-                int countCommentAnonymous = 0;
-                int countCommentNonAnonymous = 0;
-                data.DepartmentName = department.Name;
-                foreach(var comment in comments)
+                var departments = await _context.Departments.AsNoTracking().ToListAsync();
+                var comments = await _context.Comments
+                    .Include(x => x.User)
+                    .AsNoTracking()
+                    .ToListAsync();
+                List<NumOfCommentResponseModel> result = new List<NumOfCommentResponseModel>();
+                foreach (var department in departments)
                 {
-                    
-                    if(comment.User.DepartmentId == department.Id)
+                    NumOfCommentResponseModel data = new NumOfCommentResponseModel();
+                    int countCommentAnonymous = 0;
+                    int countCommentNonAnonymous = 0;
+                    data.DepartmentName = department.Name;
+                    foreach (var comment in comments)
                     {
-                        if(comment.IsAnonymous == true)
+
+                        if (comment.User.DepartmentId == department.Id)
                         {
-                            countCommentAnonymous++;
-                        }
-                        if(comment.IsAnonymous == false)
-                        {
-                            countCommentNonAnonymous++;
+                            if (comment.IsAnonymous == true)
+                            {
+                                countCommentAnonymous++;
+                            }
+                            if (comment.IsAnonymous == false)
+                            {
+                                countCommentNonAnonymous++;
+                            }
                         }
                     }
+                    data.CommentAnonymous = countCommentAnonymous;
+                    data.CommentNonAnonymous = countCommentNonAnonymous;
+                    result.Add(data);
                 }
-                data.CommentAnonymous = countCommentAnonymous;
-                data.CommentNonAnonymous = countCommentNonAnonymous;
-                result.Add(data);
+                return result;
             }
-            return result;
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<TotalIdeaOfDepartmentsResponseModel>> GetTotalIdeaOfEachDepartment()
+        {
+            try
+            {
+                var departments = await _context.Departments
+                                .Include(x => x.Users).ThenInclude(x => x.Topics).ThenInclude(x => x.Ideas)
+                                .AsNoTracking()
+                                .AsSplitQuery()
+                                .ToListAsync();
+                List<TotalIdeaOfDepartmentsResponseModel> result = new List<TotalIdeaOfDepartmentsResponseModel>();
+
+                foreach (var department in departments)
+                {
+                    int totalIdea = 0;
+                    foreach (var user in department.Users)
+                    {
+                        foreach (var topic in user.Topics)
+                        {
+                            totalIdea += topic.Ideas.Count;
+                        };
+                    }
+                    TotalIdeaOfDepartmentsResponseModel data = new TotalIdeaOfDepartmentsResponseModel
+                    {
+                        DepartmentName = department.Name,
+                        TotalIdea = totalIdea,
+                    };
+                    result.Add(data);
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<TotalStaffAndIdeaAndTopicAndCommentResponseModel> GetTotalOfStaffAndIdeaAndTopicAndCommment()
+        {
+            try
+            {
+                int totalStaff = await _context.Users.CountAsync();
+                int totalIdea = await _context.Ideas.CountAsync();
+                int totalTopic = await _context.Topics.CountAsync();
+                int totalComment = await _context.Comments.CountAsync();
+
+                TotalStaffAndIdeaAndTopicAndCommentResponseModel data = new TotalStaffAndIdeaAndTopicAndCommentResponseModel
+                {
+                    TotalStaff = totalStaff,
+                    TotalIdea = totalIdea,
+                    TotalTopic = totalTopic,
+                    TotalComment = totalComment
+                };
+
+                return data;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<PercentageOfIdeaForEachDepartment>> GetPercentageOfIdeaForEachDepartments()
+        {
+            try
+            {
+                var totalIdeaOfEachDepartment = await GetTotalIdeaOfEachDepartment();
+                int totalIdea = 0;
+                totalIdeaOfEachDepartment.ForEach(x =>
+                {
+                    totalIdea += x.TotalIdea;
+                });
+
+                List<PercentageOfIdeaForEachDepartment> result = new List<PercentageOfIdeaForEachDepartment>();
+                decimal totalPercentage = 0;
+
+                for (int i = 0; i < totalIdeaOfEachDepartment.Count; i++)
+                {
+                    var department = totalIdeaOfEachDepartment[i];
+                    decimal realPercentage = (decimal)department.TotalIdea * 100 / totalIdea;
+                    Console.WriteLine(realPercentage.ToString());
+                    decimal ceilPercentage = Math.Floor(realPercentage);
+                    totalPercentage += ceilPercentage;
+                    PercentageOfIdeaForEachDepartment data = new PercentageOfIdeaForEachDepartment
+                    {
+                        DepartmentName = department.DepartmentName,
+                        Percentage = ceilPercentage,
+                    };
+                    result.Add(data);
+                }
+
+                if (100 - totalPercentage != 0)
+                {
+                    var surplus = 100 - totalPercentage;
+                    var smallestPercentage = result.Where(x => x.Percentage > 0).OrderBy(x => x.Percentage).Take(1).SingleOrDefault();
+                    smallestPercentage.Percentage += surplus;
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<IdeaForChartResponseModel>> GetIdeasForChart()
+        {
+            try
+            {
+                var data = await _context.Ideas
+                .Include(x => x.User)
+                .Include(x => x.Comments)
+                .Include(x => x.Reactions)
+                .Include(x => x.Views)
+                .AsNoTracking()
+                .AsSplitQuery()
+                .ToListAsync();
+
+                List<IdeaForChartResponseModel> result = _mapper.Map<List<IdeaForChartResponseModel>>(data);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public async Task<List<DailyReportResponseModel>> GetDailyReportInThreeMonths()
         {

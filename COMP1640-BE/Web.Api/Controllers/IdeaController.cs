@@ -164,6 +164,7 @@ namespace Web.Api.Controllers
                 List<File> files = await UploadFileAsync(requestModel.UploadFiles, idea);
                 // Auto update slug and LastUpdate time field.
                 await UpdateSlugAndLastUpdateTime(idea);
+                idea.CreatedAt = DateTime.Now;
 
                 // Create Idea.
                 Idea createdIdea = await _ideaService.CreateAsync(idea);

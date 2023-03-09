@@ -74,6 +74,17 @@ namespace Web.Api.Extensions
 
             //View
             CreateMap<View, ViewResponseModel>();
+
+            // Chart
+            CreateMap<Idea, IdeaForChartResponseModel>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .AfterMap((src, dest) =>
+                {
+                    dest.TotalView = src.Views.Count;
+                    dest.TotalComment = src.Comments.Count;
+                    dest.TotalUpVote = src.Reactions.Where(x => x.React == 1).Count();
+                    dest.TotalDownVote = src.Reactions.Where(x => x.React == -1).Count();
+                });
         }
     }
 }

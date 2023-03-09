@@ -65,7 +65,7 @@ namespace Web.Api.Data.Context
             // Link One-One || Idea - User
             builder.Entity<Topic>()
                 .HasOne(x => x.User)
-                .WithMany(x => x.Topic)
+                .WithMany(x => x.Topics)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
