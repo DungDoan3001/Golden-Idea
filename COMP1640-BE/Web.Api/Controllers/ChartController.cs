@@ -78,7 +78,6 @@ namespace Web.Api.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest(new MessageResponseModel
                 {
                     Message = "Error",
@@ -100,10 +99,14 @@ namespace Web.Api.Controllers
             {
                 return await _chartService.GetDailyReportInThreeMonths();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
             }
         }
     }
