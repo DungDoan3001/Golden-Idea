@@ -4,6 +4,7 @@ export const tokensDark = {
   grey: {
     // manually adjusted
     0: "#ffffff",
+    5: "#EDEDED",
     10: "#f6f6f6",
     50: "#f0f0f0",
     100: "#e0e0e0",
@@ -11,6 +12,7 @@ export const tokensDark = {
     300: "#a3a3a3",
     400: "#858585",
     500: "#666666",
+    550: "#D8D9CF",
     600: "#525252",
     700: "#3d3d3d",
     800: "#292929",
@@ -90,15 +92,20 @@ export const themeSettings = (mode) => {
             alt: tokensDark.primary[500],
           },
           modify: {
-              default: tokensDark.black[100],
-            },
+            default: tokensDark.black[100],
+          },
           content: {
             main: tokensDark.grey[0],
+            icon: tokensDark.grey[0]
           },
-          thumbnail: {
+          comment: {
             ...tokensDark.secondary,
             main: tokensDark.primary[500],
-          }
+          },
+          topic: {
+            ...tokensLight.primary,
+            main: tokensDark.primary[400],
+          },
         }
         : {
           // palette values for light mode
@@ -121,16 +128,24 @@ export const themeSettings = (mode) => {
             alt: tokensDark.grey[50],
           },
           modify: {
-              default: tokensDark.black[100],
-            },
+            default: tokensDark.black[100],
+          },
           content: {
             main: tokensDark.grey[700],
+            icon: tokensDark.grey[300],
           },
           thumbnail: {
             ...tokensLight.secondary,
             main: tokensDark.secondary[300],
-
-          }
+          },
+          comment: {
+            ...tokensLight.grey,
+            main: tokensDark.grey[5],
+          },
+          topic: {
+            ...tokensLight.grey,
+            main: tokensDark.grey[550],
+          },
         }),
     },
     typography: {

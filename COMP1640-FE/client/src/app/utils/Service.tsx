@@ -1,14 +1,13 @@
-import { postData } from "../../dataTest.js"
 
 const Service = {
-  getData: (from: any, to: any) => {
+  getData: (data:any, from: any, to: any) => {
     return new Promise((resolve, rejects) => {
 
-      const data = postData.slice(from, to);
+      const sdata = data.slice(from, to);
 
       resolve({
-        count: postData.length,
-        data: data,
+        count: data.length,
+        data: sdata,
       });
     })
   }
