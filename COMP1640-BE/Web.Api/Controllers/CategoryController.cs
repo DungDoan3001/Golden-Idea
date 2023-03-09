@@ -32,7 +32,7 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
-        /// Get all categoriess.
+        /// Get all categories.
         /// </summary>
         /// <returns>List of Category objects</returns>
         /// <response code="200">Successfully get all categoriess</response>
