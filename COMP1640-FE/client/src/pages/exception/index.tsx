@@ -16,7 +16,7 @@ const Exception = () => {
                     width: "150%"
                 }
             }}>
-                <Header title="EXCEPTION REPORT" subtitle={view === 'ideas' ? "Ideas Without Any Comment & Anonymous Ideas Bar Chart" : "Comments by Department Bar Chart"} />
+                <Header title="EXCEPTION REPORT" subtitle={view === 'ideas' ? "Non Comment & Anonymous Ideas Bar Chart" : "Comments by Department Bar Chart"} />
             </Box>
             <Box height="2vh">
                 <FormControl sx={{ mt: "1rem" }}>
