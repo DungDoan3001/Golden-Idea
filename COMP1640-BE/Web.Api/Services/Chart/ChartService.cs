@@ -288,7 +288,7 @@ namespace Web.Api.Services.Chart
                     int countComment = 0; 
                     foreach(var idea in totalIdea)
                     {
-                        if(String.Equals(idea.LastUpdate.ToString("dd/MM/yyyy"), date.AddDays(i).ToString("dd/MM/yyyy")))
+                        if(String.Equals(idea.CreatedAt.ToString("dd/MM/yyyy"), date.AddDays(i).ToString("dd/MM/yyyy")))
                         {
                             countIdea++;
                         }
