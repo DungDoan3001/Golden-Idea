@@ -137,6 +137,7 @@ namespace Web.Api.Controllers
             }
         }
 
+        /// <summary>
         /// Get the number of ideas with anonymous and idea with no comments for each department.
         /// </summary>
         /// <response code="200">Successfully get all information</response>
