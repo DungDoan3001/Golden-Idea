@@ -41,6 +41,11 @@ namespace Web.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the number of ideas with anonymous and idea with no comments for each department.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("num-of-ideas-anonymous-by-department")]
         public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyAndNoCommentByDepart()
         {
@@ -58,8 +63,13 @@ namespace Web.Api.Controllers
                 });
             }
         }
-
-        [HttpGet("NumOfCommentByDepartment")]
+        
+        /// <summary>
+        /// Get the number of comments with anonymous and non-anonymous from users in each department.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("num-of-comment-by-department")]
         public async Task<ActionResult<List<NumOfCommentResponseModel>>> GetNumOfCommentByDepart()
         {
             try
@@ -75,6 +85,25 @@ namespace Web.Api.Controllers
                     StatusCode = (int)HttpStatusCode.BadRequest,
                     Errors = new List<string> { ex.GetBaseException().Message }
                 });
+            }
+        }
+
+        /// <summary>
+        /// Get the total of comments and ideas in 3 months by day.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("daily-report-in-three-months")]
+        public async Task<ActionResult<List<DailyReportResponseModel>>> GetDailyReportInThreeMonths()
+        {
+            try
+            {
+                return await _chartService.GetDailyReportInThreeMonths();
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

@@ -140,13 +140,13 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
-        /// Create a topic
+        /// Create a idea
         /// </summary>
-        /// <param name="requestModel">Request model for topic</param>
+        /// <param name="requestModel">Request model for idea</param>
         /// <returns>A message if the creation is success.</returns>
-        /// <response code="201">Successfully created the topic</response>
+        /// <response code="201">Successfully created the idea</response>
         /// <response code="400">There is something wrong while execute.</response>
-        /// <response code="409">There is a conflict while create a topic</response>
+        /// <response code="409">There is a conflict while create a idea</response>
         [HttpPost("")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Create([FromForm] IdeaRequestModel requestModel)
@@ -376,8 +376,6 @@ namespace Web.Api.Controllers
                 });
             }
         }
-
-
 
         private async Task UploadImage(IFormFile image, Idea idea)
         {

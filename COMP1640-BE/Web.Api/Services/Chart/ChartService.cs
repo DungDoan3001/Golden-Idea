@@ -140,8 +140,40 @@ namespace Web.Api.Services.Chart
             try
             {
                 DateTime threeMonthPrevious = DateTime.Now.AddMonths(-3);
-                int totalDays = threeMonthPrevious.Month + threeMonthPrevious.AddMonths(1).Month + threeMonthPrevious.AddMonths(2).Month;
-                return null;
+                int totalDays = 0;
+                for (int i = 0; i < 3; i++)
+                {
+                    totalDays = totalDays + DateTime.DaysInMonth(DateTime.Now.AddMonths(-i).Year, DateTime.Now.AddMonths(-i).Month);
+                }
+                List<DailyReportResponseModel> result = new List<DailyReportResponseModel>();
+                var totalIdea = await _context.Ideas.AsNoTracking().ToListAsync();
+                for (int i = 0; i <= totalDays; i++)
+                {
+                    DailyReportResponseModel data = new DailyReportResponseModel();
+                    DateTime date = threeMonthPrevious;
+                    int countIdea = 0;
+                    int countComment = 0; 
+                    foreach(var idea in totalIdea)
+                    {
+                        if(String.Equals(idea.LastUpdate.ToString("dd/MM/yyyy"), date.AddDays(i).ToString("dd/MM/yyyy")))
+                        {
+                            countIdea++;
+                        }
+                    }
+                    var totalComment = await _context.Comments.ToListAsync();
+                    foreach (var comment in totalComment)
+                    {
+                        if (String.Equals(comment.CreatedDate.ToString("dd/MM/yyyy"), date.AddDays(i).ToString("dd/MM/yyyy")))
+                        {
+                            countComment++;
+                        }
+                    }
+                    data.Date = DateTime.Parse(date.AddDays(i).ToString("dd/MM/yyyy"));
+                    data.TotalComment = countComment;
+                    data.TotalIdea = countIdea;
+                    result.Add(data);
+                }
+                return result;
             }
             catch (Exception)
             {
