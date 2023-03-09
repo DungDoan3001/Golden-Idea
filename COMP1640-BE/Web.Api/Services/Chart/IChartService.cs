@@ -13,5 +13,6 @@ namespace Web.Api.Services.Chart
         Task<TotalStaffAndIdeaAndTopicAndCommentResponseModel> GetTotalOfStaffAndIdeaAndTopicAndCommment();
         Task<List<PercentageOfIdeaForEachDepartment>> GetPercentageOfIdeaForEachDepartments();
         Task<List<IdeaForChartResponseModel>> GetIdeasForChart();
+        Task<List<DailyReportResponseModel>> GetDailyReportInThreeMonths();
     }
 }

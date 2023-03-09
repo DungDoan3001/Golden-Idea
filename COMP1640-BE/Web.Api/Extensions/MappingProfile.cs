@@ -32,11 +32,13 @@ namespace Web.Api.Extensions
             // Role
             CreateMap<IdentityRole<Guid>, RoleResponseModel>();
 
-
             //User
-            CreateMap<UserRequestModel, User>();
-            CreateMap<User, UserRequestModel>();
-            CreateMap<User, UserResponseModel>();
+            CreateMap<UserRequestModel, User>()
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.File));
+            CreateMap<User, UserRequestModel>()
+                .ForMember(dest => dest.File, opt => opt.MapFrom(src => src.Avatar));
+            CreateMap<User, UserResponseModel>()
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar));
 
             // Idea
             CreateMap<Idea, IdeaResponseModel>()

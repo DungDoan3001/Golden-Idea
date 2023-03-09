@@ -21,7 +21,14 @@ namespace Web.Api.Controllers
         {
             _fileUploadService = fileUploadService;
         }
-
+        /// <summary>
+        /// Upload an image to cloudinary
+        /// </summary>
+        /// <param name="fileInput">Request model for upload image</param>
+        /// <returns>An image just uploaded</returns>
+        /// <response code="201">Successfully upload an image</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="409">There is a conflict while uploaded image</response>
         [HttpPost("image")]
         public async Task<IActionResult> UploadImage([FromForm] FileRequestModel fileInput)
         {
@@ -41,7 +48,15 @@ namespace Web.Api.Controllers
                 });
             }
         }
-
+        
+        /// <summary>
+        /// Upload multiple files to cloudinary
+        /// </summary>
+        /// <param name="fileInput">Request model for upload files</param>
+        /// <returns>An image just uploaded</returns>
+        /// <response code="201">Successfully upload files</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="409">There is a conflict while uploaded files</response>
         [HttpPost("file")]
         public async Task<IActionResult> UploadFile([FromForm] FileRequestModel fileInput)
         {

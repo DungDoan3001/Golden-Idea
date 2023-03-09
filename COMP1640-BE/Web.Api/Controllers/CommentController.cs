@@ -20,6 +20,11 @@ namespace Web.Api.Controllers
             _commentService = commentService;
         }
 
+        /// <summary>
+        /// Get all comments of specific idea.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("{ideaId}")]
         public async Task<ActionResult<List<CommentResponseModel>>> GetAllCommentOfIdea([FromRoute] Guid ideaId)
         {
@@ -39,6 +44,14 @@ namespace Web.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a comment in the idea
+        /// </summary>
+        /// <param name="comment">Request model for comment</param>
+        /// <returns>A category just created</returns>
+        /// <response code="201">Successfully created a comment for the idea</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        /// <response code="409">There is a conflict while create a comment</response>
         [HttpPost]
         public async Task<ActionResult<CommentResponseModel>> CreateComment([FromBody] CommentRequestModel comment)
         {
