@@ -23,12 +23,48 @@ namespace Web.Api.Controllers
         /// </summary>
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
-        [HttpGet("ContributorsByDepart")]
+        [HttpGet("contributors-by-department")]
         public async Task<ActionResult<List<ContributorResponseModel>>> GetContributorsByDepart() 
         {
             try
             {
                 return await _chartService.GetContributorByDepart();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        [HttpGet("num-of-ideas-anonymous-by-department")]
+        public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyAndNoCommentByDepart()
+        {
+            try
+            {
+                return await _chartService.GetNumOfIdeaAnonyAndNoCommentByDepart();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        [HttpGet("NumOfCommentByDepartment")]
+        public async Task<ActionResult<List<NumOfCommentResponseModel>>> GetNumOfCommentByDepart()
+        {
+            try
+            {
+                return await _chartService.GetNumOfCommentByDepart();
             }
             catch (Exception ex)
             {
@@ -40,18 +76,6 @@ namespace Web.Api.Controllers
                     Errors = new List<string> { ex.GetBaseException().Message }
                 });
             }
-        }
-
-        [HttpGet("NumOfIdeaAnonyByDepartment")]
-        public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyAndNoCommentByDepart()
-        {
-            return await _chartService.GetNumOfIdeaAnonyAndNoCommentByDepart();
-        }
-
-        [HttpGet("NumOfCommentByDepartment")]
-        public async Task<ActionResult<List<NumOfCommentResponseModel>>> GetNumOfCommentByDepart()
-        {
-            return await _chartService.GetNumOfCommentByDepart();
         }
     }
 }
