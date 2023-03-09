@@ -168,7 +168,7 @@ namespace Web.Api.Services.Chart
                             countComment++;
                         }
                     }
-                    data.Date = DateTime.Parse(date.AddDays(i).ToString("dd/MM/yyyy"));
+                    data.Date = date.AddDays(i).ToString("dd/MM/yyyy");
                     data.TotalComment = countComment;
                     data.TotalIdea = countIdea;
                     result.Add(data);
