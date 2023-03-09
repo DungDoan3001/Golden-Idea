@@ -272,11 +272,11 @@ namespace Web.Api.Services.Chart
         {
             try
             {
-                DateTime threeMonthPrevious = DateTime.Now.AddMonths(-3);
+                DateTime threeMonthPrevious = DateTime.UtcNow.AddMonths(-3);
                 int totalDays = 0;
                 for (int i = 0; i < 3; i++)
                 {
-                    totalDays = totalDays + DateTime.DaysInMonth(DateTime.Now.AddMonths(-i).Year, DateTime.Now.AddMonths(-i).Month);
+                    totalDays = totalDays + DateTime.DaysInMonth(DateTime.UtcNow.AddMonths(-i).Year, DateTime.UtcNow.AddMonths(-i).Month);
                 }
                 List<DailyReportResponseModel> result = new List<DailyReportResponseModel>();
                 var totalIdea = await _context.Ideas.AsNoTracking().ToListAsync();
@@ -310,7 +310,6 @@ namespace Web.Api.Services.Chart
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
