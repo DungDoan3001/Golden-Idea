@@ -21,7 +21,7 @@ namespace Web.Api.Entities
         public ICollection<View> Views { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Reaction> Reactions { get; set; }
-        public virtual ICollection<Topic> Topic { get; set; }
+        public virtual ICollection<Topic> Topics { get; set; }
     }
 
 }

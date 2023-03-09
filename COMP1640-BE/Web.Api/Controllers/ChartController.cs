@@ -42,6 +42,102 @@ namespace Web.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Total Idea count for each department.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("ideas-by-department")]
+        public async Task<ActionResult<List<TotalIdeaOfDepartmentsResponseModel>>> GetTotalIdeaByDepartment()
+        {
+            try
+            {
+                return await _chartService.GetTotalIdeaOfEachDepartment();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Get List of Ideas for dashboard.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("list-of-ideas")]
+        public async Task<ActionResult<List<IdeaForChartResponseModel>>> GetIdeasForChart()
+        {
+            try
+            {
+                return await _chartService.GetIdeasForChart();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Percentage Idea count for each department.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("percentage-of-ideas-by-department")]
+        public async Task<ActionResult<List<PercentageOfIdeaForEachDepartment>>> GetPercentageOfIdeasByDepartment()
+        {
+            try
+            {
+                return await _chartService.GetPercentageOfIdeaForEachDepartments();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Total staff and idea and comment and topic count.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("get-staff-idea-comment-topic")]
+        public async Task<ActionResult<TotalStaffAndIdeaAndTopicAndCommentResponseModel>> GetTotalStaffAndIdeaAndCommentAndTopic()
+        {
+            try
+            {
+                return await _chartService.GetTotalOfStaffAndIdeaAndTopicAndCommment();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
         [HttpGet("NumOfIdeaAnonyByDepartment")]
         public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyAndNoCommentByDepart()
         {
