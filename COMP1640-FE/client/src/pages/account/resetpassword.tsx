@@ -4,10 +4,8 @@ import {
 } from "@mui/icons-material";
 import Image from '../../app/assets/GoldenIdea.svg'
 import { LoadingButton } from '@mui/lab';
-import { object, string, TypeOf } from "zod";
 import { useEffect } from "react";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useStoreContext } from '../../app/context/ContextProvider';
@@ -15,22 +13,24 @@ import agent from '../../app/api/agent';
 import FormInput from '../../app/components/FormInput';
 import axios from 'axios';
 import { router } from '../../app/routes/Routers';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-const resetPasswordSchema = object({
-    password: string().min(1, "Required Field!"),
-    confirmPassword: string().min(1, "Required Field!"),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "Not match!",
-    path: ["confirmPassword"],
+const resetPasswordSchema = Yup.object().shape({
+    password: Yup.string().required("Required Field!"),
+    confirmPassword: Yup.string()
+        .required("Required Field!")
+        .oneOf([Yup.ref('password')], 'Not match!'),
 });
 
-export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>;
+
+export type ResetPasswordInput = Yup.InferType<typeof resetPasswordSchema>;
 const ResetPass = () => {
     const store = useStoreContext();
     const { resetCode } = useParams();
 
     const methods = useForm<ResetPasswordInput>({
-        resolver: zodResolver(resetPasswordSchema),
+        resolver: yupResolver(resetPasswordSchema),
     });
 
     const {

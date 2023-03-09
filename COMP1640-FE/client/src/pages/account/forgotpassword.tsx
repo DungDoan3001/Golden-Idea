@@ -1,5 +1,4 @@
-import { object, string, TypeOf } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import * as Yup from 'yup';
 import { useEffect } from "react";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { LoadingButton } from '@mui/lab';
@@ -11,17 +10,18 @@ import {
     ForwardToInbox
 } from "@mui/icons-material";
 import FormInput from "../../app/components/FormInput";
+import { yupResolver } from '@hookform/resolvers/yup';
 
-const forgotPasswordchema = object({
-    email: string().min(1, "Email is required").email("Invalid email address"),
+const forgotPasswordSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email!").required("Require email!"),
 });
 
-export type ForgotPasswordInput = TypeOf<typeof forgotPasswordchema>;
+export type ForgotPasswordInput = Yup.InferType<typeof forgotPasswordSchema>;
 
 const ForgotPassword = () => {
     const store = useStoreContext();
     const methods = useForm<ForgotPasswordInput>({
-        resolver: zodResolver(forgotPasswordchema),
+        resolver: yupResolver(forgotPasswordSchema),
     });
 
     const {
