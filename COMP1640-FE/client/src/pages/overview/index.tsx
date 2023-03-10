@@ -1,13 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, useTheme } from "@mui/material";
 import Header from "../../app/components/Header";
 import OverviewChart from '../../app/components/OverviewChart';
-import { dataOverview } from '../../dataTest';
+import agent from '../../app/api/agent';
+import Loading from '../../app/components/Loading';
 const Overview = () => {
   const theme = useTheme();
 
-  const menuItems: Array<string> = [...new Set(dataOverview.map((Val: { department: any }) => Val.department))];
+  const [dataOverview, setDataOverview] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedDepartment, setSelectedDepartment] = useState<number>(0);
+  useEffect(() => {
+    const fetchContributors = async () => {
+      const response = await agent.Chart.overviewChart();
+      setDataOverview(response);
+      setIsLoading(false);
+    };
+    fetchContributors();
+  }, []);
+
+  const menuItems: Array<string> = [...new Set(dataOverview.map((Val: { departmentName: any }) => Val.departmentName))];
+
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedDepartment(event.target.value as unknown as number);
@@ -15,7 +28,7 @@ const Overview = () => {
 
   const filteredDataOverview = selectedDepartment === 0
     ? dataOverview
-    : dataOverview.filter((item) => item.department === menuItems[selectedDepartment - 1]);
+    : dataOverview.filter((item: any) => item.departmentName === menuItems[selectedDepartment - 1]);
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -39,8 +52,8 @@ const Overview = () => {
           onChange={handleChange}
         >
           <MenuItem value={0}>All</MenuItem>
-          {dataOverview.map((item, index) => (
-            <MenuItem key={index} value={index + 1}>{item.department}</MenuItem>
+          {dataOverview.map((item: any, index) => (
+            <MenuItem key={index} value={index + 1}>{item.departmentName}</MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -58,7 +71,9 @@ const Overview = () => {
             overflow: 'auto'
           },
         }}>
-          <OverviewChart isDashboard={false} formatedData={filteredDataOverview} />
+          {isLoading ? <Loading /> :
+            <OverviewChart isDashboard={false} formatedData={filteredDataOverview} />
+          }
         </Box>
       </Box>
     </Box>

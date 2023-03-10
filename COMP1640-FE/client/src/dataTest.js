@@ -127,51 +127,37 @@ export const dataContributor = [
   {
     department: " IT",
     contributors: 52,
-    contributorsColor: "hsl(52, 70%, 50%)",
     "non contributory": 123,
-    "non contributoryColor": "hsl(311, 70%, 50%)",
   },
   {
     department: "Business",
     contributors: 121,
-    contributorsColor: "hsl(339, 70%, 50%)",
     "non contributory": 123,
-    "non contributoryColor": "hsl(311, 70%, 50%)",
   },
   {
     department: "HR",
     contributors: 55,
-    contributorsColor: "hsl(46, 70%, 50%)",
     "non contributory": 123,
-    "non contributoryColor": "hsl(311, 70%, 50%)",
   },
   {
     department: "Marketing",
     contributors: 60,
-    contributorsColor: "hsl(212, 70%, 50%)",
     "non contributory": 123,
-    "non contributoryColor": "hsl(311, 70%, 50%)",
   },
   {
     department: "Graphic Design",
     contributors: 172,
-    contributorsColor: "hsl(82, 70%, 50%)",
     "non contributory": 123,
-    "non contributoryColor": "hsl(311, 70%, 50%)",
   },
   {
     department: "Math",
     contributors: 171,
-    contributorsColor: "hsl(5, 70%, 50%)",
     "non contributory": 123,
-    "non contributoryColor": "hsl(311, 70%, 50%)",
   },
   {
     department: "QA",
     contributors: 142,
-    contributorsColor: "hsl(78, 70%, 50%)",
     "non contributory": 123,
-    "non contributoryColor": "hsl(311, 70%, 50%)",
   },
 ];
 export const dataComment = [
@@ -248,71 +234,99 @@ export const dataOverview = [
     "total ideasColor": "hsl(78, 70%, 50%)",
   },
 ];
-export const rawData = {
-  IT: 10,
-  Business: 20,
-  HR: 30,
-  Marketing: 40,
-};
+export const rawData = [
+  {
+    departmentName: "IT",
+    percentage: 10,
+  },
+  {
+    departmentName: "Bussiness 1",
+    percentage: 20,
+  },
+  {
+    departmentName: "HR",
+    percentage: 30,
+  },
+  {
+    departmentName: "Lecturer",
+    percentage: 30,
+  },
+  {
+    departmentName: "Student Office",
+    percentage: 10,
+  },
+];
 export const postData = [
   {
     _id: 1,
     title: "I don't know what to post 1",
-    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
+    content:
+      "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
     userName: "username",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 2",
-    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
+    content:
+      "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
     userName: "username",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 3",
-    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
+    content:
+      "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
     userName: "username",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 4",
-    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
+    content:
+      "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
     userName: "username",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 5",
-    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
+    content:
+      "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
     userName: "username",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
   {
     _id: 1,
     title: "I don't know what to post 6",
-    content: "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
+    content:
+      "Adalis Dimidry, là một half-elf ở một ngôi làng nhỏ sâu trong rừng. Do mang trong mình dòng máu lai nên bị đa số người trong tộc kì thị. Tuy nhiên do năng khiếu đàn hát và gương mặt điển trai của mình nên cũng phần nào xoay xở được phép ở lại làng nhưng sự kì thị vẫn không giảm xuống mà lại còn ngày càng tăng. Ngày nọ khi Adalis đang luyện sáo một mình trong rừng thì đột nhiên một người đen kịt tiến tới và đưa anh một cây sáo nhìn ma mị và nói “Thứ này sẽ giúp ngươi thoát khỏi hoàn cảnh hiện tại” rồi biến mất. Cây sáo ma mị nằm đó như muốn lôi cuốn người khác cầm lấy vậy. Lúc đấy Adalis không nghĩ rằng một cây sáo nào có thể gây ra sự kiện kinh hoàng sau này nên đã cầm lấy và cất vào tủ đồ của mình. Một năm sau,",
     img: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901810858823711/101.jpg",
     lastUpdate: "00:00:00 | 12/02/2023",
     userName: "username",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     catalog: "anime",
   },
 ];
@@ -6411,10 +6425,12 @@ export const dataOverall = [
 export const commentData = [
   {
     id: "1122f440-3f86-4af3-a053-9cef88bb5f5a",
-    content: "This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! ",
+    content:
+      "This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! This is a great idea! ",
     createdDate: "2020-06-15T08:00:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 1234,
     ideaID: 5678,
   },
@@ -6423,7 +6439,8 @@ export const commentData = [
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-21T08:45:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 2345,
     ideaID: 6789,
   },
@@ -6432,7 +6449,8 @@ export const commentData = [
     content: "This is a great idea!",
     createdDate: "2020-06-22T09:15:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 3456,
     ideaID: 7890,
   },
@@ -6441,7 +6459,8 @@ export const commentData = [
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-23T09:30:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 4567,
     ideaID: 8901,
   },
@@ -6450,7 +6469,8 @@ export const commentData = [
     content: "This is a great idea!",
     createdDate: "2020-06-24T10:00:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 5678,
     ideaID: 9012,
   },
@@ -6459,7 +6479,8 @@ export const commentData = [
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-25T10:30:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 6789,
     ideaID: 1523,
   },
@@ -6468,7 +6489,8 @@ export const commentData = [
     content: "This is a great idea!",
     createdDate: "2020-06-26T11:00:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 7801,
     ideaID: 1234,
   },
@@ -6477,7 +6499,8 @@ export const commentData = [
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-27T11:30:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 8912,
     ideaID: 2345,
   },
@@ -6486,7 +6509,8 @@ export const commentData = [
     content: "This is a great idea!",
     createdDate: "2020-06-28T12:00:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 9123,
     ideaID: 3456,
   },
@@ -6495,7 +6519,8 @@ export const commentData = [
     content: "I agree, this would be really useful!",
     createdDate: "2020-06-29T12:30:00.000Z",
     userName: "userName",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     userID: 1346,
     ideaID: 4567,
   },
@@ -6549,7 +6574,8 @@ export const topicData = [
     closureDate: "2020-11-23",
     finalClosureDate: "2020-12-23",
     userName: "UserName-001",
-    userImg: "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
+    userImg:
+      "https://cdn.discordapp.com/attachments/1074670576809033798/1078901913384394763/profile.jpeg",
     lastUpdate: "00:00:00 | 12/02/2023",
   },
   {
