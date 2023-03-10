@@ -132,14 +132,14 @@ namespace Web.Api.Controllers
         {
             try
             {
-                bool check = await CheckExist(requestModel.Name);
-                if (check)
-                    return Conflict(new MessageResponseModel 
-                    { 
-                        Message = "Conflict", 
-                        StatusCode = (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "The name already existed." }
-                    });
+                //bool check = await CheckExist(requestModel.Name);
+                //if (check)
+                //    return Conflict(new MessageResponseModel 
+                //    { 
+                //        Message = "Conflict", 
+                //        StatusCode = (int)HttpStatusCode.Conflict,
+                //        Errors = new List<string> { "The name already existed." }
+                //    });
 
                 Entities.Topic topic = _mapper.Map<Entities.Topic>(requestModel);
 
@@ -193,15 +193,6 @@ namespace Web.Api.Controllers
         {
             try
             {
-                bool check = await CheckExist(requestModel.Name);
-                if (check)
-                    return Conflict(new MessageResponseModel 
-                    { 
-                        Message = "Conflict", 
-                        StatusCode = (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "The name already existed." }
-                    });
-
                 Entities.Topic topic = await _topicService.GetByIdAsync(id);
                 if (topic == null) 
                     return NotFound(new MessageResponseModel 
@@ -212,7 +203,6 @@ namespace Web.Api.Controllers
                     });
 
                 _mapper.Map<TopicRequestModel, Entities.Topic>(requestModel, topic);
-
                 // Get User
                 User user = await _userService.GetByUserName(requestModel.UserName);
                 if (user == null)
@@ -296,12 +286,12 @@ namespace Web.Api.Controllers
             }
         }
 
-        private async Task<bool> CheckExist(string name)
-        {
-            IEnumerable<Entities.Topic> checkTopics = await _topicService.GetByNameAsync(name);
-            if (checkTopics.Any())
-                return true;
-            return false;
-        }
+        //private async Task<bool> CheckExist(string name)
+        //{
+        //    IEnumerable<Entities.Topic> checkTopics = await _topicService.GetByNameAsync(name);
+        //    if (checkTopics.Any())
+        //        return true;
+        //    return false;
+        //}
     }
 }
