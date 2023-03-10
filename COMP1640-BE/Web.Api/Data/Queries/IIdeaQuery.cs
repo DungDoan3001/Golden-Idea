@@ -9,6 +9,7 @@ namespace Web.Api.Data.Queries
     {
         Task<List<Idea>> GetAllAsync();
         Task<List<Idea>> GetAllByAuthorAsync(Guid userId);
+        Task<List<Idea>> GetAllByTopicAsync(Guid topicId);
         Task<Idea> GetByIdAsync(Guid id);
         Task<Idea> GetBySlugAsync(string slug);
         Task<bool> CheckSlugExistedAsync(string slug);

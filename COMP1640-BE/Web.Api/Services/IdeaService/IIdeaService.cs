@@ -9,6 +9,7 @@ namespace Web.Api.Services.IdeaService
     {
         Task<IEnumerable<Idea>> GetAllAsync();
         Task<IEnumerable<Idea>> GetAllByAuthorAsync(Guid userId);
+        Task<IEnumerable<Idea>> GetAllByTopicAsync(Guid topicId);
         Task<Idea> GetByIdAsync(Guid id);
         Task<Idea> GetBySlugAsync(string slug);
         Task<Idea> CreateAsync(Idea idea);

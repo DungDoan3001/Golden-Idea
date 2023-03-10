@@ -39,6 +39,20 @@ namespace Web.Api.Data.Queries
                 .ToListAsync();
         }
 
+        public async Task<List<Idea>> GetAllByTopicAsync(Guid topicId)
+        {
+            return await dbSet
+                .Include(x => x.User)
+                .Include(x => x.Topic)
+                .Include(x => x.Category)
+                .Include(x => x.Files)
+                .Include(x => x.Views)
+                .Include(x => x.Reactions)
+                .Where(x => x.TopicId == topicId)
+                .AsSplitQuery()
+                .ToListAsync();
+        }
+
         public async Task<Idea> GetByIdAsync(Guid id)
         {
             return await dbSet
