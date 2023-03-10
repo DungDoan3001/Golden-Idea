@@ -66,7 +66,6 @@ namespace Web.Api.Extensions
                     } else { dest.FileExtention = src.Format; }
                 });
             CreateMap<IdeaRequestModel, Idea>();
-
             // Reaction
             CreateMap<Reaction, ReactionResponseModel>();
 

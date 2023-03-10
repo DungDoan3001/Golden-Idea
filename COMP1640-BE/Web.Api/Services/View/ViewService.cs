@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Web.Api.Data.Context;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
-using Web.Api.Entities;
-using static Dropbox.Api.Sharing.ListFileMembersIndividualResult;
 
 namespace Web.Api.Services.View
 {

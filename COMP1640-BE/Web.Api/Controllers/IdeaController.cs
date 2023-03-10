@@ -182,9 +182,9 @@ namespace Web.Api.Controllers
                 // Map Idea.
                 Idea idea = _mapper.Map<Idea>(requestModel);
                 // Upload thumbnail.
-                if (requestModel.Image != null)
+                if (requestModel.File != null)
                 {
-                    await UploadImage(requestModel.Image, idea);
+                    await UploadImage(requestModel.File, idea);
                 }
                 // Upload Files
                 List<File> files = await UploadFileAsync(requestModel.UploadFiles, idea);
@@ -268,7 +268,7 @@ namespace Web.Api.Controllers
                 }
 
                 // Delete old media
-                if(requestModel.Image != null)
+                if(requestModel.File != null)
                 {
                     await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
                 }
@@ -285,9 +285,9 @@ namespace Web.Api.Controllers
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);
                 // Upload thumbnail.
-                if (requestModel.Image != null)
+                if (requestModel.File != null)
                 {
-                    await UploadImage(requestModel.Image, idea);
+                    await UploadImage(requestModel.File, idea);
                 }
                 // Upload Files
                 List<File> files = await UploadFileAsync(requestModel.UploadFiles, idea);
