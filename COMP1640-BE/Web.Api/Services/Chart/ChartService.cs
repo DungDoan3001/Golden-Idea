@@ -288,7 +288,7 @@ namespace Web.Api.Services.Chart
                     int countComment = 0; 
                     foreach(var idea in totalIdea)
                     {
-                        if(String.Equals(idea.CreatedAt.ToString("dd/MM/yyyy"), date.AddDays(i).ToString("dd/MM/yyyy")))
+                        if(String.Equals(idea.CreatedAt.ToString("yyyy-MM-dd"), date.AddDays(i).ToString("yyyy-MM-dd")))
                         {
                             countIdea++;
                         }
@@ -296,12 +296,12 @@ namespace Web.Api.Services.Chart
                     var totalComment = await _context.Comments.ToListAsync();
                     foreach (var comment in totalComment)
                     {
-                        if (String.Equals(comment.CreatedDate.ToString("dd/MM/yyyy"), date.AddDays(i).ToString("dd/MM/yyyy")))
+                        if (String.Equals(comment.CreatedDate.ToString("yyyy-MM-dd"), date.AddDays(i).ToString("yyyy-MM-dd")))
                         {
                             countComment++;
                         }
                     }
-                    data.Date = date.AddDays(i).ToString("dd/MM/yyyy");
+                    data.Date = date.AddDays(i).ToString("yyyy-MM-dd");
                     data.TotalComment = countComment;
                     data.TotalIdea = countIdea;
                     result.Add(data);
