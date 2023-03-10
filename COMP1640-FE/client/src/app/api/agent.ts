@@ -103,12 +103,21 @@ const Account = {
     forgotpassword: (values: any) => requests.post('authentication/change-password', values),
     resetpassword: (resetCode: string, values: any) => requests.put(`authentication/change-password/${resetCode}`, values)
 }
+const Chart = {
+    contributorChart: () => requests.get('charts/contributors-by-department'),
+    breakdownChart: () => requests.get('charts/percentage-of-ideas-by-department'),
+    exceptionChart: () => requests.get('charts/num-of-ideas-anonymous-by-department'),
+    overallChart: () => requests.get('charts/get-staff-idea-comment-topic'),
+    overviewChart: () => requests.get('charts/ideas-by-department'),
+    dailyChart: () => requests.get('charts/daily-report-in-three-months'),
+}
 const agent = {
     Department,
     Category,
     Topic,
     User,
-    Account
+    Account,
+    Chart,
 }
 
 export default agent;

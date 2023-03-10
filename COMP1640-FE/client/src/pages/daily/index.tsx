@@ -1,52 +1,71 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import Header from "../../app/components/Header";
 import { ResponsiveLine } from "@nivo/line";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { dataOverall } from "../../dataTest";
 import Loading from "../../app/components/Loading";
+import agent from "../../app/api/agent";
 const DailyReport = () => {
-    const [startDate, setStartDate] = useState(new Date("2023-02-01"));
-    const [endDate, setEndDate] = useState(new Date("2023-03-01"));
-    //const { data } = useGetIdeasQuery();
-    const data = dataOverall[0].dailyData;
+    //GET end date
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    const formattedEndDate = `${year}-${month}-${day}`
+    //GET start date
+    const startFormattedDate = new Date(formattedEndDate);
+    startFormattedDate.setDate(startFormattedDate.getDate() - 75);
+    const formattedStartDate = startFormattedDate.toISOString().substring(0, 10);
+    //INITIAL data
+    const [startDate, setStartDate] = useState(new Date(formattedStartDate));
+    const [endDate, setEndDate] = useState(new Date(formattedEndDate.toString()));
+
+    const [dataDaily, setDataDaily] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await agent.Chart.dailyChart();
+            setDataDaily(response);
+        };
+        fetchData();
+    }, []);
+    console.log(dataDaily)
     const theme: any = useTheme();
 
     const [formattedData] = useMemo(() => {
-        if (!data) return [];
-
-        const totalIdeasLine: any = {
-            id: "totalIdeas",
+        if (!dataDaily) return [];
+        const totalIdeaLine: any = {
+            id: "totalIdea",
             color: theme.palette.secondary.main,
             data: [],
         };
-        const totalCommentsLine: any = {
-            id: "totalComments",
+        const totalCommentLine: any = {
+            id: "totalComment",
             color: theme.palette.secondary[600],
             data: [],
         };
 
-        Object.values(data).forEach(({ date, totalIdeas, totalComments }: any) => {
+        Object.values(dataDaily).forEach(({ date, totalIdea, totalComment }: any) => {
             const dateFormatted = new Date(date);
             if (dateFormatted >= startDate && dateFormatted <= endDate) {
                 const splitDate = date.substring(date.indexOf("-") + 1);
 
-                totalIdeasLine.data = [
-                    ...totalIdeasLine.data,
-                    { x: splitDate, y: totalIdeas },
+                totalIdeaLine.data = [
+                    ...totalIdeaLine.data,
+                    { x: splitDate, y: totalIdea },
                 ];
-                totalCommentsLine.data = [
-                    ...totalCommentsLine.data,
-                    { x: splitDate, y: totalComments },
+                totalCommentLine.data = [
+                    ...totalCommentLine.data,
+                    { x: splitDate, y: totalComment },
                 ];
             }
         });
 
-        const formattedData = [totalIdeasLine, totalCommentsLine];
+        const formattedData = [totalIdeaLine, totalCommentLine];
         return [formattedData];
-    }, [data, startDate, endDate]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [dataDaily, startDate, endDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    console.log(formattedData);
     return (
         <Box m="1.5rem 2.5rem" >
             <Box sx={{
@@ -73,7 +92,7 @@ const DailyReport = () => {
                 </Box>
                 <Box>
                     <DatePicker
-                        selected={startDate}
+                        selected={endDate}
                         onChange={date => date && setEndDate(date)}
                         selectsEnd
                         startDate={startDate}
@@ -98,7 +117,6 @@ const DailyReport = () => {
                     },
                 }}>
                     {formattedData ? (
-
                         <Box height={"100%"}
                             width={"73rem"}
                             minHeight={"325px"}

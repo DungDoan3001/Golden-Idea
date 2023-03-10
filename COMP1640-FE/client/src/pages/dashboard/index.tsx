@@ -20,16 +20,40 @@ import StatBox from "../../app/components/StatBox";
 import OverviewChart from "../../app/components/OverviewChart";
 import { dataIdeas, dataOverall, dataOverview } from "../../dataTest";
 import Loading from "../../app/components/Loading";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import agent from "../../app/api/agent";
 
-// import OverviewChart from "components/OverviewChart";
-// import { useGetDashboardQuery } from "state/api";
-// import StatBox from "components/StatBox";
+interface IData {
+  totalStaff: number;
+  totalIdea: number;
+  totalComment: number;
+  totalTopic: number;
+}
 const Dashboard = () => {
   const theme: any = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const [pageSize, setPageSize] = React.useState<number>(10);
-  const data = dataOverall[0]
+  const [dataBreakdown, setDataBreakdown] = useState([]);
+  const [dataOverview, setDataOverview] = useState([]);
+  const [dataOverall, setDataOverall] = useState<IData>({
+    totalStaff: 0,
+    totalIdea: 0,
+    totalComment: 0,
+    totalTopic: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await agent.Chart.breakdownChart();
+      const res = await agent.Chart.overallChart();
+      const data = await agent.Chart.overviewChart();
+      setDataBreakdown(response);
+      setDataOverall(res);
+      setDataOverview(data);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
   const columns: any = [
     {
       field: "id",
@@ -72,7 +96,7 @@ const Dashboard = () => {
       flex: 1,
     },
   ];
-  if (!dataIdeas) return <Loading />;
+  if (loading) return <Loading />;
   return (
     <Box m="1.5rem 2.5rem" sx={{
       [theme.breakpoints.down('sm')]: {
@@ -119,8 +143,8 @@ const Dashboard = () => {
         {/* ROW 1 */}
         <StatBox
           title="Total Staffs"
-          value={data.totalStaffs.value}
-          increase={`${data.totalStaffs.increase}%`}
+          value={dataOverall.totalStaff}
+          increase={`${2}%`}
           description="Since last month"
           icon={
             <PersonAdd
@@ -130,8 +154,8 @@ const Dashboard = () => {
         />
         <StatBox
           title="Total Ideas"
-          value={data.totalIdeas.value}
-          increase={`${data.totalIdeas.increase}%`}
+          value={dataOverall.totalIdea}
+          increase={`${10}%`}
           description="Since last month"
           icon={
             <PostAdd
@@ -163,13 +187,13 @@ const Dashboard = () => {
               height: '100%',
               overflow: 'auto'
             },
-          }}><OverviewChart isDashboard={true} formatedData={dataOverview} /></Box>
-
+          }}>
+            <OverviewChart isDashboard={true} formatedData={dataOverview} /></Box>
         </Box>
         <StatBox
           title="Total comments"
-          value={data.totalComments.value}
-          increase={`${data.totalComments.increase}%`}
+          value={dataOverall.totalComment}
+          increase={`${5}%`}
           description="Since last month"
           icon={
             <InsertComment
@@ -179,8 +203,8 @@ const Dashboard = () => {
         />
         <StatBox
           title="Total topics"
-          value={data.totalTopics.value}
-          increase={`${data.totalTopics.increase}%`}
+          value={dataOverall.totalTopic}
+          increase={`${3}%`}
           description="Since last month"
           icon={
             < DynamicFeed
@@ -239,7 +263,7 @@ const Dashboard = () => {
           <Typography variant="h6" sx={{ color: theme.palette.secondary[100] }}>
             Ideas By Category
           </Typography>
-          <BreakdownChart isDashboard={true} />
+          <BreakdownChart isDashboard={true} data={dataBreakdown} />
           <Typography
             p="0 0.6rem"
             fontSize="0.8rem"

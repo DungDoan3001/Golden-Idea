@@ -3,11 +3,23 @@ import { Box, FormControl, InputLabel, MenuItem, Select, useTheme } from "@mui/m
 import Header from "../../app/components/Header";
 
 import ExceptionBarChart from "../../app/components/ExceptionBarChart";
-import { useState } from "react";
-import { dataComment, dataExceptions } from '../../dataTest'
+import { useEffect, useState } from "react";
+import { dataComment } from '../../dataTest'
+import agent from "../../app/api/agent";
+import Loading from "../../app/components/Loading";
 
 const Exception = () => {
     const theme = useTheme();
+    const [dataExceptions, setDataExceptions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchExceptions = async () => {
+            const response = await agent.Chart.exceptionChart();
+            setDataExceptions(response);
+            setLoading(false);
+        };
+        fetchExceptions();
+    }, []);
     const [view, setView] = useState("ideas");
     return (
         <Box m="1.5rem 2.5rem" >
@@ -46,7 +58,11 @@ const Exception = () => {
                         overflow: 'auto'
                     },
                 }}>
-                    {view === "comments" ? <ExceptionBarChart isComment={true} dataChart={dataComment} /> : <ExceptionBarChart isComment={false} dataChart={dataExceptions} />}
+                    {loading ? <Loading /> : (<>
+                        {view === "comments" ? <ExceptionBarChart isComment={true} dataChart={dataComment} /> : <ExceptionBarChart isComment={false} dataChart={dataExceptions} />}
+                    </>
+                    )}
+
                 </Box>
             </Box>
         </Box>

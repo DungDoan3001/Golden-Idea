@@ -27,7 +27,6 @@ export default function AppTextInput(props: Props) {
         setPassword(event.target.value);
         field.onChange(event.target.value); // Manually update the form field value
     };
-
     return (
         <div className="app-text-input">
             <TextField
@@ -51,6 +50,9 @@ export default function AppTextInput(props: Props) {
                         </InputAdornment>
                     ), value: password,
                 } : {}}
+                InputLabelProps={{
+                    shrink: true,
+                }}
                 onChange={handleChange} // Add onChange handler to update the local state and form field value
             />
         </div>
