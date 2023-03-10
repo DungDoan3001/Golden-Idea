@@ -7,6 +7,7 @@ using Web.Api.DTOs.ResponseModels;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System;
 
 namespace Web.Api.Controllers
 {
@@ -34,7 +35,7 @@ namespace Web.Api.Controllers
                     StatusCode = (int)HttpStatusCode.OK,
                 });
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
                 return BadRequest(new MessageResponseModel
                 {
