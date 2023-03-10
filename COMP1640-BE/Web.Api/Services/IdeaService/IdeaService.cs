@@ -6,7 +6,6 @@ using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.Entities;
-using static Dropbox.Api.Files.ListRevisionsMode;
 
 namespace Web.Api.Services.IdeaService
 {
@@ -47,6 +46,18 @@ namespace Web.Api.Services.IdeaService
             }
         }
 
+        public async Task<IEnumerable<Idea>> GetAllByTopicAsync(Guid topicId)
+        {
+            try
+            {
+                return await _ideaQuery.GetAllByTopicAsync(topicId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Idea> GetByIdAsync(Guid id)
         {
             try
@@ -70,6 +81,7 @@ namespace Web.Api.Services.IdeaService
                 throw;
             }
         }
+
 
         public async Task<Idea> CreateAsync(Idea idea)
         {

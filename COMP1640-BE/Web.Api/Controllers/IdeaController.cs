@@ -120,13 +120,39 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("slug/{slug}")]
-        public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string slug)
+        public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string topicId)
         {
             try
             {
-                Idea idea = await _ideaService.GetBySlugAsync(slug);
+                Idea idea = await _ideaService.GetBySlugAsync(topicId);
                 IdeaResponseModel IdeaResponse = _mapper.Map<IdeaResponseModel>(idea);
                 return Ok(IdeaResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Get idea by topic
+        /// </summary>
+        /// <returns>List of Ideas</returns>
+        /// <response code="200">Successfully get idea</response>
+        /// <response code="400">There is something wrong while execute.</response>
+        [HttpGet("topic/{topicId}")]
+        public async Task<ActionResult<IdeaResponseModel>> GetByTopic([FromRoute] Guid topicId)
+        {
+            try
+            {
+                IEnumerable<Idea> ideas = await _ideaService.GetAllByTopicAsync(topicId);
+                IEnumerable<IdeaResponseModel> IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
+                return Ok(IdeaResponses);
             }
             catch (Exception ex)
             {
