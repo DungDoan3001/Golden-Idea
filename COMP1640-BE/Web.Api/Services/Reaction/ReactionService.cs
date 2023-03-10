@@ -57,7 +57,7 @@ namespace Web.Api.Services.ReactionService
                     await _unitOfWork.CompleteAsync();
                     return result;
                 }
-                if (userReact.First().React == react || react != 1 || react != -1)
+                if (userReact.First().React == react || react != 1 && react != -1)
                 {
                     var result = _reactionRepo.Delete(userReact.First().Id);
                     await _unitOfWork.CompleteAsync();
