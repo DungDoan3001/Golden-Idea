@@ -1,0 +1,8 @@
+{
+    "crons": [
+        {
+            "path": "./cronTrigger.js",
+            "schedule": "0/10 0 0 ? * * *"
+        }
+    ]
+}
