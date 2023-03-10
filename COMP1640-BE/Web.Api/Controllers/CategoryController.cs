@@ -154,14 +154,6 @@ namespace Web.Api.Controllers
         {
             try
             {
-                bool check = await CheckExist(requestModel.Name);
-                if (check)
-                    return Conflict(new MessageResponseModel 
-                    {
-                        Message = "Conflict", 
-                        StatusCode = (int)HttpStatusCode.Conflict, 
-                        Errors = new List<string> { "The name already existed" } 
-                    });
                 Entities.Category category = await _categoryService.GetByIdAsync(id);
                 if (category == null) 
                     return NotFound(new MessageResponseModel 
@@ -170,6 +162,17 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors= new List<string> {"Can not find category with the given id"}
                     });
+                if(category.Name.Trim().ToLower() != requestModel.Name.Trim().ToLower())
+                {
+                    bool check = await CheckExist(requestModel.Name);
+                    if (check)
+                        return Conflict(new MessageResponseModel
+                        {
+                            Message = "Conflict",
+                            StatusCode = (int)HttpStatusCode.Conflict,
+                            Errors = new List<string> { "The name already existed" }
+                        });
+                }
                 _mapper.Map<CategoryRequestModel, Entities.Category>(requestModel, category);
                 Entities.Category updatedCategory = await _categoryService.UpdateAsync(category);
                 return Ok(_mapper.Map<CategoryResponseModel>(updatedCategory));

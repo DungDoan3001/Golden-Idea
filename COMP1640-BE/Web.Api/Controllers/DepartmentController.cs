@@ -148,14 +148,6 @@ namespace Web.Api.Controllers
         {
             try
             {
-                bool check = await CheckExist(requestModel.Name);
-                if (check)
-                    return Conflict(new MessageResponseModel 
-                    { 
-                        Message = "Conflict", 
-                        StatusCode = (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "The name already existed" }
-                    });
                 Department department = await _departmentService.GetByIdAsync(id);
                 if (department == null) 
                     return NotFound(new MessageResponseModel 
@@ -164,6 +156,17 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Can not find department with the given id" }
                     });
+                if(department.Name.Trim().ToLower() != requestModel.Name.Trim().ToLower())
+                {
+                    bool check = await CheckExist(requestModel.Name);
+                    if (check)
+                        return Conflict(new MessageResponseModel
+                        {
+                            Message = "Conflict",
+                            StatusCode = (int)HttpStatusCode.Conflict,
+                            Errors = new List<string> { "The name already existed" }
+                        });
+                }
                 _mapper.Map<DepartmentRequestModel, Department>(requestModel, department);
                 Department updatedDepartment = await _departmentService.UpdateAsync(department);
                 return Ok(_mapper.Map<DepartmentResponseModel>(updatedDepartment));
