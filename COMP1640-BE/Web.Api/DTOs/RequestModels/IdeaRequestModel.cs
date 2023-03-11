@@ -16,7 +16,7 @@ namespace Web.Api.DTOs.RequestModels
         [DataType(DataType.Upload)]
         [AllowedExtensions(new string[] { ".jpg", ".png" })]
         [MaxFileSize(2 * 1024 * 1024)]
-        public IFormFile Image { get; set; }
+        public IFormFile File { get; set; }
 
         [Required(ErrorMessage = "Must choose if the idea is anonymous.")]
         public bool IsAnonymous { get; set; } = true;
