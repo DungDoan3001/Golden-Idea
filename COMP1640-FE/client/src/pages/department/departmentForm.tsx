@@ -42,8 +42,10 @@ const DepartmentForm = ({ department, cancelEdit }: Props) => {
                 };
                 response = await dispatch(addDepartment(newDepartment)).unwrap();
             }
+            toast.success('Successfully', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
             cancelEdit();
-            await dispatch(getDepartments()).unwrap();
         } catch (error: any) {
             toast.error('Failed to load resource: the server responded with a status of 409 (Conflict)', {
                 position: toast.POSITION.TOP_RIGHT,

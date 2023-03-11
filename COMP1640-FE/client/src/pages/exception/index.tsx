@@ -4,18 +4,20 @@ import Header from "../../app/components/Header";
 
 import ExceptionBarChart from "../../app/components/ExceptionBarChart";
 import { useEffect, useState } from "react";
-import { dataComment } from '../../dataTest'
 import agent from "../../app/api/agent";
 import Loading from "../../app/components/Loading";
 
 const Exception = () => {
     const theme = useTheme();
     const [dataExceptions, setDataExceptions] = useState([]);
+    const [dataComments, setDataComments] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchExceptions = async () => {
             const response = await agent.Chart.exceptionChart();
+            const res = await agent.Chart.commentChart();
             setDataExceptions(response);
+            setDataComments(res);
             setLoading(false);
         };
         fetchExceptions();
@@ -59,7 +61,7 @@ const Exception = () => {
                     },
                 }}>
                     {loading ? <Loading /> : (<>
-                        {view === "comments" ? <ExceptionBarChart isComment={true} dataChart={dataComment} /> : <ExceptionBarChart isComment={false} dataChart={dataExceptions} />}
+                        {view === "comments" ? <ExceptionBarChart isComment={true} dataChart={dataComments} /> : <ExceptionBarChart isComment={false} dataChart={dataExceptions} />}
                     </>
                     )}
 

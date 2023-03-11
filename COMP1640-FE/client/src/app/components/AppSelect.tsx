@@ -20,9 +20,11 @@ export default function AppSelect(props: Props) {
                 label={props.label}
                 onChange={field.onChange}
             >
-                {props.items.map((department) => (
+                {props.label === "Categories" ? (props.items.map((category) => (
+                    <MenuItem value={category.id} key={category.id}>{category.name}</MenuItem>
+                ))) : (props.items.map((department) => (
                     <MenuItem value={department.id} key={department.id}>{department.name}</MenuItem>
-                ))}
+                )))}
             </Select>
             <FormHelperText>{fieldState.error?.message}</FormHelperText>
         </FormControl>

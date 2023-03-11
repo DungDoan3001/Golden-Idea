@@ -42,8 +42,10 @@ const CategoryForm = ({ category, cancelEdit }: Props) => {
                 };
                 response = await dispatch(addCategory(newCategory)).unwrap();
             }
+            toast.success('Successfully', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
             cancelEdit();
-            await dispatch(getCategories()).unwrap();
         } catch (error: any) {
             toast.error('Failed to load resource: the server responded with a status of 409 (Conflict)', {
                 position: toast.POSITION.TOP_RIGHT,

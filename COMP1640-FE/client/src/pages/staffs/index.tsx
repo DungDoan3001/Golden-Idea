@@ -84,7 +84,7 @@ const Staffs = () => {
     },
     {
       field: "username",
-      headerName: "User Name",
+      headerName: "Username",
       flex: 0.5,
       minWidth: 130,
     },
@@ -92,7 +92,13 @@ const Staffs = () => {
       field: "email",
       headerName: "Email",
       flex: 1,
-      minWidth: 130
+      minWidth: 170
+    },
+    {
+      field: "role",
+      headerName: "Role",
+      flex: 0.5,
+      minWidth: 130,
     },
     {
       field: "phoneNumber",
@@ -111,13 +117,7 @@ const Staffs = () => {
       field: "address",
       headerName: "Address",
       flex: 0.4,
-      minWidth: 130,
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      flex: 0.5,
-      minWidth: 130,
+      minWidth: 250,
     },
   ];
   const actionColumn = [
