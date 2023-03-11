@@ -22,7 +22,8 @@ namespace Web.Api.Extensions
             CreateMap<Entities.Topic, TopicResponseModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName))
-                .ForMember(dest => dest.TotalIdea, opt => opt.MapFrom(src => src.Ideas.Count));
+                .ForMember(dest => dest.TotalIdea, opt => opt.MapFrom(src => src.Ideas.Count))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id));
             CreateMap<TopicRequestModel, Entities.Topic>();
 
             // Category
