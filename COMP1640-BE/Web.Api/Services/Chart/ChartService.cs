@@ -65,6 +65,7 @@ namespace Web.Api.Services.Chart
                 var ideas = await _context.Ideas
                     .Include(x => x.Topic)
                     .ThenInclude(x => x.User)
+                    .AsNoTracking()
                     .ToListAsync();
                 var departments = await _context.Departments.ToListAsync();
                 List<NumOfIdeaAnonyByDepartment> result = new List<NumOfIdeaAnonyByDepartment>();
@@ -76,8 +77,8 @@ namespace Web.Api.Services.Chart
                     data.DepartmentName = department.Name;
                     foreach (var idea in ideas)
                     {            
-                        if(idea.User.DepartmentId == department.Id)
-                        {
+                        if(idea.Topic.User.DepartmentId == department.Id)
+                        {   
                             if (await _context.Comments.Where(x => x.IdeaId == idea.Id).AsNoTracking().CountAsync() == 0)
                             {
                                 countIdeaNoComment++;
