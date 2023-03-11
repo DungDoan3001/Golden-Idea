@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
 import Moment from 'moment';
-import { AddCircleOutline, Delete, Edit } from '@mui/icons-material';
+import { AddCircleOutline, Delete, Edit, GetApp } from '@mui/icons-material';
 import ConfirmDialog from '../../app/components/ConfirmDialog';
 import Popup from '../../app/components/Popup';
 import TopicForm from './topicForm';
@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { deleteTopic, getTopics } from './topicSlice';
+import agent from '../../app/api/agent';
 const TopicPage = () => {
     const theme: any = useTheme();
     const [pageSize, setPageSize] = React.useState<number>(5);
@@ -55,6 +56,17 @@ const TopicPage = () => {
             isOpen: false
         });
     };
+    const handleDownload = (id: any) => {
+        agent.Topic.downloadZip(id)
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `file-${id}.zip`);
+                document.body.appendChild(link);
+                link.click();
+            });
+    };
     const columns: any = [
         {
             field: "ordinal",
@@ -70,7 +82,7 @@ const TopicPage = () => {
             field: "name",
             headerName: "Topic Name",
             flex: 0.5,
-            minWidth: 300,
+            minWidth: 600,
         },
         {
             field: "closureDate",
@@ -103,6 +115,8 @@ const TopicPage = () => {
             headerName: "Action",
             width: 200,
             renderCell: (params: { row: { id: any; name: any, username: any, closureDate: any, finalClosureDate: any, }; }) => {
+                const today = new Date()
+                const isAfterFinalClosure = today > new Date(params.row.finalClosureDate)
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
                         <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
@@ -116,6 +130,11 @@ const TopicPage = () => {
                         })}>
                             <Delete fontSize="inherit" />
                         </IconButton>
+                        {isAfterFinalClosure && (
+                            <IconButton aria-label="download" size="large" color="success" onClick={() => handleDownload(params.row.id)}>
+                                <GetApp fontSize="inherit" />
+                            </IconButton>
+                        )}
                     </Box>
                 );
             },

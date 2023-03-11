@@ -54,7 +54,6 @@ const StaffForm = ({ user, cancelEdit, departments, roles }: Props) => {
   async function handleSubmitData(data: FieldValues) {
     try {
       let response: User;
-      console.log(data);
       if (user) {
         response = await dispatch(updateUser(data)).unwrap();
       } else {
@@ -63,7 +62,6 @@ const StaffForm = ({ user, cancelEdit, departments, roles }: Props) => {
       toast.success('Successfully', {
         position: toast.POSITION.TOP_RIGHT,
       });
-      dispatch(getUsers()).unwrap();
       cancelEdit();
     } catch (error: any) {
       toast.error('Failed to load resource: the server responded with a status of 409 (Conflict)', {

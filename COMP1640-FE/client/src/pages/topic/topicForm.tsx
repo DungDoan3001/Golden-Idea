@@ -18,8 +18,8 @@ interface Props {
 }
 const validationSchema: any = z.object({
     name: z.string().min(1, 'Required Field!'),
-    closureDate: z.string().min(1, 'Closure date is required').regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/),
-    finalClosureDate: z.string().min(1, 'Final closure date is required').regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/),
+    closureDate: z.string().min(1, 'Closure date is required'),
+    finalClosureDate: z.string().min(1, 'Final closure date is required'),
 }).refine((data) => {
     const closureDateObj = new Date(data.closureDate);
     const finalClosureDateObj = new Date(data.finalClosureDate);
@@ -61,6 +61,9 @@ const TopicForm = ({ topic, cancelEdit }: Props) => {
             }
             cancelEdit();
             await dispatch(getTopics()).unwrap();
+            toast.success('Successfully', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
         } catch (error: any) {
             toast.error('Failed to load resource: the server responded with a status of 409 (Conflict)', {
                 position: toast.POSITION.TOP_RIGHT,

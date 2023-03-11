@@ -1,16 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { Box, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { commentData } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
 import Moment from 'moment';
+import { AddCircleOutline } from '@mui/icons-material';
+import IdeaForm from '../ideaDetail/ideaForm';
+import { Idea } from '../../app/models/Idea';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../app/store/configureStore';
+import { getCategories } from '../category/categorySlice';
 
 const Comment = () => {
     const theme: any = useTheme();
     const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [data, setData] = useState(commentData);
+    const [editMode, setEditMode] = useState(false);
+    const { categories } = useSelector((state: RootState) => state.category);
+    const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
+    function cancelEdit() {
+        if (recordForEdit) setRecordForEdit(undefined);
+        setEditMode(false);
+    }
+    const dispatch = useAppDispatch();
+    let fetchMount = true;
+    useEffect(() => {
+        if (fetchMount) {
+            dispatch(getCategories());
+        }
+        return () => {
+            fetchMount = false;
+        };
+    }, []);
     useEffect(() => {
         setData(commentData);
     }, []);
@@ -56,11 +79,17 @@ const Comment = () => {
     if (!data) {
         setLoading(true);
     }
+    if (editMode)
+        return <IdeaForm cancelEdit={cancelEdit} categories={categories} />
     return (
         <>
             {loading ? (<Loading />) : (
                 <Box m="1.5rem 2.5rem">
                     <Header title="COMMENTS" subtitle="List of Comments" />
+                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
+                        startIcon={<AddCircleOutline />}>
+                        Create a new Idea
+                    </Button>
                     <Box
                         mt="40px"
                         style={{ height: '55vh' }}

@@ -88,7 +88,8 @@ const Topic = {
     listTopics: () => requests.get('topics'),
     createTopic: (values: any) => requests.post('topics', values),
     updateTopic: (values: any, id: string) => requests.put(`topics/${id}`, values),
-    deleteTopic: (id: string) => requests.delete(`topics/${id}`)
+    deleteTopic: (id: string) => requests.delete(`topics/${id}`),
+    downloadZip: (id: string) => requests.get(`topics/${id}/download-zip`)
 }
 
 const User = {
@@ -110,6 +111,7 @@ const Chart = {
     overallChart: () => requests.get('charts/get-staff-idea-comment-topic'),
     overviewChart: () => requests.get('charts/ideas-by-department'),
     dailyChart: () => requests.get('charts/daily-report-in-three-months'),
+    commentChart: () => requests.get('charts/num-of-comment-by-department'),
 }
 const agent = {
     Department,
