@@ -4,6 +4,7 @@ using System;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.Data.Queries;
+using System.Linq;
 
 namespace Web.Api.Services.Topic
 {
@@ -12,12 +13,14 @@ namespace Web.Api.Services.Topic
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Entities.Topic> _topicRepo;
         private readonly ITopicQuery _topicQuery;
+        private readonly IIdeaQuery _ideaQuery;
 
-        public TopicService(IUnitOfWork unitOfWork, ITopicQuery topicQuery)
+        public TopicService(IUnitOfWork unitOfWork, ITopicQuery topicQuery, IIdeaQuery ideaQuery)
         {
             _unitOfWork = unitOfWork;
             _topicRepo = unitOfWork.GetBaseRepo<Entities.Topic>();
             _topicQuery = topicQuery;
+            _ideaQuery = ideaQuery;
         }
 
         public async Task<IEnumerable<Entities.Topic>> GetAllAsync()
@@ -60,7 +63,10 @@ namespace Web.Api.Services.Topic
         {
             try
             {
-                return await _topicQuery.GetAllByUserName(userName);
+                var ideas = await _ideaQuery.GetAllByUserNameForTopicServiceAsync(userName);
+                return ideas.GroupBy(x => x.Topic)
+                    .Select(x => x.Key)
+                    .ToList();
             }
             catch (Exception)
             {

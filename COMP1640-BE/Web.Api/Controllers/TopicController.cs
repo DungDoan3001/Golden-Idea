@@ -56,7 +56,7 @@ namespace Web.Api.Controllers
         }
 
         /// <summary>
-        /// Get all topics by UserName.
+        /// Get all topics that user has posted in by UserName.
         /// </summary>
         /// <returns>List of Topic objects belong to UserName</returns>
         /// <response code="200">Successfully get all topics</response>
