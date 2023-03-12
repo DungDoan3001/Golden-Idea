@@ -27,6 +27,7 @@ namespace Web.Api.Controllers
         /// Create a view for idea
         /// </summary>
         /// <param name="userView">Request username of the user</param>
+        /// <param name="ideaId">Request ideaId</param>
         /// <returns>A view just created on the idea</returns>
         /// <response code="201">Successfully created the view</response>
         /// <response code="400">There is something wrong while execute.</response>

@@ -34,11 +34,11 @@ namespace Web.Api.Services.IdeaService
             }
         }
 
-        public async Task<IEnumerable<Idea>> GetAllByAuthorAsync(Guid userId)
+        public async Task<IEnumerable<Idea>> GetAllByAuthorAsync(string userName)
         {
             try
             {
-                return await _ideaQuery.GetAllByAuthorAsync(userId);
+                return await _ideaQuery.GetAllByAuthorAsync(userName);
             }
             catch (Exception)
             {

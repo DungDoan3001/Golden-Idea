@@ -58,7 +58,6 @@ namespace Web.Api.Services.View
 
                 throw;
             }
-            return null;
         }
     }
 }
