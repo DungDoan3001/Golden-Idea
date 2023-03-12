@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web.Http.Results;
 using Web.Api.Data.Context;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
@@ -26,17 +25,15 @@ namespace Web.Api.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Entities.Role> roleManager;
         private readonly IAuthenticationManager _authManager;
-        private readonly AppDbContext _context;
         private readonly IResetPasswordService _resetPasswordService;
         private readonly IFileUploadService _fileUploadService;
 
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, AppDbContext context, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService)
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService)
         {
             _mapper = mapper;
             _userManager = userManager;
             this.roleManager = roleManager;
             _authManager = authManager;
-            _context = context;
             _resetPasswordService = resetPasswordService;
             _fileUploadService = fileUploadService;
         }

@@ -16,6 +16,7 @@ namespace Web.Api.Data.Queries
         {
             return await dbSet
                 .Include(x => x.Ideas)
+                .AsSplitQuery()
                 .ToListAsync();
         }
 
@@ -24,6 +25,7 @@ namespace Web.Api.Data.Queries
             return await dbSet
                 .Include(x => x.Ideas)
                 .Where(x => x.Id == id)
+                .AsSplitQuery()
                 .SingleOrDefaultAsync();
         }
     }

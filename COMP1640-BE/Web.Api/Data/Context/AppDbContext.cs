@@ -124,6 +124,16 @@ namespace Web.Api.Data.Context
                 .WithMany(x => x.Reactions)
                 .HasForeignKey(x => x.IdeaId)
             .OnDelete(DeleteBehavior.Restrict);
+
+            // Index for database
+            builder.Entity<Idea>()
+                .HasIndex(x => x.Slug)
+                .IsUnique();
+
+            builder.Entity<Idea>()
+                .HasIndex(x => x.CreatedAt);
+
+            
             
             base.OnModelCreating(builder);
             
