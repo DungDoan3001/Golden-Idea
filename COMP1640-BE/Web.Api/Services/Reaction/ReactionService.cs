@@ -1,9 +1,13 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
+using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Web.Api.Services.ReactionService
 {
@@ -11,11 +15,15 @@ namespace Web.Api.Services.ReactionService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Reaction> _reactionRepo;
+        private readonly UserManager<Entities.User> _userManager;
+        private readonly IMapper _mapper;
 
-        public ReactionService(IUnitOfWork unitOfWork)
+        public ReactionService(IUnitOfWork unitOfWork, UserManager<Entities.User> userManager, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _reactionRepo = unitOfWork.GetBaseRepo<Reaction>();
+            _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<Reaction> Reaction(Guid userId, Guid ideaId, string reactionType)
@@ -40,6 +48,25 @@ namespace Web.Api.Services.ReactionService
                 throw;
             }
         }
+        public async Task<GetUserReactionResponseModel> GetReactionOfUserInIdea(string email, Guid ideaId)
+        {
+            try
+            {
+                var findReaction = await _reactionRepo.Find(x => x.User.Email == email && x.IdeaId == ideaId);
+                if (!findReaction.Any())
+                {
+                    return null;
+                }
+                var result = _mapper.Map<GetUserReactionResponseModel>(findReaction.First());
+                result.Email = email;
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+            
 
         private async Task<Reaction> CheckReact(int react, Guid ideaId, Guid userId)
         {

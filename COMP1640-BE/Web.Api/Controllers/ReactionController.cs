@@ -25,6 +25,33 @@ namespace Web.Api.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<GetUserReactionResponseModel>> GetUserReactionInIdea([FromQuery] GetUserReactionRequestModel userReaction)
+        {
+            try
+            {
+                var result = await _reactionService.GetReactionOfUserInIdea(userReaction.Email, userReaction.IdeaId);
+                if(result == null) 
+                { 
+                    return NotFound(new MessageResponseModel
+                    {
+                        Message = "Error",
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find the reaction due to wrong user or idea!" }
+                    });
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageResponseModel
+                {
+                    Message = "Error",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Errors = new List<string> { ex.GetBaseException().Message }
+                });
+            }
+        }
         /// <summary>
         /// Create a reaction
         /// </summary>
