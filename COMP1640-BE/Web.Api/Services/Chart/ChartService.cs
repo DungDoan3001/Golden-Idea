@@ -13,9 +13,9 @@ namespace Web.Api.Services.Chart
     public class ChartService : IChartService
     {
         private readonly UserManager<Entities.User> _userManager;
-        protected AppDbContext _context;
+        protected IAppDbContext _context;
         private readonly IMapper _mapper;
-        public ChartService(UserManager<Entities.User> userManager, AppDbContext context, IMapper mapper)
+        public ChartService(UserManager<Entities.User> userManager, IAppDbContext context, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;

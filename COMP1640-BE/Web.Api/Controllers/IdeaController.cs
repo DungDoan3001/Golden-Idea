@@ -350,6 +350,7 @@ namespace Web.Api.Controllers
                 slug += "-" + random.Next(1000, 9999);
             }
             idea.Slug = slug;
+            idea.IsFakeData = false;
             // Update Lastupdate field.
             idea.LastUpdate = DateTime.UtcNow;
         }

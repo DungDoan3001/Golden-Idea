@@ -14,6 +14,7 @@ namespace Web.Api.Entities
         public string PublicId { get; set; }
         public string Slug { get; set; }
         public bool IsAnonymous { get; set; }
+        public bool IsFakeData { get; set; }
         public DateTime LastUpdate { get; set; }
         public DateTime CreatedAt { get; set; }
 
