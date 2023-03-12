@@ -56,6 +56,18 @@ namespace Web.Api.Services.Topic
             }
         }
 
+        public async Task<IEnumerable<Entities.Topic>> GetAllByUserName(string userName)
+        {
+            try
+            {
+                return await _topicQuery.GetAllByUserName(userName);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Entities.Topic> CreateAsync(Entities.Topic topic)
         {
             try

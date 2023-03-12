@@ -14,7 +14,9 @@ using Web.Api.Services.FileService;
 using Slugify;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
-using Org.BouncyCastle.Crypto;
+using Web.Api.Services.Topic;
+using Web.Api.Services.Category;
+using Web.Api.Services.User;
 
 namespace Web.Api.Controllers
 {
@@ -26,13 +28,21 @@ namespace Web.Api.Controllers
         private readonly IIdeaService _ideaService;
         private readonly IFileUploadService _fileUploadService;
         private readonly IFileService _fileService;
+        private readonly ITopicService _topicService;
+        private readonly ICategoryService _categoryService;
+        private readonly IUserService _userService;
 
-        public IdeaController(IMapper mapper, IIdeaService ideaService, IFileUploadService fileUploadService, IFileService fileService)
+        public IdeaController(IMapper mapper, IIdeaService ideaService, IFileUploadService fileUploadService, 
+                            IFileService fileService, ITopicService topicService, 
+                            ICategoryService categoryService, IUserService userService)
         {
             _mapper = mapper;
             _ideaService = ideaService;
             _fileUploadService = fileUploadService;
             _fileService = fileService;
+            _topicService = topicService;
+            _categoryService = categoryService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -179,6 +189,13 @@ namespace Web.Api.Controllers
         {
             try
             {
+                // Check valid request model
+                var message = await CheckValidRequest(requestModel, true);
+                if(message != null)
+                {
+                    return StatusCode(message.StatusCode, message);
+                }
+
                 // Map Idea.
                 Idea idea = _mapper.Map<Idea>(requestModel);
                 // Upload thumbnail.
@@ -256,6 +273,13 @@ namespace Web.Api.Controllers
         {
             try
             {
+                // Check valid request model
+                var message = await CheckValidRequest(requestModel, true);
+                if (message != null)
+                {
+                    return StatusCode(message.StatusCode, message);
+                }
+
                 Idea idea = await _ideaService.GetByIdAsync(id);
                 if (idea == null)
                 {
@@ -418,5 +442,60 @@ namespace Web.Api.Controllers
             idea.Image = uploadImageResult.SecureUrl.ToString();
             idea.PublicId = uploadImageResult.PublicId;
         }
+
+        private async Task<MessageResponseModel> CheckValidRequest(IdeaRequestModel requestModel, bool isCheckClosureDate)
+        {
+            // Check if input topic is valid
+            Topic topic = await _topicService.GetByIdAsync(requestModel.TopicId);
+            if (topic == null)
+            {
+                return new MessageResponseModel
+                {
+                    Message = "Not Found",
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Errors = new List<string> { "Topic not found" }
+                };
+            }
+            if (isCheckClosureDate)
+            {
+                // Check if topic still valid
+                if (topic.ClosureDate > DateTime.UtcNow)
+                {
+                    return new MessageResponseModel
+                    {
+                        Message = "Conflict",
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Can't post ideas because the topic submission deadline is over." }
+                    };
+                }
+            }
+
+            // Check if input category is valid
+            Category category = await _categoryService.GetByIdAsync(requestModel.CategoryId);
+            if (category == null)
+            {
+                return new MessageResponseModel
+                {
+                    Message = "Not Found",
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Errors = new List<string> { "Category not found." }
+                };
+            }
+
+            // Check if input user is valid
+            Entities.User user = await _userService.GetById(requestModel.UserId);
+            if (user == null)
+            {
+                return new MessageResponseModel
+                {
+                    Message = "Not Found",
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Errors = new List<string> { "User not found." }
+                };
+            }
+
+            return null;
+        }
+
     }
 }

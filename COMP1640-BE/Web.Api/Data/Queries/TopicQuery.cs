@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NLog;
 using Web.Api.Data.Context;
 using Web.Api.Entities;
 
@@ -18,6 +17,17 @@ namespace Web.Api.Data.Queries
             return await dbSet
                 .Include(x => x.User)
                 .Include(x => x.Ideas)
+                .AsSplitQuery()
+                .ToListAsync();
+        }
+
+        public async Task<List<Topic>> GetAllByUserName(string userName)
+        {
+            return await dbSet
+                .Include(x => x.User)
+                .Include(x => x.Ideas)
+                .Where(x => x.User.UserName.Trim().ToLower() == userName.Trim().ToLower())
+                .AsSplitQuery()
                 .ToListAsync();
         }
 
@@ -27,6 +37,7 @@ namespace Web.Api.Data.Queries
                 .Include(x => x.User)
                 .Include(x => x.Ideas)
                 .Where(x => x.Id == id)
+                .AsSplitQuery()
                 .SingleOrDefaultAsync();
         }
 
@@ -36,6 +47,7 @@ namespace Web.Api.Data.Queries
                 .Include(x => x.User)
                 .Include(x => x.Ideas)
                 .Where(x => x.UserId == id)
+                .AsSplitQuery()
                 .ToListAsync();
         }
     }

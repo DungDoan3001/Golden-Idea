@@ -65,6 +65,7 @@ namespace Web.Api.Services.Chart
                 var ideas = await _context.Ideas
                     .Include(x => x.Topic)
                     .ThenInclude(x => x.User)
+                    .AsSplitQuery()
                     .AsNoTracking()
                     .ToListAsync();
                 var departments = await _context.Departments.ToListAsync();
@@ -107,6 +108,7 @@ namespace Web.Api.Services.Chart
                 var departments = await _context.Departments.AsNoTracking().ToListAsync();
                 var comments = await _context.Comments
                     .Include(x => x.User)
+                    .AsSplitQuery()
                     .AsNoTracking()
                     .ToListAsync();
                 List<NumOfCommentResponseModel> result = new List<NumOfCommentResponseModel>();
@@ -280,7 +282,10 @@ namespace Web.Api.Services.Chart
                     totalDays = totalDays + DateTime.DaysInMonth(DateTime.UtcNow.AddMonths(-i).Year, DateTime.UtcNow.AddMonths(-i).Month);
                 }
                 List<DailyReportResponseModel> result = new List<DailyReportResponseModel>();
-                var totalIdea = await _context.Ideas.AsNoTracking().ToListAsync();
+                var totalIdea = await _context.Ideas
+                    .Where(x => x.CreatedAt <= DateTime.UtcNow && x.CreatedAt >= threeMonthPrevious)
+                    .AsNoTracking()
+                    .ToListAsync();
                 for (int i = 0; i <= totalDays; i++)
                 {
                     DailyReportResponseModel data = new DailyReportResponseModel();

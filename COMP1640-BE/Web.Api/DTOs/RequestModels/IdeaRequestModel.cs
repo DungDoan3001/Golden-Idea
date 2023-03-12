@@ -22,13 +22,13 @@ namespace Web.Api.DTOs.RequestModels
         public bool IsAnonymous { get; set; } = true;
 
         [Required(ErrorMessage = "Must provide a user identity")]
-        public Guid? UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [Required(ErrorMessage = "Must provide a category identity")]
-        public Guid? CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         [Required(ErrorMessage = "Must provide a topic identity")]
-        public Guid? TopicId { get; set; }
+        public Guid TopicId { get; set; }
 
         [DataType(DataType.Upload)]
         [AllowedNumberOfFile(5)]
