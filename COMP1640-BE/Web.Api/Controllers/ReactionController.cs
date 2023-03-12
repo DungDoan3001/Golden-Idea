@@ -25,6 +25,11 @@ namespace Web.Api.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Get reaction of user in the idea.
+        /// </summary>
+        /// <response code="200">Successfully get all information</response>
+        /// <response code="400">There is something wrong while execute.</response>
         [HttpGet]
         public async Task<ActionResult<GetUserReactionResponseModel>> GetUserReactionInIdea([FromQuery] GetUserReactionRequestModel userReaction)
         {
