@@ -37,6 +37,7 @@ using Web.Api.Services.FileService;
 using Web.Api.Services.View;
 using static Dropbox.Api.TeamLog.EventCategory;
 using Web.Api.Services.Chart;
+using Web.Api.Services.FakeData;
 
 namespace Web.Api
 {
@@ -167,6 +168,8 @@ namespace Web.Api
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IViewService, ViewService>();
             services.AddScoped<IChartService, ChartService>();
+            services.AddScoped<IFakeDataService, FakeDataService>();
+
             //SignalR
             services.AddSignalR();
             
