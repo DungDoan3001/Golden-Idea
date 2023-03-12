@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 
 interface TopicState {
     topics: Topic[];
+    user_topics: Topic[];
     topic: Topic | null;
     loading: boolean;
     isFetchTopicId: boolean;
@@ -13,6 +14,7 @@ interface TopicState {
 
 const initialState: TopicState = {
     topics: [],
+    user_topics: [],
     topic: null,
     loading: false,
     isFetchTopicId: false,
@@ -23,6 +25,13 @@ export const getTopics: AsyncThunk<Topic[], void, {}> = createAsyncThunk(
     'topics/getTopics',
     async () => {
         const response = await agent.Topic.listTopics();
+        return response;
+    }
+);
+export const getUserTopics: AsyncThunk<Topic[], string, {}> = createAsyncThunk(
+    'topics/getUserTopics',
+    async (id: any) => {
+        const response = await agent.Topic.listUserTopics(id);
         return response;
     }
 );
@@ -83,7 +92,18 @@ export const topicSlice: Slice<TopicState> = createSlice({
             .addCase(getTopics.rejected, (state) => {
                 state.loading = false;
             });
-
+        //set get user topics
+        builder
+            .addCase(getUserTopics.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getUserTopics.fulfilled, (state, action) => {
+                state.user_topics = action.payload;
+                state.loading = false;
+            })
+            .addCase(getUserTopics.rejected, (state) => {
+                state.loading = false;
+            });
         //set add topic
         builder.addCase(addTopic.fulfilled, (state, action) => {
             state.topics.push(action.payload);

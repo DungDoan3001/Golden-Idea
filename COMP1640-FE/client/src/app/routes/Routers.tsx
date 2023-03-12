@@ -22,6 +22,7 @@ import ForgotPassword from "../../pages/account/forgotpassword";
 import ResetPass from "../../pages/account/resetpassword";
 import Login from "../../pages/account/login";
 import AdminPage from "../../pages/staffs/index.admin";
+import ListIdeas from "../../pages/myIdeas/index.ideas";
 
 export const router = createBrowserRouter([
     {
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
                     {
                         element: <Layout />, children: [
                             { path: 'home', element: <Home /> },
+                            { path: 'topic/:id/:name', element: <ListIdeas /> },
                             { path: 'myIdeas', element: <MyIdeas /> },
                             { path: 'ideaDetail', element: <IdeaDetail /> },
                             { path: 'dashboard', element: <Dashboard /> },

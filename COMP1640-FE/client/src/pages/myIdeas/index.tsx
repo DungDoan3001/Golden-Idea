@@ -5,15 +5,28 @@ import AppPagination from '../../app/components/AppPagination';
 import { topicData } from "../../dataTest.js"
 import { useTheme } from '@emotion/react';
 import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch } from '../../app/store/configureStore';
-import { getTopics } from '../topic/topicSlice';
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
+import { getTopics, getUserTopics } from '../topic/topicSlice';
 import Loading from '../../app/components/Loading';
+import { useNavigate } from 'react-router-dom';
 
 const MyIdeas = () => {
   const theme: any = useTheme();
   const { topics, loading } = useSelector((state: RootState) => state.topic);
+  //const { user_topics, loading } = useSelector((state: RootState) => state.topic);
+  const { user } = useAppSelector(state => state.account);
   const dispatch = useAppDispatch();
   let fetchMount = true;
+  // useEffect(() => {
+  //   if (fetchMount) {
+  //     if (user?.name) {
+  //       dispatch(getUserTopics(user.name));
+  //     }
+  //   }
+  //   return () => {
+  //     fetchMount = false;
+  //   };
+  // }, []);
   useEffect(() => {
     if (fetchMount) {
       dispatch(getTopics());
@@ -23,47 +36,64 @@ const MyIdeas = () => {
     };
   }, []);
 
-
+  const navigate = useNavigate();
   const [topic, setTopic] = useState(topics);
+  //const [topic, setTopic] = useState(user_topics);
 
   return (
     <>
       {loading ? (<Loading />) : (
         <Box
-          p="3rem"
           sx={{
             [theme.breakpoints.up('sm')]: {
-              width: '100%',
+              width: '95%',
+              marginTop: 10,
+              ml: '3%'
             },
             [theme.breakpoints.down('sm')]: {
-              width: '130%',
+              width: '115%',
+              marginTop: 5,
+              ml: '8%'
             },
           }}
         >
-          <List style={{ paddingTop: "2rem" }}>
+          <List sx={{
+            paddingTop: "0.1rem",
+            marginTop: {
+              xs: "-5px",
+              md: "-30px"
+            },
+          }}>
             {topic.map((item: any) => (
-              <ListItemButton style={{ padding: "1.25rem" }}>
-                <Divider absolute={true} />
-                <ListItemIcon>
-                  <QuestionAnswerIcon color="secondary" style={{ fontSize: "2.5rem" }} />
+              <ListItemButton sx={{
+                p: { xs: 1, sm: 2 }, flexDirection: { xs: "column", sm: "row" },
+                bgcolor: "#FFFFFF",
+                borderRadius: "10px",
+                boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.15)",
+                mb: { xs: 2, sm: 3 },
+              }}
+                onClick={() => navigate(`/topic/${item.id}/${item.name}`)}>
+                <ListItemIcon sx={{ mr: { xs: 0, sm: 2 } }}>
+                  <QuestionAnswerIcon color="secondary" sx={{ fontSize: { xs: "2rem", sm: "2.5rem" } }} />
                 </ListItemIcon>
-                <ListItemText>
-                  <span style={{
-                    margin: "0rem 1rem",
-                    fontSize: "1.2rem",
-                  }}>
-                    {item.name}
-                  </span>
-                  <Box m="0rem 1rem">
-                    100k Posts
-                  </Box>
-                </ListItemText>
-                <ListItemText style={{ textAlign: "right" }}>
-                  Closure Date: {item.closureDate}
-                </ListItemText>
-                <ListItemText style={{ textAlign: "right" }}>
-                  Final Closure Date: {item.finalClosureDate}
-                </ListItemText>
+                <Box sx={{ flexGrow: 1, mb: { xs: 1, sm: 0 }, mr: { xs: 0, sm: 2 } }}>
+                  <ListItemText
+                    primary={item.name.toUpperCase()}
+                    secondary={`${item.totalIdea} Idea Posts`}
+                    primaryTypographyProps={{ variant: "h5", textAlign: { xs: "center", sm: "justify" }, fontWeight: "bold" }}
+                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "center", sm: "justify" } }}
+                  />
+                </Box>
+                <Box sx={{ flexShrink: 0 }}>
+                  <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" }, alignItems: { xs: "center", sm: "flex-end" } }}>
+                    <ListItemText
+                      primary={`Closure Date: ${new Date(item.closureDate).toLocaleDateString('en-GB')}`}
+                      secondary={`Final Closure Date: ${new Date(item.finalClosureDate).toLocaleDateString('en-GB')}`}
+                      primaryTypographyProps={{ variant: "body1", textAlign: { xs: "center", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
+                      secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "center", sm: "right" } }}
+                    />
+                  </List>
+                </Box>
               </ListItemButton>
             ))}
             <AppPagination

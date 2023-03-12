@@ -86,6 +86,7 @@ const Category = {
 
 const Topic = {
     listTopics: () => requests.get('topics'),
+    listUserTopics: (id: any) => requests.get(`topics/user/${id}`),
     createTopic: (values: any) => requests.post('topics', values),
     updateTopic: (values: any, id: string) => requests.put(`topics/${id}`, values),
     deleteTopic: (id: string) => requests.delete(`topics/${id}`),
