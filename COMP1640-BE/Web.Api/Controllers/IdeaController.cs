@@ -403,15 +403,19 @@ namespace Web.Api.Controllers
                     });
                 }
 
-                if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
-                foreach (var file in idea.Files)
+                if(idea.IsFakeData == false)
                 {
-                    if(file.Format == null)
+                    if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
+                    foreach (var file in idea.Files)
                     {
-                        await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
-                    } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                        if (file.Format == null)
+                        {
+                            await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
+                        }
+                        else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                    }
+                    await _fileService.DeleteRangeAsync(idea.Files);
                 }
-                await _fileService.DeleteRangeAsync(idea.Files);
                 bool isDelete = await _ideaService.DeleteAsync(id);
                 if (!isDelete)
                     return Conflict(new MessageResponseModel
