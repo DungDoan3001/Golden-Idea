@@ -21,6 +21,16 @@ namespace Web.Api.Data.Queries
                 .ToListAsync();
         }
 
+        public async Task<List<Topic>> GetAllByUserName(string userName)
+        {
+            return await dbSet
+                .Include(x => x.User)
+                .Include(x => x.Ideas)
+                .Where(x => x.User.UserName.Trim().ToLower() == userName.Trim().ToLower())
+                .AsSplitQuery()
+                .ToListAsync();
+        }
+
         public async Task<Topic> GetByIdAsync(Guid id)
         {
             return await dbSet
