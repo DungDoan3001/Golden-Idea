@@ -19,7 +19,6 @@ namespace Web.Api.Services.FakeData
         private readonly IAppDbContext _context;
         private SlugHelper _slugHelper = new SlugHelper();
         private RandomDateTime randomDateTime = new RandomDateTime();
-
         public FakeDataService(IUnitOfWork unitOfWork, IAppDbContext context)
         {
             _unitOfWork = unitOfWork;
@@ -55,9 +54,9 @@ namespace Web.Api.Services.FakeData
                 //Begin to fake Data
                 for (int i = 1; i <= numberOfIdeaToCreate; i++)
                 {
-                    Guid userId = userIdLs.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
-                    Guid categoryId = categoryIdLs.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
-                    Guid topicId = topicIdLs.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                    Guid userId = RandomSelect.GetRandom(userIdLs, 1).FirstOrDefault();
+                    Guid categoryId = RandomSelect.GetRandom(categoryIdLs, 1).FirstOrDefault();
+                    Guid topicId = RandomSelect.GetRandom(topicIdLs, 1).FirstOrDefault();
 
                     Entities.Topic topic = topics.Where(x => x.Id == topicId).FirstOrDefault();
 
