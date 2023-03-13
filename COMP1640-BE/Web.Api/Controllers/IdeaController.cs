@@ -134,11 +134,11 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("slug/{slug}")]
-        public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string topicId)
+        public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string slug)
         {
             try
             {
-                Idea idea = await _ideaService.GetBySlugAsync(topicId);
+                Idea idea = await _ideaService.GetBySlugAsync(slug);
                 IdeaResponseModel IdeaResponse = _mapper.Map<IdeaResponseModel>(idea);
                 return Ok(IdeaResponse);
             }
