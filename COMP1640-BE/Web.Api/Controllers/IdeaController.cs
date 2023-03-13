@@ -57,8 +57,12 @@ namespace Web.Api.Controllers
             try
             {
                 IEnumerable<Idea> ideas = await _ideaService.GetAllAsync();
-                IEnumerable<IdeaResponseModel> IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
-                return Ok(IdeaResponses.OrderBy(x => x.Title));
+                IEnumerable<IdeaResponseModel> ideaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
+                ideaResponses.ToList().ForEach(response =>
+                {
+                    response.Files = null;
+                });
+                return Ok(ideaResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
