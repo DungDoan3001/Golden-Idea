@@ -78,11 +78,11 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all ideas</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("user/{userName}")]
-        public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAllByAuthor([FromRoute] string userName)
+        public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAllByAuthor([FromQuery] Guid topicId,[FromRoute] string userName)
         {
             try
             {
-                IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userName);
+                IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userName, topicId);
                 IEnumerable<IdeaResponseModel> IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
                 return Ok(IdeaResponses.OrderBy(x => x.Title));
             }
