@@ -88,10 +88,10 @@ namespace Web.Api
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy
-                        .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials()
-                        .WithOrigins("https://goldenidea.azurewebsites.net", "http://localhost:3000", "http://localhost:5000");
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed(_ => true)
+                        .AllowCredentials();
                 });
             });
 
@@ -197,10 +197,10 @@ namespace Web.Api
                 c.DefaultModelsExpandDepth(-1);
             });
 
-            app.UseCors(x => x
-                            .AllowAnyOrigin()
+            app.UseCors(x => x.AllowAnyHeader()
                             .AllowAnyMethod()
-                            .AllowAnyHeader());
+                            .AllowCredentials()
+                            .SetIsOriginAllowed(origin => true));
 
             app.UseHttpsRedirection();
 
