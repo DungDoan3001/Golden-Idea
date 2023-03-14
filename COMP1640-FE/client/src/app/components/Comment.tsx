@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { addComment, loadComments } from '../../pages/comment/commentSlice';
 import { ChatComment } from '../models/Comment';
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HttpTransportType, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/configureStore';
+import { RootState, store } from '../store/configureStore';
 interface CommentProps {
     ideaId: string;
 }
@@ -15,9 +15,13 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
     const comments = useSelector((state: RootState) => state.comment.comments);
 
     useEffect(() => {
+        var token = sessionStorage.getItem('user');
         const connection = new HubConnectionBuilder()
-            .withUrl(`https://goldenidea.azurewebsites.net/chat?ideaId=${ideaId}`)
+            .withUrl(`https://goldenidea.azurewebsites.net/chat?ideaId=${ideaId}`, {
+                accessTokenFactory: () => `${token!}` // Return access token
+            })
             .withAutomaticReconnect()
+            .configureLogging(LogLevel.Information)
             .build();
 
         connection.start().then(() => {
