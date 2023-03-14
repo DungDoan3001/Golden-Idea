@@ -7,6 +7,7 @@ const MAX_FILES = 5;
 
 interface FileInputProps {
     onFileSelect: (files: FileList) => void;
+    name: string;
 }
 
 const FileInput: React.FC<FileInputProps> = ({ onFileSelect }) => {

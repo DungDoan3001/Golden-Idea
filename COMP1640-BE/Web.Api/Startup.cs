@@ -38,6 +38,7 @@ using Web.Api.Services.View;
 using static Dropbox.Api.TeamLog.EventCategory;
 using Web.Api.Services.Chart;
 using Web.Api.Services.FakeData;
+using Web.Api.Services.ZipFile;
 
 namespace Web.Api
 {
@@ -87,8 +88,9 @@ namespace Web.Api
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy
-                        .AllowAnyMethod()
                         .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed(_ => true)
                         .AllowCredentials();
                 });
             });
@@ -169,7 +171,7 @@ namespace Web.Api
             services.AddScoped<IViewService, ViewService>();
             services.AddScoped<IChartService, ChartService>();
             services.AddScoped<IFakeDataService, FakeDataService>();
-
+            services.AddScoped<IZipFileService, ZipFileService>();
             //SignalR
             services.AddSignalR();
             
@@ -195,10 +197,10 @@ namespace Web.Api
                 c.DefaultModelsExpandDepth(-1);
             });
 
-            app.UseCors(x => x
-                            .AllowAnyOrigin()
+            app.UseCors(x => x.AllowAnyHeader()
                             .AllowAnyMethod()
-                            .AllowAnyHeader());
+                            .AllowCredentials()
+                            .SetIsOriginAllowed(origin => true));
 
             app.UseHttpsRedirection();
 

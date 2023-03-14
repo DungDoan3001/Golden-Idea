@@ -8,7 +8,7 @@ namespace Web.Api.Services.IdeaService
     public interface IIdeaService
     {
         Task<IEnumerable<Idea>> GetAllAsync();
-        Task<IEnumerable<Idea>> GetAllByAuthorAsync(string userName);
+        Task<IEnumerable<Idea>> GetAllByAuthorAsync(string userName, Guid topicId);
         Task<IEnumerable<Idea>> GetAllByTopicAsync(Guid topicId);
         Task<Idea> GetByIdAsync(Guid id);
         Task<Idea> GetBySlugAsync(string slug);
@@ -19,5 +19,6 @@ namespace Web.Api.Services.IdeaService
         Task<bool> CheckIdeaExisted(Guid id);
         Task<bool> CheckExistedImageContainDuplicateAsync(string image);
         Task<List<Idea>> SearchByTitle(string searchTerm);
+        Task<bool> SendEmailNotifyUserCreateIdea(Entities.Idea idea);
     }
 }

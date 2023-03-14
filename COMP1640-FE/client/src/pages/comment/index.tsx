@@ -17,8 +17,8 @@ const Comment = () => {
     const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [data, setData] = useState(commentData);
-    const [editMode, setEditMode] = useState(false);
     const { categories } = useSelector((state: RootState) => state.category);
+    const [editMode, setEditMode] = useState(false);
     const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
     function cancelEdit() {
         if (recordForEdit) setRecordForEdit(undefined);
@@ -86,7 +86,7 @@ const Comment = () => {
             {loading ? (<Loading />) : (
                 <Box m="1.5rem 2.5rem">
                     <Header title="COMMENTS" subtitle="List of Comments" />
-                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
+                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)}
                         startIcon={<AddCircleOutline />}>
                         Create a new Idea
                     </Button>

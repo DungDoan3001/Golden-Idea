@@ -40,7 +40,8 @@ export const validationSchema = yup.object({
             if (!value) return true;
             const file = value as FileObject;
             return file.size <= 2 * 1024 * 1024;
-        }).notRequired()
+        }).notRequired(),
+    UploadFiles: yup.mixed()
 })
 const IdeaForm = ({ cancelEdit, categories }: Props) => {
     const theme: any = useTheme();
@@ -201,7 +202,7 @@ const IdeaForm = ({ cancelEdit, categories }: Props) => {
                     )}
                     <Grid item xs={12} md={12} px={2} pb={4}>
                         <h3>Upload Files</h3>
-                        <FileInput onFileSelect={handleFileSelect} />
+                        <FileInput onFileSelect={handleFileSelect} name='FileList' />
                     </Grid>
                     <Grid item xs={12} md={12} px={2}>
                         <FormControlLabel

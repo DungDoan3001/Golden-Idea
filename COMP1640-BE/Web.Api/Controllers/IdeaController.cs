@@ -57,8 +57,12 @@ namespace Web.Api.Controllers
             try
             {
                 IEnumerable<Idea> ideas = await _ideaService.GetAllAsync();
-                IEnumerable<IdeaResponseModel> IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
-                return Ok(IdeaResponses.OrderBy(x => x.Title));
+                IEnumerable<IdeaResponseModel> ideaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
+                ideaResponses.ToList().ForEach(response =>
+                {
+                    response.Files = null;
+                });
+                return Ok(ideaResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
@@ -78,11 +82,11 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all ideas</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("user/{userName}")]
-        public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAllByAuthor([FromRoute] string userName)
+        public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAllByAuthor([FromQuery] Guid topicId,[FromRoute] string userName)
         {
             try
             {
-                IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userName);
+                IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userName, topicId);
                 IEnumerable<IdeaResponseModel> IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
                 return Ok(IdeaResponses.OrderBy(x => x.Title));
             }
@@ -130,11 +134,11 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("slug/{slug}")]
-        public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string topicId)
+        public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string slug)
         {
             try
             {
-                Idea idea = await _ideaService.GetBySlugAsync(topicId);
+                Idea idea = await _ideaService.GetBySlugAsync(slug);
                 IdeaResponseModel IdeaResponse = _mapper.Map<IdeaResponseModel>(idea);
                 return Ok(IdeaResponse);
             }
@@ -216,7 +220,11 @@ namespace Web.Api.Controllers
                 {
                     IEnumerable<File> addedFiles = await _fileService.AddRangeAsync(files);
                 }
-
+                // Send email to owner of topic
+                if(createdIdea != null)
+                {
+                    var topic = await _ideaService.SendEmailNotifyUserCreateIdea(createdIdea);
+                }
                 return Created(createdIdea.Id.ToString(), new MessageResponseModel { Message = "Success", StatusCode = (int)HttpStatusCode.Created });
             }
             catch (Exception ex)
@@ -403,15 +411,19 @@ namespace Web.Api.Controllers
                     });
                 }
 
-                if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
-                foreach (var file in idea.Files)
+                if(idea.IsFakeData == false)
                 {
-                    if(file.Format == null)
+                    if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
+                    foreach (var file in idea.Files)
                     {
-                        await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
-                    } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                        if (file.Format == null)
+                        {
+                            await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
+                        }
+                        else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                    }
+                    await _fileService.DeleteRangeAsync(idea.Files);
                 }
-                await _fileService.DeleteRangeAsync(idea.Files);
                 bool isDelete = await _ideaService.DeleteAsync(id);
                 if (!isDelete)
                     return Conflict(new MessageResponseModel
@@ -460,7 +472,7 @@ namespace Web.Api.Controllers
             if (isCheckClosureDate)
             {
                 // Check if topic still valid
-                if (topic.ClosureDate > DateTime.UtcNow)
+                if (topic.ClosureDate < DateTime.UtcNow)
                 {
                     return new MessageResponseModel
                     {

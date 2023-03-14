@@ -8,7 +8,7 @@ namespace Web.Api.Data.Queries
     public interface IIdeaQuery
     {
         Task<List<Idea>> GetAllAsync();
-        Task<List<Idea>> GetAllByAuthorAsync(string userName);
+        Task<List<Idea>> GetAllByAuthorAsync(string userName, Guid topicId);
         Task<List<Idea>> GetAllByTopicAsync(Guid topicId);
         Task<Idea> GetByIdAsync(Guid id);
         Task<Idea> GetBySlugAsync(string slug);

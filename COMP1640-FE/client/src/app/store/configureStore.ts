@@ -6,6 +6,8 @@ import { departmentSlice } from "../../pages/department/departmentSlice";
 import { categorySlice } from "../../pages/category/categorySlice";
 import { topicSlice } from "../../pages/topic/topicSlice";
 import { userSlice } from "../../pages/staffs/userSlice";
+import { ideaSlice } from "../../pages/myIdeas/ideasSlice";
+import { commentsSlice } from "../../pages/comment/commentSlice";
 
 export const store = configureStore({
     reducer: {
@@ -15,6 +17,8 @@ export const store = configureStore({
         department: departmentSlice.reducer,
         category: categorySlice.reducer,
         topic: topicSlice.reducer,
+        idea: ideaSlice.reducer,
+        comment: commentsSlice.reducer,
     }
 })
 

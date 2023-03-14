@@ -41,7 +41,7 @@ namespace Web.Api.Controllers
                 {
                     return Ok(new MessageResponseModel
                     {
-                        Message = "Created successfully " + numberToGenerate + " accounts.",
+                        Message = "Created successfully " + numberToGenerate + " ideas.",
                         StatusCode = (int)HttpStatusCode.OK
                     });
                 }

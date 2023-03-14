@@ -25,9 +25,23 @@ namespace Web.Api.Data.Queries
                 .ToListAsync();
         }
 
-        public async Task<List<Idea>> GetAllByAuthorAsync(string userName)
+        public async Task<List<Idea>> GetAllByAuthorAsync(string userName, Guid topicId)
         {
-            return await dbSet
+            if(!(topicId == Guid.Empty))
+            {
+                return await dbSet
+                .Include(x => x.User)
+                .Include(x => x.Topic)
+                .Include(x => x.Category)
+                .Include(x => x.Files)
+                .Include(x => x.Views)
+                .Include(x => x.Reactions)
+                .Where(x => x.User.UserName.Trim().ToLower() == userName.Trim().ToLower() && x.Topic.Id == topicId)
+                .AsSplitQuery()
+                .ToListAsync();
+            } else
+            {
+                return await dbSet
                 .Include(x => x.User)
                 .Include(x => x.Topic)
                 .Include(x => x.Category)
@@ -37,6 +51,7 @@ namespace Web.Api.Data.Queries
                 .Where(x => x.User.UserName.Trim().ToLower() == userName.Trim().ToLower())
                 .AsSplitQuery()
                 .ToListAsync();
+            }
         }
 
         public async Task<List<Idea>> GetAllByUserNameForTopicServiceAsync(string userName)
