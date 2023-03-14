@@ -38,6 +38,7 @@ using Web.Api.Services.View;
 using static Dropbox.Api.TeamLog.EventCategory;
 using Web.Api.Services.Chart;
 using Web.Api.Services.FakeData;
+using Web.Api.Services.ZipFile;
 
 namespace Web.Api
 {
@@ -89,7 +90,8 @@ namespace Web.Api
                     policy
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials();
+                        .AllowCredentials()
+                        .WithOrigins("https://goldenidea.azurewebsites.net");
                 });
             });
 
@@ -169,7 +171,7 @@ namespace Web.Api
             services.AddScoped<IViewService, ViewService>();
             services.AddScoped<IChartService, ChartService>();
             services.AddScoped<IFakeDataService, FakeDataService>();
-
+            services.AddScoped<IZipFileService, ZipFileService>();
             //SignalR
             services.AddSignalR();
             
