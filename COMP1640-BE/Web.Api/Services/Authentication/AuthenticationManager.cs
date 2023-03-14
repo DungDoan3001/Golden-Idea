@@ -89,7 +89,6 @@ namespace Web.Api.Services.Authentication
             );
             return tokenOptions;
         }
-
         public async Task<bool> GenerateChangePasswordTokenAsync(Entities.User user)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -119,7 +118,6 @@ namespace Web.Api.Services.Authentication
             }
             return false;
         }
-
         public async Task<bool> SendEmailChangePassword(Entities.User user, string resetPasswordId)
         {
             string appDomain = _configuration.GetSection("Application:AppDomain").Value;

@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Web.Api.Entities;
 using AutoMapper;
 using Web.Api.DTOs.ResponseModels;
+using Web.Api.Services.Chart;
 
 namespace Web.Api.Services.ZipFile
 {
@@ -21,22 +22,12 @@ namespace Web.Api.Services.ZipFile
     {
         protected IAppDbContext _context;
         private readonly IMapper _mapper;
-        public ZipFileService(IAppDbContext context, IMapper mapper)
+        public readonly IChartService _chartService;
+        public ZipFileService(IAppDbContext context, IMapper mapper, IChartService chartService)
         {
             _context = context;
             _mapper = mapper;
-        }
-
-        public FileZip GetZippedFile(DateTime deliveryDate)
-        {
-            var deliveries = GetDeliveriesForDate(deliveryDate);
-            var csvFiles = deliveries
-                .GroupBy(a => a.StoreName)
-                .Select(store =>
-                    ToCSVFile(store.ToList(), $"{store.Key} {deliveryDate:dd-MM-yyyy} - Delivery.csv"))
-                .ToList();
-
-            return ToZip(csvFiles);
+            _chartService = chartService;
         }
 
         public async Task<FileZip> ZipIdeasOfTopicExpired(Guid topicId)
@@ -46,17 +37,21 @@ namespace Web.Api.Services.ZipFile
                 var topic = await _context.Topics
                     .Where(x => x.Id == topicId && x.FinalClosureDate < DateTime.UtcNow)
                     .SingleAsync();
+                if(topic == null)
+                {
+                    throw new Exception("Can not find the topic which is closed!");
+                }
                 var ideasOfTopic = await _context.Ideas
+                    .Include(x => x.User)
                     .Include(x => x.Category)
                     .Include(x => x.Views)
                     .Include(x => x.Reactions)
                     .Where(x => x.TopicId == topic.Id)
                     .ToListAsync();
                 List<FileZip> dataToCSV = new List<FileZip>();
-                List<IdeaResponseModel> result = _mapper.Map<List<IdeaResponseModel>>(ideasOfTopic);
-                dataToCSV.Add(ToCSVFile(result, $"Ideas.csv")); //format response data
-
-                return ToZip(dataToCSV);
+                var result = _mapper.Map<List<IdeaForZipResponseModel>>(ideasOfTopic);
+                dataToCSV.Add(ToCSVFile(result, $"Ideas.csv"));
+                return ToZip(dataToCSV, "Idea Details of Topic");
             }
             catch (Exception)
             {
@@ -64,7 +59,31 @@ namespace Web.Api.Services.ZipFile
                 throw;
             }
         }
-        private FileZip ToZip(List<FileZip> files)
+        public async Task<FileZip> ZipDashboardData()
+        {
+            try
+            {
+                var ideas = await _chartService.GetIdeasForChart();
+                var totalIdeaCount = await _chartService.GetTotalIdeaOfEachDepartment();
+                var totalStaffIdeaTopicComment = await _chartService.GetTotalOfStaffAndIdeaAndTopicAndCommment();
+                var percentageOfIdea = await _chartService.GetPercentageOfIdeaForEachDepartments();
+                List<TotalStaffAndIdeaAndTopicAndCommentResponseModel> totalStaffIdeaTopicComment_list = new List<TotalStaffAndIdeaAndTopicAndCommentResponseModel>();
+                totalStaffIdeaTopicComment_list.Add(totalStaffIdeaTopicComment);
+                List<FileZip> dataToCSV = new List<FileZip>
+                {
+                    ToCSVFile(ideas, $"All Ideas.csv"),
+                    ToCSVFile(totalIdeaCount, $"Total Idea count for each department.csv"),
+                    ToCSVFile(totalStaffIdeaTopicComment_list, $"Total Staff-Idea-Topic-Commment.csv"),
+                    ToCSVFile(percentageOfIdea, $"Percentage of idea for each departments.csv")
+                };
+                return ToZip(dataToCSV, "Dashboard");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        private FileZip ToZip(List<FileZip> files, string fileZipName)
         {
             var compressedFileStream = new MemoryStream();
             using (var zipArchive = new ZipArchive(compressedFileStream, ZipArchiveMode.Create, true))
@@ -83,7 +102,7 @@ namespace Web.Api.Services.ZipFile
             return new FileZip()
             {
                 Bytes = compressedFileStream.ToArray(),
-                FileName = $"Idea Details of Topic.zip"
+                FileName = $"{fileZipName.TrimEnd()}.zip"
             };
         }
         private FileZip ToCSVFile(IEnumerable records, string fileName)

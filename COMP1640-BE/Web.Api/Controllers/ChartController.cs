@@ -23,7 +23,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("contributors-by-department")]
-        public async Task<ActionResult<List<ContributorResponseModel>>> GetContributorsByDepart() 
+        public async Task<ActionResult<List<ContributorResponseModel>>> GetContributorsByDepartment() 
         {
             try
             {
