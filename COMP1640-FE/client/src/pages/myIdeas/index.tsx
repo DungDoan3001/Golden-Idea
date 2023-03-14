@@ -1,48 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import AppPagination from '../../app/components/AppPagination';
-import { topicData } from "../../dataTest.js"
 import { useTheme } from '@emotion/react';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
-import { getTopics, getUserTopics } from '../topic/topicSlice';
+import { getUserTopics } from '../topic/topicSlice';
 import Loading from '../../app/components/Loading';
 import { useNavigate } from 'react-router-dom';
 
 const MyIdeas = () => {
   const theme: any = useTheme();
-  const { topics, loading } = useSelector((state: RootState) => state.topic);
-  //const { user_topics, loading } = useSelector((state: RootState) => state.topic);
+  const { user_topics, loading } = useSelector((state: RootState) => state.topic);
   const { user } = useAppSelector(state => state.account);
   const dispatch = useAppDispatch();
   let fetchMount = true;
-  // useEffect(() => {
-  //   if (fetchMount) {
-  //     if (user?.name) {
-  //       dispatch(getUserTopics(user.name));
-  //     }
-  //   }
-  //   return () => {
-  //     fetchMount = false;
-  //   };
-  // }, []);
   useEffect(() => {
     if (fetchMount) {
-      dispatch(getTopics());
+      if (user?.name) {
+        dispatch(getUserTopics(user.name));
+      }
     }
     return () => {
       fetchMount = false;
     };
   }, []);
-
   const navigate = useNavigate();
-  const [topic, setTopic] = useState(topics);
-  //const [topic, setTopic] = useState(user_topics);
+  const [topic, setTopic] = useState(user_topics);
 
   return (
     <>
-      {loading ? (<Loading />) : (
+      {loading ? (
+        <Loading />
+      ) : user_topics && user_topics.length ? (
         <Box
           sx={{
             [theme.breakpoints.up('sm')]: {
@@ -53,7 +43,7 @@ const MyIdeas = () => {
             [theme.breakpoints.down('sm')]: {
               width: '115%',
               marginTop: 5,
-              ml: '8%'
+              ml: '9%'
             },
           }}
         >
@@ -67,12 +57,12 @@ const MyIdeas = () => {
             {topic.map((item: any) => (
               <ListItemButton sx={{
                 p: { xs: 1, sm: 2 }, flexDirection: { xs: "column", sm: "row" },
-                bgcolor: "#FFFFFF",
+                bgcolor: theme.palette.content.layout,
                 borderRadius: "10px",
                 boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.15)",
                 mb: { xs: 2, sm: 3 },
               }}
-                onClick={() => navigate(`/topic/${item.id}/${item.name}`)}>
+                onClick={() => navigate(`/myTopic/${item.id}/${item.name}`)}>
                 <ListItemIcon sx={{ mr: { xs: 0, sm: 2 } }}>
                   <QuestionAnswerIcon color="secondary" sx={{ fontSize: { xs: "2rem", sm: "2.5rem" } }} />
                 </ListItemIcon>
@@ -98,11 +88,11 @@ const MyIdeas = () => {
             ))}
             <AppPagination
               setItem={(p: any) => setTopic(p)}
-              data={topics}
+              data={user_topics}
               size={5}
             />
           </List>
-        </Box>)}
+        </Box>) : <Typography variant="h2" align="left" fontWeight={'bold'} marginLeft={4.5} marginTop={3}>YOU HAVE NOT ADDED ANY IDEA!</Typography>}
     </>
   );
 }

@@ -6,6 +6,7 @@ import PostAuthorInfo from './PostAuthorInfo';
 
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import ThumbsUpDownTwoToneIcon from '@mui/icons-material/ThumbsUpDownTwoTone';
+import { Link } from 'react-router-dom';
 
 interface HomePageItemProps {
   data: any
@@ -13,7 +14,7 @@ interface HomePageItemProps {
 
 const HomePageItem = ({ data }: HomePageItemProps) => {
   const theme: any = useTheme();
-
+  console.log(data)
   return (
     <Grid item xs={4}>
       <Box>
@@ -23,43 +24,48 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
             backgroundColor: theme.palette.thumbnail.main, p: "1rem", borderRadius: "2rem 0rem"
           }}
         >
-          <Box
-            component="img"
-            alt="thumbnail"
-            src={data.img}
-            height="100%"
-            width="100%"
-            sx={{
-              objectFit: "cover",
-              borderRadius: "2rem 0rem",
-              '&:hover': {
-                backgroundColor: theme.palette.thumbnail.main,
-                opacity: '0.7',
-                cursor: 'pointer',
-              }
-            }}
-          />
+          <Link to={`/ideaDetail/${data.topic.id}/${data.slug}`}>
+            <Box
+              component="img"
+              alt="thumbnail"
+              src={data.image}
+              height="15rem" // set fixed height
+              sx={{
+                width: { xs: '22.2rem', md: '21rem' },
+                objectFit: "cover",
+                borderRadius: "2rem 0rem",
+                '&:hover': {
+                  backgroundColor: theme.palette.thumbnail.main,
+                  opacity: '0.7',
+                  cursor: 'pointer',
+                }
+              }}
+            />
+          </Link>
         </Box>
-        <CategoryButton search={false} category={data.catalog} />
-        <Typography
-          mt="0.5rem"
-          variant="h3"
-          color={theme.palette.content.main}
-          fontWeight="bold"
-        >
-          {data.title.length <= 50 ? data.title : data.title.substring(0, 50) + "..."}
-        </Typography>
+        <CategoryButton search={false} category={data.category?.name} />
+        <Link to={`/ideaDetail/${data.topic.id}/${data.slug}`} style={{ textDecoration: 'none' }}>
+          <Typography
+            mt="0.5rem"
+            variant="h3"
+            color={theme.palette.content.main}
+            fontWeight="bold"
+            sx={{ '&:hover': { color: theme.palette.secondary.main } }}
+          >
+            {data.title.length <= 50 ? data.title : data.title.substring(0, 50) + "..."}
+          </Typography>
+        </Link>
         <Box component="line" display="flex" alignItems="center" justifyContent="left">
           <Box component="line" display="flex" alignItems="center" justifyContent="left">
             <RemoveRedEyeTwoToneIcon style={{ fontSize: "1.1rem", color: theme.palette.content.icon }} />
             <Box pl="0.5rem">
-              20
+              {data.view}
             </Box>
           </Box>
           <Box ml="2rem" component="line" display="flex" alignItems="center" justifyContent="left">
             <ThumbsUpDownTwoToneIcon style={{ fontSize: "1.1rem", color: theme.palette.content.icon }} />
             <Box pl="0.5rem">
-              20 | 10
+              {data.upVote} | {data.downVote}
             </Box>
           </Box>
         </Box>

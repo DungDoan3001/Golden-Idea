@@ -15,11 +15,11 @@ export const commentsSlice = createSlice({
         addComment: (state, action: PayloadAction<ChatComment>) => {
             state.comments.push(action.payload);
         },
-        setComments: (state, action: PayloadAction<ChatComment[]>) => {
+        loadComments: (state, action: PayloadAction<any[]>) => {
             state.comments = action.payload;
         },
     },
 });
 
-
+export const { addComment, loadComments } = commentsSlice.actions
 export default commentsSlice.reducer;

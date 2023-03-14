@@ -12,7 +12,7 @@ import { Idea } from '../../app/models/Idea';
 import { AddCircleOutline } from '@mui/icons-material';
 import Filter from '../../app/components/filter/Filter';
 import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch } from '../../app/store/configureStore';
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 import { getIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
 const viewOptions = [
@@ -23,14 +23,15 @@ const viewOptions = [
     { label: "Most Disliked", value: "most_disliked" }
 ];
 
-const ListIdeas = () => {
+const ListMyIdeas = () => {
     const theme: any = useTheme();
     const { name, id } = useParams();
     const [editMode, setEditMode] = useState(false);
     const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
     const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
+    const { user } = useAppSelector(state => state.account);
     const { ideas, loading } = useSelector((state: RootState) => state.idea);
-    const [idea, setIdea] = useState(ideas);
+    const [idea, setIdea] = useState(ideas.filter((idea: any) => idea.user?.userName === user?.name)); // filter the ideas based on user's username
     const dispatch = useAppDispatch();
     let fetchMount = true;
     useEffect(() => {
@@ -44,22 +45,22 @@ const ListIdeas = () => {
     useEffect(() => {
         switch (selectedViewOption) {
             case 'most_viewed':
-                setIdea([...ideas].sort((a, b) => b.view - a.view));
+                setIdea([...idea].sort((a, b) => b.view - a.view));
                 break;
             case 'latest':
-                setIdea([...ideas].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+                setIdea([...idea].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
                 break;
             case 'oldest':
-                setIdea([...ideas].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
+                setIdea([...idea].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
                 break;
             case 'most_liked':
-                setIdea([...ideas].sort((a, b) => b.upVote - a.upVote));
+                setIdea([...idea].sort((a, b) => b.upVote - a.upVote));
                 break;
             case 'most_disliked':
-                setIdea([...ideas].sort((a, b) => b.downVote - a.downVote));
+                setIdea([...idea].sort((a, b) => b.downVote - a.downVote));
                 break;
             default:
-                setIdea(ideas);
+                setIdea(ideas.filter((idea: any) => idea.user?.userName === user?.name));
                 break;
         }
     }, [selectedViewOption, ideas]);
@@ -139,8 +140,8 @@ const ListIdeas = () => {
                         )}
                     </Grid>
                     <AppPagination
-                        setItem={setIdea} // Update this line
-                        data={ideas} // Update this line
+                        setItem={(p: any) => setIdea(p)}
+                        data={ideas.filter((idea: any) => idea.user?.userName == user?.name)}
                         size={6}
                     />
                 </Box>
@@ -170,4 +171,4 @@ const ListIdeas = () => {
     );
 }
 
-export default ListIdeas
+export default ListMyIdeas

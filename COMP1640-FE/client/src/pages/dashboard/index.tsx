@@ -14,14 +14,17 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridValueGetterParams } from "@mui/x-data-grid";
 import BreakdownChart from "../../app/components/BreakdownChart";
 import StatBox from "../../app/components/StatBox";
 import OverviewChart from "../../app/components/OverviewChart";
-import { dataIdeas, dataOverall, dataOverview } from "../../dataTest";
 import Loading from "../../app/components/Loading";
 import React, { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../../app/store/configureStore";
+import { getDashboardIdeas } from "../myIdeas/ideasSlice";
+import moment from "moment";
 
 interface IData {
   totalStaff: number;
@@ -32,6 +35,8 @@ interface IData {
 const Dashboard = () => {
   const theme: any = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
+  const dispatch = useAppDispatch();
+  const { ideas_dashboard } = useSelector((state: RootState) => state.idea);
   const [pageSize, setPageSize] = React.useState<number>(10);
   const [dataBreakdown, setDataBreakdown] = useState([]);
   const [dataOverview, setDataOverview] = useState([]);
@@ -47,6 +52,7 @@ const Dashboard = () => {
       const response = await agent.Chart.breakdownChart();
       const res = await agent.Chart.overallChart();
       const data = await agent.Chart.overviewChart();
+      await dispatch(getDashboardIdeas());
       setDataBreakdown(response);
       setDataOverall(res);
       setDataOverview(data);
@@ -56,10 +62,14 @@ const Dashboard = () => {
   }, []);
   const columns: any = [
     {
-      field: "id",
-      headerName: "ID",
-      minWidth: 130,
-      flex: 1,
+      field: "ordinal",
+      headerName: "#",
+      flex: 0.2,
+      valueGetter: (params: GridValueGetterParams) => {
+        const { row } = params;
+        const index = ideas_dashboard.findIndex((r) => r.id === row.id);
+        return index + 1;
+      }
     },
     {
       field: "image",
@@ -84,16 +94,43 @@ const Dashboard = () => {
       flex: 1,
     },
     {
-      field: "lastUpdate",
+      field: "createdAt",
       headerName: "CreatedAt",
-      minWidth: 250,
+      minWidth: 150,
       flex: 1,
+      renderCell: (params: { value: string; }) => {
+        return moment(params.value).format('DD-MM-YYYY');
+      },
     },
     {
-      field: "userID",
-      headerName: "UserID",
+      field: "lastUpdate",
+      headerName: "Last Update",
+      minWidth: 150,
+      flex: 1,
+      renderCell: (params: { value: string; }) => {
+        return moment(params.value).format('DD-MM-YYYY');
+      },
+    },
+    {
+      field: "category",
+      headerName: "Category",
       minWidth: 250,
       flex: 1,
+      renderCell: (params: { value: any; }) => params.value.name
+    },
+    {
+      field: "topic",
+      headerName: "Topic",
+      minWidth: 350,
+      flex: 1,
+      renderCell: (params: { value: any; }) => params.value.name
+    },
+    {
+      field: "user",
+      headerName: "Creator",
+      minWidth: 250,
+      flex: 1,
+      renderCell: (params: { value: any; }) => params.value.userName
     },
   ];
   if (loading) return <Loading />;
@@ -105,7 +142,7 @@ const Dashboard = () => {
       },
     }}>
       <FlexBetween>
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="DASHBOARD" subtitle="Welcome to Summary of Golden Idea Statistic" />
         <Box>
           <Button
             sx={{
@@ -248,8 +285,8 @@ const Dashboard = () => {
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 50, 100]}
-            getRowId={(row) => row.id}
-            rows={(dataIdeas) || []}
+            getRowId={(row) => row.id ?? ''}
+            rows={(ideas_dashboard) || []}
             columns={columns}
           />
         </Box>

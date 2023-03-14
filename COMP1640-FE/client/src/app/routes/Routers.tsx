@@ -23,6 +23,7 @@ import ResetPass from "../../pages/account/resetpassword";
 import Login from "../../pages/account/login";
 import AdminPage from "../../pages/staffs/index.admin";
 import ListIdeas from "../../pages/myIdeas/index.ideas";
+import ListMyIdeas from "../../pages/myIdeas/index.myideas";
 
 export const router = createBrowserRouter([
     {
@@ -46,8 +47,9 @@ export const router = createBrowserRouter([
                         element: <Layout />, children: [
                             { path: 'home', element: <Home /> },
                             { path: 'topic/:id/:name', element: <ListIdeas /> },
+                            { path: 'myTopic/:id/:name', element: <ListMyIdeas /> },
                             { path: 'myIdeas', element: <MyIdeas /> },
-                            { path: 'ideaDetail', element: <IdeaDetail /> },
+                            { path: 'ideaDetail/:topicId/:slug', element: <IdeaDetail /> },
                             { path: 'dashboard', element: <Dashboard /> },
                             { path: 'staffs', element: <Staffs /> },
                             { path: 'admin', element: <AdminPage /> },

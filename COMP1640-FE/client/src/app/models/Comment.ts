@@ -1,5 +1,5 @@
 export interface ChatComment {
-    id: number;
+    ideaId: string;
     userName: string;
     content: string;
     createdDate: any;
