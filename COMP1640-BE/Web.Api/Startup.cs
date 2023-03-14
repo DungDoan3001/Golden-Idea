@@ -91,7 +91,7 @@ namespace Web.Api
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()
-                        .WithOrigins("https://goldenidea.azurewebsites.net");
+                        .WithOrigins("https://goldenidea.azurewebsites.net", "http://localhost:3000", "http://localhost:5000");
                 });
             });
 

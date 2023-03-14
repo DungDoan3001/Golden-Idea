@@ -53,6 +53,20 @@ namespace Web.Api.Extensions
                     // Map Downvote
                     dest.DownVote = src.Reactions.Where(x => x.React == -1).Count();
                 });
+            CreateMap<Idea, IdeaForZipResponseModel>()
+                .AfterMap((src, dest) =>
+                {
+                    // Map view
+                    dest.View = src.Views.Count();
+                    // Map Upvote
+                    dest.UpVote = src.Reactions.Where(x => x.React == 1).Count();
+                    // Map Downvote
+                    dest.DownVote = src.Reactions.Where(x => x.React == -1).Count();
+                })
+                .ForMember(dest => dest.Category_name, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.User_Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.Topic, opt => opt.MapFrom(src => src.Topic.Name));
+            //
             CreateMap<Topic, IdeaResponseModel_Topic>();
             CreateMap<User, IdeaResponseModel_User>();
             CreateMap<Category, IdeaResponseModel_Category>();

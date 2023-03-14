@@ -12,12 +12,10 @@ namespace Web.Api.Services.Chart
 {
     public class ChartService : IChartService
     {
-        private readonly UserManager<Entities.User> _userManager;
         protected IAppDbContext _context;
         private readonly IMapper _mapper;
-        public ChartService(UserManager<Entities.User> userManager, IAppDbContext context, IMapper mapper)
+        public ChartService(IAppDbContext context, IMapper mapper)
         {
-            _userManager = userManager;
             _context = context;
             _mapper = mapper;
         }

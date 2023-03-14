@@ -17,7 +17,7 @@ namespace Web.Api.SignalR
 
         public async Task SendComment(CommentRequestModel userComment)
         {
-            var comment = _commentService.Create(userComment);
+            var comment = await _commentService.Create(userComment);
             await Clients.Group(userComment.IdeaId.ToString())
                 .SendAsync("ReceiveComment", comment);
         }
