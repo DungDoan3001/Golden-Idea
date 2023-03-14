@@ -1,10 +1,28 @@
 export interface Idea {
-    id: string;
-    title:string;
+    id?: string;
+    title: string;
+    slug: string;
     content: string;
-    image: any;
-    lastUpdate: Date;
-    userID?:string;
-    categoryID?: string;
-    topicID?: string;
+    image: string;
+    isAnonymous: boolean;
+    lastUpdate: any;
+    createdAt: any;
+    upVote: number;
+    downVote: number;
+    view: number;
+    user: {
+        id: string;
+        userName: string;
+        email: string;
+        avatar: string;
+    };
+    topic: {
+        id: string;
+        name: string;
+    };
+    category: {
+        id: string;
+        name: string;
+    };
+    files: any;
 }

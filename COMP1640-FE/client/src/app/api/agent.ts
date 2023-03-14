@@ -86,12 +86,20 @@ const Category = {
 
 const Topic = {
     listTopics: () => requests.get('topics'),
+    listUserTopics: (username: any) => requests.get(`topics/user/${username}`),
     createTopic: (values: any) => requests.post('topics', values),
     updateTopic: (values: any, id: string) => requests.put(`topics/${id}`, values),
     deleteTopic: (id: string) => requests.delete(`topics/${id}`),
     downloadZip: (id: string) => requests.get(`topics/${id}/download-zip`)
 }
-
+const Idea = {
+    listIdeas: (id: any) => requests.get(`ideas/topic/${id}`),
+    listDashboardIdeas: () => requests.get('ideas'),
+    getIdeaDetail: (id: any) => requests.get(`ideas/id/${id}`),
+    createCategory: (values: any) => requests.post('categories', values),
+    updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
+    deleteCategory: (id: string) => requests.delete(`categories/${id}`)
+}
 const User = {
     listUsers: () => requests.get('User'),
     listRoles: () => requests.get('roles'),
@@ -120,6 +128,7 @@ const agent = {
     User,
     Account,
     Chart,
+    Idea,
 }
 
 export default agent;

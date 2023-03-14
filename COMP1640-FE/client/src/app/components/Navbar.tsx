@@ -144,11 +144,15 @@ const Navbar = () => {
               anchorEl={anchorEl}
               open={isOpen}
               onClose={handleClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              PaperProps={{
+                style: {
+                  padding: 0,
+                },
+              }}
             >
               <MenuItem onClick={() => {
                 dispatch(signOut());
-              }}>Log Out</MenuItem>
+              }}>Sign Out</MenuItem>
             </Menu>
           </FlexBetween>
         </FlexBetween>

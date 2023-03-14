@@ -17,6 +17,7 @@ import { topicData } from "../../dataTest.js"
 
 import PostAuthorInfo from '../../app/components/PostAuthorInfo';
 import AppPagination from '../../app/components/AppPagination';
+import Comment from '../../app/components/Comment';
 
 const IdeaDetail = () => {
   const theme: any = useTheme();
@@ -167,6 +168,7 @@ const IdeaDetail = () => {
           size={5}
         />
       </Box>
+      <Comment ideaId='8bc9ff66-f901-44da-b9e3-294e0de0ac15' />
     </Box >
   );
 }
