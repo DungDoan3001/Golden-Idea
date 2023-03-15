@@ -1,5 +1,6 @@
 import FlexBetween from "../../app/components/FlexBetween";
 import Header from "../../app/components/Header";
+import axios from "axios";
 import {
   DownloadOutlined,
   PostAdd,
@@ -25,6 +26,7 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../app/store/configureStore";
 import { getDashboardIdeas } from "../myIdeas/ideasSlice";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 interface IData {
   totalStaff: number;
@@ -60,6 +62,30 @@ const Dashboard = () => {
     };
     fetchData();
   }, []);
+
+  const handleDownload = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: "https://goldenidea.azurewebsites.net/api/ZipFiles/download-data-dashboard",
+        responseType: "blob", // set the response type to blob
+      });
+
+      const blob = new Blob([response.data], { type: "application/zip" }); // create a new Blob object from the response data
+      const url = URL.createObjectURL(blob); // create a temporary URL for the Blob object
+      const link = document.createElement("a"); // create a new <a> element
+      link.href = url; // set the href attribute of the <a> element to the temporary URL
+      link.download = "dashboard.zip"; // set the download attribute of the <a> element to the desired filename
+      document.body.appendChild(link); // append the <a> element to the DOM
+      link.click(); // simulate a click on the <a> element to trigger the download
+      document.body.removeChild(link); // remove the <a> element from the DOM
+      toast.success('Download Successfully', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const columns: any = [
     {
       field: "ordinal",
@@ -160,6 +186,7 @@ const Dashboard = () => {
                 boxShadow: 'none',
               },
             }}
+            onClick={handleDownload}
           >
             <DownloadOutlined sx={{ mr: "10px" }} />
             Download Reports

@@ -1,8 +1,6 @@
 export interface ChatComment {
     ideaId: string;
-    userName: string;
+    username?: string;
     content: string;
-    createdDate: any;
-    isAnonymous: string;
-    avatar: string;
+    isAnonymous: boolean;
 }
