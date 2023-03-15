@@ -11,9 +11,10 @@ import TopicForm from './topicForm';
 import { Topic } from '../../app/models/Topic';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch } from '../../app/store/configureStore';
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 import { deleteTopic, getTopics } from './topicSlice';
 import agent from '../../app/api/agent';
+import axios from 'axios';
 const TopicPage = () => {
     const theme: any = useTheme();
     const [pageSize, setPageSize] = React.useState<number>(5);
@@ -21,6 +22,8 @@ const TopicPage = () => {
     const [recordForEdit, setRecordForEdit] = useState<Topic | undefined>(undefined);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
     const { topics, loading } = useSelector((state: RootState) => state.topic);
+    //Get user info here
+    const { user } = useAppSelector(state => state.account);
     const dispatch = useAppDispatch();
     let fetchMount = true;
     useEffect(() => {
@@ -56,16 +59,28 @@ const TopicPage = () => {
             isOpen: false
         });
     };
-    const handleDownload = (id: any) => {
-        agent.Topic.downloadZip(id)
-            .then((response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", `file-${id}.zip`);
-                document.body.appendChild(link);
-                link.click();
+    const handleDownload = async (id: any) => {
+        try {
+            const response = await axios({
+                method: "get",
+                url: `https://goldenidea.azurewebsites.net/api/ZipFiles/download-all-ideas-of-topic/${id}`,
+                responseType: "blob", // set the response type to blob
             });
+
+            const blob = new Blob([response.data], { type: "application/zip" }); // create a new Blob object from the response data
+            const url = URL.createObjectURL(blob); // create a temporary URL for the Blob object
+            const link = document.createElement("a"); // create a new <a> element
+            link.href = url; // set the href attribute of the <a> element to the temporary URL
+            link.download = "topic-report.zip"; // set the download attribute of the <a> element to the desired filename
+            document.body.appendChild(link); // append the <a> element to the DOM
+            link.click(); // simulate a click on the <a> element to trigger the download
+            document.body.removeChild(link); // remove the <a> element from the DOM
+            toast.success('Download Successfully', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        } catch (error) {
+            console.error(error);
+        }
     };
     const columns: any = [
         {
@@ -117,6 +132,10 @@ const TopicPage = () => {
             renderCell: (params: { row: { id: any; name: any, username: any, closureDate: any, finalClosureDate: any, }; }) => {
                 const today = new Date()
                 const isAfterFinalClosure = today > new Date(params.row.finalClosureDate)
+                let isDownloadablePerson = false;
+                if (user) {
+                    isDownloadablePerson = user?.role[0] === 'Administrator' || user?.role[0] === 'QA Manager';
+                }
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
                         <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
@@ -130,7 +149,7 @@ const TopicPage = () => {
                         })}>
                             <Delete fontSize="inherit" />
                         </IconButton>
-                        {isAfterFinalClosure && (
+                        {isAfterFinalClosure && isDownloadablePerson && (
                             <IconButton aria-label="download" size="large" color="success" onClick={() => handleDownload(params.row.id)}>
                                 <GetApp fontSize="inherit" />
                             </IconButton>
