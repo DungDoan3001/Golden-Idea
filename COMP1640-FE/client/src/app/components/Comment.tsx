@@ -65,9 +65,9 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
         };
     }, [dispatch, ideaId]);
 
-    const sendComment = async (comment: ChatComment) => {
+    const sendComment = (comment: ChatComment) => {
         try {
-            await connection.invoke('SendComment', comment)
+            connection.invoke('SendComment', comment)
         }
         catch (error) {
             console.log(error)
@@ -80,7 +80,8 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
     const handleAnonymousChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsAnonymous(event.target.checked);
     };
-    const handleSubmit = () => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         const comment: ChatComment = {
             ideaId: ideaId,
             username: user?.name,

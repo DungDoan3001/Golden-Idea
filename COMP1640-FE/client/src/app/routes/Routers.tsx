@@ -11,7 +11,6 @@ import Category from "../../pages/category";
 import Layout from "../../pages/layout";
 import Topic from "../../pages/topic";
 import Department from "../../pages/department";
-import Comment from "../../pages/comment";
 import Overview from "../../pages/overview";
 import Breakdown from "../../pages/breakdown";
 import Contributors from "../../pages/contributor";
@@ -24,6 +23,7 @@ import Login from "../../pages/account/login";
 import AdminPage from "../../pages/staffs/index.admin";
 import ListIdeas from "../../pages/myIdeas/index.ideas";
 import ListMyIdeas from "../../pages/myIdeas/index.myideas";
+import CommentPage from "../../pages/comment";
 
 export const router = createBrowserRouter([
     {
@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
                             { path: 'categories', element: <Category /> },
                             { path: 'topics', element: <Topic /> },
                             { path: 'departments', element: <Department /> },
-                            { path: 'comments', element: <Comment /> },
+                            { path: 'comments', element: <CommentPage /> },
                             { path: 'overview', element: <Overview /> },
                             { path: 'breakdown', element: <Breakdown /> },
                             { path: 'contributors', element: <Contributors /> },
