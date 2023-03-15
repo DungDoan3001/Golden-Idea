@@ -220,7 +220,11 @@ namespace Web.Api.Controllers
                 {
                     IEnumerable<File> addedFiles = await _fileService.AddRangeAsync(files);
                 }
-
+                // Send email to owner of topic
+                if(createdIdea != null)
+                {
+                    var topic = await _ideaService.SendEmailNotifyUserCreateIdea(createdIdea);
+                }
                 return Created(createdIdea.Id.ToString(), new MessageResponseModel { Message = "Success", StatusCode = (int)HttpStatusCode.Created });
             }
             catch (Exception ex)
@@ -468,7 +472,7 @@ namespace Web.Api.Controllers
             if (isCheckClosureDate)
             {
                 // Check if topic still valid
-                if (topic.ClosureDate > DateTime.UtcNow)
+                if (topic.ClosureDate < DateTime.UtcNow)
                 {
                     return new MessageResponseModel
                     {

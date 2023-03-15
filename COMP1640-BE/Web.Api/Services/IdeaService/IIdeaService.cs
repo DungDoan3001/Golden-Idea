@@ -19,5 +19,6 @@ namespace Web.Api.Services.IdeaService
         Task<bool> CheckIdeaExisted(Guid id);
         Task<bool> CheckExistedImageContainDuplicateAsync(string image);
         Task<List<Idea>> SearchByTitle(string searchTerm);
+        Task<bool> SendEmailNotifyUserCreateIdea(Entities.Idea idea);
     }
 }

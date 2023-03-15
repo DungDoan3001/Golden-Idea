@@ -193,53 +193,18 @@ const IdeaDetail = () => {
               </Box>
             </Box>
           </Box>
-          <Typography
-            m="1rem 0rem"
-            variant="h3"
-            color={theme.palette.content.main}
-            fontWeight="semibold"
-          >
-            Comment
-          </Typography>
-          <Divider variant="fullWidth" />
-          {
-            comments.map((item: any) => (
-              <Paper
-                sx={{ backgroundColor: theme.palette.comment.main }}
-                style={{ padding: "1rem 1rem 0rem" }}
-              >
-                <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item>
-                    <Avatar alt="Profile Image" src={item.userImg} />
-                  </Grid>
-                  <Grid item xs zeroMinWidth>
-                    <Grid container wrap="nowrap" spacing={2}>
-                      <Grid item xs zeroMinWidth>
-                        <Box fontSize="1.1rem" component="h4" justifyContent="left">
-                          {item.userName}
-                        </Box>
-                      </Grid>
-                      <Grid item xs zeroMinWidth>
-                        <Box mt="0.25rem" fontSize="0.8rem" display="flex" justifyContent="right" alignItems="center" color="gray">
-                          {moment(item.createdDate).format("hh:mm | DD/MM/YYYY")}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                    {item.content}
-                  </Grid>
-                </Grid>
-                <Divider variant="fullWidth" style={{ margin: "1rem 0rem" }} />
-              </Paper>
-            ))
-          }
-          <Box pb="2rem">
-            <AppPagination
-              setItem={(p: any) => setComments(p)}
-              data={commentData}
-              size={5}
-            />
-          </Box>
-          <Comment ideaId='8bc9ff66-f901-44da-b9e3-294e0de0ac15' />
+        ))}
+      </Box>
+      <Typography
+        m="1rem 0rem"
+        variant="h3"
+        color={theme.palette.content.main}
+        fontWeight="semibold"
+      >
+        Comment
+      </Typography>
+      <Divider variant="fullWidth" />
+      <Comment ideaId='8bc9ff66-f901-44da-b9e3-294e0de0ac15' />
     </Box >
       }
     </>
