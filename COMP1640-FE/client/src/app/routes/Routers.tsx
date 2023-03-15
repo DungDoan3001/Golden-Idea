@@ -26,62 +26,62 @@ import ListMyIdeas from "../../pages/myIdeas/index.myideas";
 import CommentPage from "../../pages/comment";
 
 export const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <App />,
-        children: [
-            // User authenticated routes
-            {
-                element: <RequireAuth />, children: [
-                    {
-                        element: <Layout />, children: [
-                            { path: 'home', element: <Home /> },
-                        ]
-                    },
-                ]
-            },
-            // Admin routes
-            {
-                element: <RequireAuth roles={['Administrator']} />, children: [
-                    {
-                        element: <Layout />, children: [
-                            { path: 'home', element: <Home /> },
-                            { path: 'topic/:id/:name', element: <ListIdeas /> },
-                            { path: 'myTopic/:id/:name', element: <ListMyIdeas /> },
-                            { path: 'myIdeas', element: <MyIdeas /> },
-                            { path: 'ideaDetail/:slug', element: <IdeaDetail /> },
-                            { path: 'dashboard', element: <Dashboard /> },
-                            { path: 'staffs', element: <Staffs /> },
-                            { path: 'admin', element: <AdminPage /> },
-                            { path: 'categories', element: <Category /> },
-                            { path: 'topics', element: <Topic /> },
-                            { path: 'departments', element: <Department /> },
-                            { path: 'comments', element: <CommentPage /> },
-                            { path: 'overview', element: <Overview /> },
-                            { path: 'breakdown', element: <Breakdown /> },
-                            { path: 'contributors', element: <Contributors /> },
-                            { path: 'dailyreport', element: <DailyReport /> },
-                            { path: 'exception', element: <Exception /> },
-                        ]
-                    },
-                ]
-            },
-            // QA manager routes
-            {
-                element: <RequireAuth roles={['QA Manager']} />, children: [
-                ]
-            },
-            // QA coordinator routes
-            {
-                element: <RequireAuth roles={['QA Coordinator']} />, children: [
-                ]
-            },
-            { path: 'server-error', element: <ServerError /> },
-            { path: 'login', element: <Login /> },
-            { path: 'not-found', element: <NotFound /> },
-            { path: 'forgot', element: <ForgotPassword /> },
-            { path: 'change-password/:resetCode', element: <ResetPass /> },
-            { path: '*', element: <Navigate replace to='/not-found' /> }
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      // User authenticated routes
+      {
+        element: <RequireAuth />, children: [
+          {
+            element: <Layout />, children: [
+              { path: 'home', element: <Home /> },
+            ]
+          },
         ]
-    }
+      },
+      // Admin routes
+      {
+        element: <RequireAuth roles={['Administrator']} />, children: [
+          {
+            element: <Layout />, children: [
+              { path: 'home', element: <Home /> },
+              { path: 'topic/:id/:name', element: <ListIdeas /> },
+              { path: 'myTopic/:id/:name', element: <ListMyIdeas /> },
+              { path: 'myIdeas', element: <MyIdeas /> },
+              { path: 'ideaDetail/:slug', element: <IdeaDetail /> },
+              { path: 'dashboard', element: <Dashboard /> },
+              { path: 'staffs', element: <Staffs /> },
+              { path: 'admin', element: <AdminPage /> },
+              { path: 'categories', element: <Category /> },
+              { path: 'topics', element: <Topic /> },
+              { path: 'departments', element: <Department /> },
+              { path: 'comments', element: <CommentPage /> },
+              { path: 'overview', element: <Overview /> },
+              { path: 'breakdown', element: <Breakdown /> },
+              { path: 'contributors', element: <Contributors /> },
+              { path: 'dailyreport', element: <DailyReport /> },
+              { path: 'exception', element: <Exception /> },
+            ]
+          },
+        ]
+      },
+      // QA manager routes
+      {
+        element: <RequireAuth roles={['QA Manager']} />, children: [
+        ]
+      },
+      // QA coordinator routes
+      {
+        element: <RequireAuth roles={['QA Coordinator']} />, children: [
+        ]
+      },
+      { path: 'server-error', element: <ServerError /> },
+      { path: 'login', element: <Login /> },
+      { path: 'not-found', element: <NotFound /> },
+      { path: 'forgot', element: <ForgotPassword /> },
+      { path: 'change-password/:resetCode', element: <ResetPass /> },
+      { path: '*', element: <Navigate replace to='/not-found' /> }
+    ]
+  }
 ])

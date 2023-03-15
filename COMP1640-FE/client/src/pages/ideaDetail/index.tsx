@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography, ListItemText, List } from '@mui/material';
 import Service from '../../app/utils/Service';
 import { useTheme } from '@emotion/react';
 import moment from 'moment';
@@ -29,7 +29,6 @@ const IdeaDetail = () => {
   const { slug } = useParams();
   const [isLike, setIslike] = useState(false);
   const [isDislike, setisDislike] = useState(false);
-  const [comments, setComments] = useState([]);
   const { idea, loading } = useSelector((state: RootState) => state.idea);
   const dispatch = useAppDispatch();
   let fetchMount = true;
@@ -84,21 +83,36 @@ const IdeaDetail = () => {
                 position: 'relative',
                 display: 'inline-block',
                 color: theme.palette.secondary.main,
-                // '&:after': {
-                //   content: '""',
-                //   position: 'absolute',
-                //   top: '-10px',
-                //   left: '-10px',
-                //   right: '-10px',
-                //   bottom: '-10px',
-                //   border: `2px solid ${theme.palette.secondary.main}`,
-                //   borderStyle: 'dashed',
-                //   borderRadius: '10px',
-                // },
               }}
             >
               {idea?.topic.name}
             </Typography>
+            <Divider variant="fullWidth" />
+            <Box m="1rem 0rem" display="flex" alignItems="center" justifyContent="right">
+              <Box
+                component="img"
+                alt="profile"
+                src={idea?.topic.avatar}
+                height="2.5rem"
+                width="2.5rem"
+                borderRadius="50%"
+                sx={{ objectFit: "cover" }}
+              />
+              <Box component="h4" m=".5rem 1rem">
+                Topic By: {idea?.topic.username}
+              </Box>
+              <Box>
+                <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" }, alignItems: { xs: "center", sm: "flex-end" } }}>
+                  <ListItemText
+                    primary={`Closure Date: ${new Date(idea?.topic.closureDate).toLocaleDateString('en-GB')}`}
+                    secondary={`Final Closure Date: ${new Date(idea?.topic.finalClosureDate).toLocaleDateString('en-GB')}`}
+                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
+                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
+                  />
+                </List>
+              </Box>
+            </Box>
+            <Divider variant="fullWidth" />
             <Box sx={{ backgroundColor: theme.palette.comment.main, borderRadius: "0.5rem" }}>
               <Box p="1rem 5%">
                 <Grid
