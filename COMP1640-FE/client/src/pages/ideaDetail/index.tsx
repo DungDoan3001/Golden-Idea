@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography } from '@mui/material';
-import Service from '../../app/utils/Service';
+import { Box, Grid, IconButton, Typography } from '@mui/material';
 import { useTheme } from '@emotion/react';
-import moment from 'moment';
 
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import ThumbDownTwoToneIcon from '@mui/icons-material/ThumbDownTwoTone';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-
-
-import { postData } from "../../dataTest.js"
-import { commentData } from '../../dataTest.js';
-
-import PostAuthorInfo from '../../app/components/PostAuthorInfo';
-import AppPagination from '../../app/components/AppPagination';
 
 import { useParams } from 'react-router-dom';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
@@ -193,7 +184,7 @@ const IdeaDetail = () => {
               </Box>
             </Box>
           </Box>
-          <Typography
+          {/* <Typography
             m="1rem 0rem"
             variant="h3"
             color={theme.palette.content.main}
@@ -238,8 +229,8 @@ const IdeaDetail = () => {
               data={commentData}
               size={5}
             />
-          </Box>
-          <Comment ideaId='8bc9ff66-f901-44da-b9e3-294e0de0ac15' />
+          </Box> */}
+          <Comment ideaId={`${idea?.id}`} />
     </Box >
       }
     </>
