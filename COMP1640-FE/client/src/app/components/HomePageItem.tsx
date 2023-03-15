@@ -96,7 +96,11 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
               >
                 {data.content.length <= 100 ? data.content : data.content.substring(0, 100) + "..."}
               </Typography>
-              <PostAuthorInfo top={false} data={data} />
+              <PostAuthorInfo
+                avatar={data.user.avatar}
+                userName={data.user.userName}
+                lastUpdate={data.lastUpdate}
+              />
             </Box>
 
           </ListItem>

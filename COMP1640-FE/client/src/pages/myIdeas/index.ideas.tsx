@@ -15,164 +15,165 @@ import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { getIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
 const viewOptions = [
-    { label: "Most Viewed", value: "most_viewed" },
-    { label: "Latest", value: "latest" },
-    { label: "Oldest", value: "oldest" },
-    { label: "Most Liked", value: "most_liked" },
-    { label: "Most Disliked", value: "most_disliked" }
+  { label: "Most Viewed", value: "most_viewed" },
+  { label: "Latest", value: "latest" },
+  { label: "Oldest", value: "oldest" },
+  { label: "Most Liked", value: "most_liked" },
+  { label: "Most Disliked", value: "most_disliked" }
 ];
 
 const ListIdeas = () => {
-    const theme: any = useTheme();
-    const { name, id } = useParams();
-    const [editMode, setEditMode] = useState(false);
-    const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
-    const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
-    const { ideas, loading } = useSelector((state: RootState) => state.idea);
-    const [ideaData, setIdeaData] = useState(ideas)
-    const [idea, setIdea] = useState([]);
-    const dispatch = useAppDispatch();
-    let fetchMount = true;
-    useEffect(() => {
-        if (fetchMount) {
-            dispatch(getIdeas(id));
-        }
-        return () => {
-            fetchMount = false;
-        };
-    }, []);
-    useEffect(() => {
-        switch (selectedViewOption) {
-            case 'most_viewed':
-              setIdeaData([...ideas].sort((a, b) => b.view - a.view));
-                break;
-            case 'latest':
-              setIdeaData([...ideas].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
-                break;
-            case 'oldest':
-              setIdeaData([...ideas].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
-                break;
-            case 'most_liked':
-              setIdeaData([...ideas].sort((a, b) => b.upVote - a.upVote));
-                break;
-            case 'most_disliked':
-              setIdeaData([...ideas].sort((a, b) => b.downVote - a.downVote));
-                break;
-            default:
-              setIdeaData(ideas);
-                break;
-        }
-    }, [selectedViewOption, ideas]);
-
-    useEffect(() => {
-      window.scrollTo(0, 0)
-    },[idea,ideas,ideaData])
-
-    function cancelEdit() {
-        if (recordForEdit) setRecordForEdit(undefined);
-        setEditMode(false);
+  const theme: any = useTheme();
+  const { name, id } = useParams();
+  const [editMode, setEditMode] = useState(false);
+  const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
+  const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
+  const { ideas, loading } = useSelector((state: RootState) => state.idea);
+  const [ideaData, setIdeaData] = useState(ideas)
+  const [idea, setIdea] = useState([]);
+  const dispatch = useAppDispatch();
+  let fetchMount = true;
+  useEffect(() => {
+    if (fetchMount) {
+      dispatch(getIdeas(id));
     }
-    const handleViewOptionChange = (value: string) => {
-        setSelectedViewOption(value);
+    return () => {
+      fetchMount = false;
     };
-    return (
-        <>
-            {loading ? <Loading /> : (<Box alignItems="center" justifyContent="center"
-                width="100%"
-                sx={{
-                    [theme.breakpoints.up('sm')]: {
-                        width: '90%',
-                        m: '3rem',
-                    },
-                    [theme.breakpoints.down('sm')]: {
-                        width: '100%',
-                        m: '3.5rem',
-                    },
-                }}
+  }, []);
+  useEffect(() => {
+    switch (selectedViewOption) {
+      case 'most_viewed':
+        setIdeaData([...ideas].sort((a, b) => b.view - a.view));
+        break;
+      case 'latest':
+        setIdeaData([...ideas].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+        break;
+      case 'oldest':
+        setIdeaData([...ideas].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
+        break;
+      case 'most_liked':
+        setIdeaData([...ideas].sort((a, b) => b.upVote - a.upVote));
+        break;
+      case 'most_disliked':
+        setIdeaData([...ideas].sort((a, b) => b.downVote - a.downVote));
+        break;
+      default:
+        setIdeaData(ideas);
+        break;
+    }
+  }, [selectedViewOption, ideas]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [idea, ideas, ideaData])
+
+  function cancelEdit() {
+    if (recordForEdit) setRecordForEdit(undefined);
+    setEditMode(false);
+  }
+  const handleViewOptionChange = (value: string) => {
+    setSelectedViewOption(value);
+  };
+  return (
+    <>
+      {loading ? <Loading /> : (<Box alignItems="center" justifyContent="center"
+        width="100%"
+        sx={{
+          [theme.breakpoints.up('sm')]: {
+            width: '90%',
+            m: '3rem',
+          },
+          [theme.breakpoints.down('sm')]: {
+            width: '100%',
+            m: '3.5rem',
+          },
+        }}
+      >
+        <Box sx={{
+          position: 'center',
+          mb: "2rem",
+          mx: 'auto',
+        }}>
+          <Typography
+            variant="h1"
+            color={theme.palette.content.main}
+            fontWeight="bold"
+            sx={{
+              textAlign: 'center',
+              textTransform: 'uppercase',
+              position: 'relative',
+              display: 'inline-block',
+              color: theme.palette.secondary.main,
+              // '&:after': {
+              //     content: '""',
+              //     position: 'absolute',
+              //     top: '-10px',
+              //     left: '-10px',
+              //     right: '-10px',
+              //     bottom: '-10px',
+              //     border: `2px solid ${theme.palette.secondary.main}`,
+              //     borderStyle: 'dashed',
+              //     borderRadius: '10px',
+              // },
+            }}
+          >
+            {name}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ mr: 2 }}>
+            <Button
+              variant="contained"
+              size="medium"
+              color="success"
+              onClick={() => setEditMode(true)}
+              startIcon={<AddCircleOutline />}
             >
-                <Box sx={{
-                    position: 'center',
-                    mb: "2rem",
-                    mx: 'auto',
-                }}>
-                    <Typography
-                        variant="h1"
-                        color={theme.palette.content.main}
-                        fontWeight="bold"
-                        sx={{
-                            textAlign: 'center',
-                            textTransform: 'uppercase',
-                            position: 'relative',
-                            display: 'inline-block',
-                            '&:after': {
-                                content: '""',
-                                position: 'absolute',
-                                top: '-10px',
-                                left: '-10px',
-                                right: '-10px',
-                                bottom: '-10px',
-                                border: `2px solid ${theme.palette.secondary.main}`,
-                                borderStyle: 'dashed',
-                                borderRadius: '10px',
-                            },
-                        }}
-                    >
-                        {name}
-                    </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box sx={{ mr: 2 }}>
-                        <Button
-                            variant="contained"
-                            size="medium"
-                            color="success"
-                            onClick={() => setEditMode(true)}
-                            startIcon={<AddCircleOutline />}
-                        >
-                            Create a new Idea
-                        </Button>
-                    </Box>
-                    <Box sx={{ ml: 2 }}>
-                        <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
-                    </Box>
-                </Box>
-                <Box mt="5%" alignItems="center" justifyContent="center">
-                    <Grid container spacing={2.5} columns={{ xs: 4, sm: 8, md: 12 }}>
-                        {idea.map((item: any) => (
-                            <HomePageItem data={item} />
-                        )
-                        )}
-                    </Grid>
-                    <AppPagination
-                        setItem={setIdea} // Update this line
-                        data={ideaData} // Update this line
-                        size={6}
-                    />
-                </Box>
-                <Box sx={{
-                    [theme.breakpoints.up('sm')]: {
-                        p: '4rem',
-                    },
-                    [theme.breakpoints.down('sm')]: {
-                        p: '1rem',
-                        pb: '4rem',
-                    },
-                }}
-                >
-                    <Grid container spacing={0.5}>
-                        {
-                            categoryData.map((item: any) => (
-                                <Grid item xs={6} sm={4} md={2.4}>
-                                    <CategoryButton search={true} category={item.name} />
-                                </Grid>
-                            ))
-                        }
-                    </Grid>
-                </Box>
-            </Box >
+              Create a new Idea
+            </Button>
+          </Box>
+          <Box sx={{ ml: 2 }}>
+            <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
+          </Box>
+        </Box>
+        <Box mt="5%" alignItems="center" justifyContent="center">
+          <Grid container spacing={2.5} columns={{ xs: 4, sm: 8, md: 12 }}>
+            {idea.map((item: any) => (
+              <HomePageItem data={item} />
+            )
             )}
-        </>
-    );
+          </Grid>
+          <AppPagination
+            setItem={setIdea} // Update this line
+            data={ideaData} // Update this line
+            size={6}
+          />
+        </Box>
+        <Box sx={{
+          [theme.breakpoints.up('sm')]: {
+            p: '4rem',
+          },
+          [theme.breakpoints.down('sm')]: {
+            p: '1rem',
+            pb: '4rem',
+          },
+        }}
+        >
+          <Grid container spacing={0.5}>
+            {
+              categoryData.map((item: any) => (
+                <Grid item xs={6} sm={4} md={2.4}>
+                  <CategoryButton search={true} category={item.name} />
+                </Grid>
+              ))
+            }
+          </Grid>
+        </Box>
+      </Box >
+      )}
+    </>
+  );
 }
 
 export default ListIdeas
