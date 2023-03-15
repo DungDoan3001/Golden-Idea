@@ -196,7 +196,7 @@ const IdeaDetail = () => {
             </Box>
           </Box>
           <Divider variant="fullWidth" />
-          <Comment ideaId='8bc9ff66-f901-44da-b9e3-294e0de0ac15' />
+          <Comment ideaId={`${idea?.id}`} />
         </>
       }
     </>
