@@ -99,7 +99,20 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
     setIsAnonymous(false);
   };
   return (
-    <Box m="4rem">
+    <Box
+      m="4rem"
+      width="100%"
+      sx={{
+        [theme.breakpoints.up('sm')]: {
+          width: '80%',
+          m: "1rem 6rem",
+        },
+        [theme.breakpoints.down('sm')]: {
+          width: '110%',
+          m: "1rem 2rem",
+        },
+      }}
+    >
       <Typography
         m="1rem 0rem"
         variant="h3"
@@ -143,7 +156,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
             </Grid>
           </form>
           {
-            comments.map((item: any) => (
+            comment.map((item: any) => (
               <Paper
                 sx={{ backgroundColor: theme.palette.comment.main }}
                 style={{ padding: "1rem 1rem 0rem" }}

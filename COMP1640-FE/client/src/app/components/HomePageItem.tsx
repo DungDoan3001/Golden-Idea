@@ -69,6 +69,7 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                   variant="h3"
                   color={theme.palette.content.main}
                   fontWeight="bold"
+                  textAlign="justify"
                   sx={{ '&:hover': { color: theme.palette.secondary.main } }}
                 >
                   {data.title.length <= 50 ? data.title : data.title.substring(0, 50) + "..."}
@@ -93,8 +94,9 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                 variant="h5"
                 color={theme.palette.content.main}
                 fontSize="1rem"
+                textAlign="justify"
               >
-                {data.content.length <= 100 ? data.content : data.content.substring(0, 100) + "..."}
+                {data.content.length <= 90 ? data.content : data.content.substring(0, 90) + "..."}
               </Typography>
               <PostAuthorInfo
                 avatar={data.user.avatar}

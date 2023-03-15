@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, List, ListItemText, Divider } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
 import AppPagination from '../../app/components/AppPagination';
 import CategoryButton from '../../app/components/CategoryButton';
@@ -24,7 +24,7 @@ const viewOptions = [
 
 const ListIdeas = () => {
   const theme: any = useTheme();
-  const { name, id } = useParams();
+  const { name, id, username, closureDate, finalClosureDate } = useParams();
   const [editMode, setEditMode] = useState(false);
   const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
   const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
@@ -105,21 +105,36 @@ const ListIdeas = () => {
               position: 'relative',
               display: 'inline-block',
               color: theme.palette.secondary.main,
-              // '&:after': {
-              //     content: '""',
-              //     position: 'absolute',
-              //     top: '-10px',
-              //     left: '-10px',
-              //     right: '-10px',
-              //     bottom: '-10px',
-              //     border: `2px solid ${theme.palette.secondary.main}`,
-              //     borderStyle: 'dashed',
-              //     borderRadius: '10px',
-              // },
             }}
           >
             {name}
           </Typography>
+          <Divider variant="fullWidth" />
+          <Box m="1rem 0rem" display="flex" alignItems="center" justifyContent="right">
+            <Box
+              component="img"
+              alt="profile"
+              src={ideas[0]?.topic.avatar}
+              height="2.5rem"
+              width="2.5rem"
+              borderRadius="50%"
+              sx={{ objectFit: "cover" }}
+            />
+            <Box component="h4" m=".5rem 1rem">
+              Topic By: {ideas[0]?.topic.username}
+            </Box>
+            <Box>
+              <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" }, alignItems: { xs: "center", sm: "flex-end" } }}>
+                <ListItemText
+                  primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                  secondary={`Final Closure Date: ${new Date(`${ideas[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
+                  primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
+                  secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
+                />
+              </List>
+            </Box>
+          </Box>
+          <Divider variant="fullWidth" />
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ mr: 2 }}>
