@@ -83,17 +83,18 @@ const IdeaDetail = () => {
                 textTransform: 'uppercase',
                 position: 'relative',
                 display: 'inline-block',
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  top: '-10px',
-                  left: '-10px',
-                  right: '-10px',
-                  bottom: '-10px',
-                  border: `2px solid ${theme.palette.secondary.main}`,
-                  borderStyle: 'dashed',
-                  borderRadius: '10px',
-                },
+                color: theme.palette.secondary.main,
+                // '&:after': {
+                //   content: '""',
+                //   position: 'absolute',
+                //   top: '-10px',
+                //   left: '-10px',
+                //   right: '-10px',
+                //   bottom: '-10px',
+                //   border: `2px solid ${theme.palette.secondary.main}`,
+                //   borderStyle: 'dashed',
+                //   borderRadius: '10px',
+                // },
               }}
             >
               {idea?.topic.name}
@@ -105,7 +106,11 @@ const IdeaDetail = () => {
                   container spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={3} sm={4} md={6}>
-                    {/* <PostAuthorInfo top={false} data={idea} /> */}
+                    <PostAuthorInfo
+                      avatar={idea?.user.avatar}
+                      userName={idea?.user.userName}
+                      lastUpdate={idea?.lastUpdate}
+                    />
                   </Grid>
                 </Grid>
                 <Typography
@@ -196,7 +201,7 @@ const IdeaDetail = () => {
             </Box>
           </Box>
           <Divider variant="fullWidth" />
-          <Comment ideaId={`${idea?.id}`} />
+          <Comment ideaId={idea?.id} />
         </>
       }
     </>
