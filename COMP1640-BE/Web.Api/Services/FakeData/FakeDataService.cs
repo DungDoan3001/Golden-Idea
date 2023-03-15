@@ -88,15 +88,35 @@ namespace Web.Api.Services.FakeData
     "The School Should Provide Adequate Funding for STEM Programs for Girls",
     "The School Should Offer Comprehensive Programs for Students with Physical Disabilities" 
         };
-
+        private List<string> images = new List<string>
+        {
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678633475/GoldenIdeaImg/ramdomtwitter_Mesa_20de_20trabajo_201_fpggj7.png",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784316/GoldenIdeaImg/1b9c5edf895e27b842ce49c73d48a385_ab12jb.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784340/GoldenIdeaImg/9b04b3de845880bed61c2b3411062869_nlooo0.jpg",
+            "https://i.pinimg.com/564x/f5/c6/9f/f5c69f1c388ea51ab3f9739f620412ee.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784382/GoldenIdeaImg/44b22579ff75e2bff2e651b6184a9b5b_ag6xjb.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784400/GoldenIdeaImg/4d14adfe064eb5ab426b0d934634b775_xxyczi.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784421/GoldenIdeaImg/24f5a325396a398ce004cdcf0379fe44_fxdnbu.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784461/GoldenIdeaImg/b91a2b58a66acb0f09fc5f3fb1566ffd_gtl8lp.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784491/GoldenIdeaImg/393fd89e68af0bca05250bdd28fde98f_e5pio3.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784508/GoldenIdeaImg/58c10d15dc253f8a0e468b8c345e78e8_txllid.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784530/GoldenIdeaImg/37bed85550d6061138dead3040beacf2_mbo7xn.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784550/GoldenIdeaImg/200050daa2c93a67395df795a0d47d81_iziupz.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784589/GoldenIdeaImg/078695b0839d295241e9ca533bfb649b_pk9h4a.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784604/GoldenIdeaImg/111c3977e2432749c52aba0f6b907a7f_cajlmt.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784620/GoldenIdeaImg/1b8c669f290e06b645b83d84646cf1db_sogxbt.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784637/GoldenIdeaImg/b513f2c94d3111140a9143770dd923df_xqirnl.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784665/GoldenIdeaImg/7bf7815a4165392ef10896d4ae6d4ed4_hzto3y.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784682/GoldenIdeaImg/59c7211706743d774b73c111bddf5d44_dipco9.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784697/GoldenIdeaImg/189f84bd433f14b03f11052eb63f1449_sep3gf.jpg",
+            "https://res.cloudinary.com/duasvwfje/image/upload/v1678784714/GoldenIdeaImg/05c2602f3a538d045aff850eda471295_jxzpq4.jpg",
+        };
         private string content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, " +
                     "remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. " +
                     "\n It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using " +
                     "'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their " +
                     "infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).";
-        private string image = "https://res.cloudinary.com/duasvwfje/image/upload/v1678633475/GoldenIdeaImg/ramdomtwitter_Mesa_20de_20trabajo_201_fpggj7.png";
-
-
+        
 
 
 
@@ -133,9 +153,11 @@ namespace Web.Api.Services.FakeData
                     Guid userId = RandomSelect.GetRandom(userIdLs, 1).FirstOrDefault();
                     Guid categoryId = RandomSelect.GetRandom(categoryIdLs, 1).FirstOrDefault();
                     Guid topicId = RandomSelect.GetRandom(topicIdLs, 1).FirstOrDefault();
+                    
 
                     Entities.Topic topic = topics.Where(x => x.Id == topicId).FirstOrDefault();
-                    string title = RandomSelect.GetRandom(titles, 1).FirstOrDefault() + " - " + uniqueShortId;
+                    string title = RandomSelect.GetRandom(this.titles, 1).FirstOrDefault() + " - " + uniqueShortId;
+                    string image = RandomSelect.GetRandom(this.images, 1).FirstOrDefault();
                     // Reset random date gen to match the topic ClosureDate
                     randomDateTime.range = (topic.ClosureDate - randomDateTime.start).Days;
                     // Get the random date
@@ -145,7 +167,7 @@ namespace Web.Api.Services.FakeData
                     {
                         Title = title,
                         Content = this.content,
-                        Image = this.image,
+                        Image = image,
                         Slug = _slugHelper.GenerateSlug(title) + "-" + i,
                         IsAnonymous = true,
                         UserId = userId,

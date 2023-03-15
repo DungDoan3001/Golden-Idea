@@ -71,6 +71,9 @@ const createFormData = (item: any) => {
     }
     return formData;
 }
+const Download = {
+    downloadDashboard: () => requests.get('ZipFiles/download-data-dashboard')
+}
 const Department = {
     listDepartment: () => requests.get('departments'),
     createDepartment: (values: any) => requests.post('departments', values),
@@ -130,6 +133,7 @@ const agent = {
     Account,
     Chart,
     Idea,
+    Download,
 }
 
 export default agent;
