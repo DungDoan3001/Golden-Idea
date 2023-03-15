@@ -11,8 +11,9 @@ import { Idea } from '../../app/models/Idea';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { getCategories } from '../category/categorySlice';
+import Comment from '../../app/components/Comment';
 
-const Comment = () => {
+const CommentPage = () => {
     const theme: any = useTheme();
     const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = React.useState<number>(5);
@@ -142,6 +143,7 @@ const Comment = () => {
                             }}
                         />
                     </Box>
+                    <Comment ideaId='e306eecb-4499-4426-b4af-4443663f7adb' />
                 </Box>
             )
             }
@@ -150,4 +152,4 @@ const Comment = () => {
     )
 }
 
-export default Comment
+export default CommentPage
