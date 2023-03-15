@@ -10,7 +10,7 @@ interface CategoryButtonProps {
 const CategoryButton = ({ category, search }: CategoryButtonProps) => {
   const theme: any = useTheme();
   return (
-    <Box mt="0.7rem"
+    <Box mt="0rem"
       display={(search)?"flex":""} alignItems="center" justifyContent="center"
     >
       <Button

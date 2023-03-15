@@ -100,8 +100,8 @@ export const themeSettings = (mode) => {
               layout: tokensDark.primary[500],
             },
             thumbnail: {
-              ...tokensLight.secondary,
-              main: tokensDark.secondary[300],
+              ...tokensLight.primary,
+              main: tokensDark.primary[500],
             },
             comment: {
               ...tokensDark.secondary,

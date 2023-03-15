@@ -3,8 +3,6 @@ import { Box, Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import Service from "../utils/Service";
 
-// import { postData } from "../../dataTest.js"
-
 const AppPagination = ({ setItem, data, size }: any) => {
   const pageSize = size;
   const [pagination, setPagination] = useState({
@@ -20,7 +18,7 @@ const AppPagination = ({ setItem, data, size }: any) => {
       setItem(response.data);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.from, pagination.to]);
+  }, [data,pagination.from, pagination.to]);
 
   const HandlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     const from = (value - 1) * pageSize;

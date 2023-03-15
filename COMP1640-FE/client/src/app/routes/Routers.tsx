@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
                             { path: 'topic/:id/:name', element: <ListIdeas /> },
                             { path: 'myTopic/:id/:name', element: <ListMyIdeas /> },
                             { path: 'myIdeas', element: <MyIdeas /> },
-                            { path: 'ideaDetail/:topicId/:slug', element: <IdeaDetail /> },
+                            { path: 'ideaDetail/:slug', element: <IdeaDetail /> },
                             { path: 'dashboard', element: <Dashboard /> },
                             { path: 'staffs', element: <Staffs /> },
                             { path: 'admin', element: <AdminPage /> },
