@@ -5,7 +5,6 @@ import HomePageItem from '../../app/components/HomePageItem';
 import AppPagination from '../../app/components/AppPagination';
 import CategoryButton from '../../app/components/CategoryButton';
 import { useParams } from "react-router-dom";
-import { postData } from "../../dataTest.js"
 import { categoryData } from '../../dataTest.js';
 import { useTheme } from '@emotion/react';
 import { Idea } from '../../app/models/Idea';
@@ -30,7 +29,8 @@ const ListIdeas = () => {
     const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
     const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
     const { ideas, loading } = useSelector((state: RootState) => state.idea);
-    const [idea, setIdea] = useState(ideas);
+    const [ideaData, setIdeaData] = useState(ideas)
+    const [idea, setIdea] = useState([]);
     const dispatch = useAppDispatch();
     let fetchMount = true;
     useEffect(() => {
@@ -44,25 +44,30 @@ const ListIdeas = () => {
     useEffect(() => {
         switch (selectedViewOption) {
             case 'most_viewed':
-                setIdea([...ideas].sort((a, b) => b.view - a.view));
+              setIdeaData([...ideas].sort((a, b) => b.view - a.view));
                 break;
             case 'latest':
-                setIdea([...ideas].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+              setIdeaData([...ideas].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
                 break;
             case 'oldest':
-                setIdea([...ideas].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
+              setIdeaData([...ideas].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
                 break;
             case 'most_liked':
-                setIdea([...ideas].sort((a, b) => b.upVote - a.upVote));
+              setIdeaData([...ideas].sort((a, b) => b.upVote - a.upVote));
                 break;
             case 'most_disliked':
-                setIdea([...ideas].sort((a, b) => b.downVote - a.downVote));
+              setIdeaData([...ideas].sort((a, b) => b.downVote - a.downVote));
                 break;
             default:
-                setIdea(ideas);
+              setIdeaData(ideas);
                 break;
         }
     }, [selectedViewOption, ideas]);
+
+    useEffect(() => {
+      window.scrollTo(0, 0)
+    },[idea,ideas,ideaData])
+
     function cancelEdit() {
         if (recordForEdit) setRecordForEdit(undefined);
         setEditMode(false);
@@ -106,7 +111,7 @@ const ListIdeas = () => {
                                 left: '-10px',
                                 right: '-10px',
                                 bottom: '-10px',
-                                border: `4px solid ${theme.palette.secondary.main}`,
+                                border: `2px solid ${theme.palette.secondary.main}`,
                                 borderStyle: 'dashed',
                                 borderRadius: '10px',
                             },
@@ -132,7 +137,7 @@ const ListIdeas = () => {
                     </Box>
                 </Box>
                 <Box mt="5%" alignItems="center" justifyContent="center">
-                    <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
+                    <Grid container spacing={2.5} columns={{ xs: 4, sm: 8, md: 12 }}>
                         {idea.map((item: any) => (
                             <HomePageItem data={item} />
                         )
@@ -140,7 +145,7 @@ const ListIdeas = () => {
                     </Grid>
                     <AppPagination
                         setItem={setIdea} // Update this line
-                        data={ideas} // Update this line
+                        data={ideaData} // Update this line
                         size={6}
                     />
                 </Box>

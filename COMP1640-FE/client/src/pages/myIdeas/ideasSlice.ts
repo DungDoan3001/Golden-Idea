@@ -40,6 +40,15 @@ export const getIdea: AsyncThunk<Idea, string, {}> = createAsyncThunk(
         return response;
     }
 );
+
+export const getIdeaBySlug: AsyncThunk<Idea, any, {}> = createAsyncThunk(
+  'idea/getIdeaBySlug',
+  async (slug: any) => {
+      const response = await agent.Idea.getIdeaBySlug(slug);
+      return response;
+  }
+);
+
 export const ideaSlice: Slice<IdeaState> = createSlice({
     name: 'ideas',
     initialState,
@@ -82,6 +91,18 @@ export const ideaSlice: Slice<IdeaState> = createSlice({
             .addCase(getIdea.rejected, (state) => {
                 state.loading = false;
             });
-    },
-});
-export default ideaSlice.reducer;
+        // set get idea by slug
+        builder
+            .addCase(getIdeaBySlug.pending, (state) => {
+                state.loading = true;
+                state.idea = null;
+            })
+            .addCase(getIdeaBySlug.fulfilled, (state, action) => {
+                state.idea = action.payload;
+                state.loading = false;
+            })
+            .addCase(getIdeaBySlug.rejected, (state) => {
+                state.loading = false;
+            });
+          }
+        })
