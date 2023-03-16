@@ -152,19 +152,20 @@ const ListIdeas = () => {
             <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
           </Box>
         </Box>
-        <Box mt="5%" alignItems="center" justifyContent="center">
-          <Grid container spacing={2.5} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Box mt="5%" display="flex" alignContent="center" alignItems="center">
+          <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
             {idea.map((item: any) => (
               <HomePageItem data={item} />
             )
             )}
           </Grid>
-          <AppPagination
-            setItem={setIdea} // Update this line
-            data={ideaData} // Update this line
-            size={6}
-          />
         </Box>
+        <AppPagination
+          setItem={setIdea} // Update this line
+          data={ideaData} // Update this line
+          size={6}
+        />
+
         <Box sx={{
           [theme.breakpoints.up('sm')]: {
             p: '4rem',

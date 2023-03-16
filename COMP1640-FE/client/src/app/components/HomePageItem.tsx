@@ -20,46 +20,51 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
     <Grid item xs={4} >
       <Box display="flex" alignContent="center" alignItems="center">
         <List>
-          <ListItem>
-            <Box
+          <Box display="flex" alignContent="center" alignItems="center">
+            <ListItem
               sx={{
-                [theme.breakpoints.up('sm')]: {
-                  height: "13rem",
-                  width: "17rem",
-                },
-                [theme.breakpoints.down('sm')]: {
-                  height: "16rem",
-                  width: "23rem",
-                },
-                backgroundColor: theme.palette.thumbnail.main, p: "0.75rem", borderRadius: "4rem 0rem"
-              }}
-            >
-              <Link to={`/ideaDetail/${data.slug}`}>
-                <Box
-                  component="img"
-                  alt="thumbnail"
-                  src={data.image}
-                  sx={{
-                    [theme.breakpoints.up('sm')]: {
-                      height: "11.5rem",
-                      width: "15.5rem",
-                    },
-                    [theme.breakpoints.down('sm')]: {
-                      height: "14.5rem",
-                      width: "21.5rem",
-                    },
-                    objectFit: "cover",
-                    borderRadius: "4rem 0rem",
-                    '&:hover': {
-                      backgroundColor: theme.palette.thumbnail.main,
-                      opacity: '0.7',
-                      cursor: 'pointer',
-                    }
-                  }}
-                />
-              </Link>
-            </Box>
-          </ListItem>
+                display: "flex", alignContent: "center", alignItems: "center",
+              }}>
+              <Box
+                sx={{
+                  [theme.breakpoints.up('sm')]: {
+                    height: "16vw",
+                    width: "100%",
+                  },
+                  [theme.breakpoints.down('sm')]: {
+                    height: "68vw",
+                    width: "92vw",
+                  },
+                  backgroundColor: theme.palette.thumbnail.main, p: {xs:"3vw", sm:"0.75vw"}, borderRadius: "4rem 0rem"
+                }}
+              >
+                <Link to={`/ideaDetail/${data.slug}`}>
+                  <Box
+                    component="img"
+                    alt="thumbnail"
+                    src={data.image}
+                    sx={{
+                      [theme.breakpoints.up('sm')]: {
+                        height: "14.5vw",
+                        width: "100%",
+                      },
+                      [theme.breakpoints.down('sm')]: {
+                        height: "62vw",
+                        width: "86vw",
+                      },
+                      objectFit: "cover",
+                      borderRadius: "4rem 0rem",
+                      '&:hover': {
+                        backgroundColor: theme.palette.thumbnail.main,
+                        opacity: '0.7',
+                        cursor: 'pointer',
+                      }
+                    }}
+                  />
+                </Link>
+              </Box>
+            </ListItem>
+          </Box>
           <ListItem>
             <Box>
               <CategoryButton search={false} category={data.category?.name} />
