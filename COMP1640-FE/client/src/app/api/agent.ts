@@ -99,6 +99,7 @@ const Idea = {
     listIdeas: (id: any) => requests.get(`ideas/topic/${id}`),
     listDashboardIdeas: () => requests.get('ideas'),
     getIdeaDetail: (id: any) => requests.get(`ideas/id/${id}`),
+    createIdea: (idea: any) => requests.postForm('ideas', createFormData(idea)),
     createCategory: (values: any) => requests.post('categories', values),
     updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
     deleteCategory: (id: string) => requests.delete(`categories/${id}`),

@@ -69,8 +69,6 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
     };
   }, [dispatch, ideaId]);
 
-  console.log(comments);
-
   const sendComment = async (comment: ChatComment) => {
     try {
       await connection.invoke('SendComment', comment)

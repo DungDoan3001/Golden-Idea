@@ -136,13 +136,16 @@ const IdeaDetail = () => {
                 >
                   {idea?.title}
                 </Typography>
-                <Box m="2rem">
+                <Box m="2rem" display="flex" alignItems="center" justifyContent="center">
                   <Box
                     component="img"
                     alt="thumbnail"
-                    src={idea?.image}
-                    height="100%"
-                    width="100%"
+                    src={idea?.image}                   
+                    sx={{ 
+                      width: {xs:"85vw", sm:"50vw"},
+                      height: {xs:"65vw", sm:"35vw"},
+                      objectFit: "cover",
+                     }}
                   >
                   </Box>
                 </Box>
