@@ -26,19 +26,19 @@ namespace Web.Api.Services.ReactionService
             _mapper = mapper;
         }
 
-        public async Task<Reaction> Reaction(Guid userId, Guid ideaId, string reactionType)
+        public async Task<Reaction> Reaction(string username, Guid ideaId, string reactionType)
         {
             try
             {
                 var react = new Reaction();
                 if (reactionType.Trim().ToLower() == "upvote")
                 {
-                    react = await CheckReact(1, ideaId, userId);
+                    react = await CheckReact(1, ideaId, username);
                     return react;
                 }
                 else if (reactionType.Trim().ToLower() == "downvote")
                 {
-                    react = await CheckReact(-1, ideaId, userId);
+                    react = await CheckReact(-1, ideaId, username);
                     return react;
                 }
                 throw new Exception("Reaction type is wrong!");
@@ -68,16 +68,21 @@ namespace Web.Api.Services.ReactionService
         }
             
 
-        private async Task<Reaction> CheckReact(int react, Guid ideaId, Guid userId)
+        private async Task<Reaction> CheckReact(int react, Guid ideaId, string username)
         {
             try
             {
-                var userReact = await _reactionRepo.Find(x => x.IdeaId == ideaId && x.UserId == userId);
+                var user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                {
+                    throw new Exception("Can not find the user");
+                }
+                var userReact = await _reactionRepo.Find(x => x.IdeaId == ideaId && x.UserId == user.Id);
                 if (!userReact.Any())
                 {
                     var result = _reactionRepo.Add(new Reaction
                     {
-                        UserId = userId,
+                        UserId = user.Id,
                         IdeaId = ideaId,
                         React = react
                     });

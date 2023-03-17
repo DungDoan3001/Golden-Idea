@@ -81,7 +81,7 @@ namespace Web.Api.Controllers
                         Errors= new List<string> { "No reaction type provided!" }
                     });
                 }
-                var reaction = await _reactionService.Reaction(userReact.UserId, userReact.IdeaId, reactionType);
+                var reaction = await _reactionService.Reaction(userReact.Username, userReact.IdeaId, reactionType);
                 var result = _mapper.Map<ReactionResponseModel>(reaction);
                 if (result == null)
                 {
