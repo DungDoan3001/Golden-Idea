@@ -86,7 +86,7 @@ namespace Web.Api.Extensions
             // Reaction
             CreateMap<Reaction, ReactionResponseModel>();
             CreateMap<Reaction, GetUserReactionResponseModel>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email));
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
 
             //Comment
             CreateMap<Comment, CommentResponseModel>();

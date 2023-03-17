@@ -48,17 +48,17 @@ namespace Web.Api.Services.ReactionService
                 throw;
             }
         }
-        public async Task<GetUserReactionResponseModel> GetReactionOfUserInIdea(string email, Guid ideaId)
+        public async Task<GetUserReactionResponseModel> GetReactionOfUserInIdea(string username, Guid ideaId)
         {
             try
             {
-                var findReaction = await _reactionRepo.Find(x => x.User.Email == email && x.IdeaId == ideaId);
+                var findReaction = await _reactionRepo.Find(x => x.User.UserName == username && x.IdeaId == ideaId);
                 if (!findReaction.Any())
                 {
                     return null;
                 }
                 var result = _mapper.Map<GetUserReactionResponseModel>(findReaction.First());
-                result.Email = email;
+                result.Username = username;
                 return result;
             }
             catch (Exception)

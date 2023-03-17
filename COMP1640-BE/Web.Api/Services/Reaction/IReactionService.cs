@@ -7,7 +7,7 @@ namespace Web.Api.Services.ReactionService
 {
     public interface IReactionService
     {
-        Task<GetUserReactionResponseModel> GetReactionOfUserInIdea(string email, Guid ideaId);
+        Task<GetUserReactionResponseModel> GetReactionOfUserInIdea(string username, Guid ideaId);
         Task<Reaction> Reaction(Guid userId, Guid ideaId, string reactionType);
     }
 }

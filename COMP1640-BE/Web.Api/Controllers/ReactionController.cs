@@ -35,7 +35,7 @@ namespace Web.Api.Controllers
         {
             try
             {
-                var result = await _reactionService.GetReactionOfUserInIdea(userReaction.Email, userReaction.IdeaId);
+                var result = await _reactionService.GetReactionOfUserInIdea(userReaction.Username, userReaction.IdeaId);
                 if(result == null) 
                 { 
                     return NotFound(new MessageResponseModel
@@ -81,7 +81,7 @@ namespace Web.Api.Controllers
                         Errors= new List<string> { "No reaction type provided!" }
                     });
                 }
-                var reaction = await _reactionService.Reaction(userReact.userId, userReact.ideaId, reactionType);
+                var reaction = await _reactionService.Reaction(userReact.UserId, userReact.IdeaId, reactionType);
                 var result = _mapper.Map<ReactionResponseModel>(reaction);
                 if (result == null)
                 {
