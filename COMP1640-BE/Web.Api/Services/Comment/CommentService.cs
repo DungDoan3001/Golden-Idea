@@ -70,7 +70,7 @@ namespace Web.Api.Services.Comment
             {
                 var comments = await _context.Comments
                     .Where(x => x.IdeaId == ideaId)
-                    .OrderBy(x => x.CreatedDate)
+                    .OrderByDescending(x => x.CreatedDate)
                     .ToListAsync();
                 var result = _mapper.Map<List<CommentResponseModel>>(comments);
                 //Get username
