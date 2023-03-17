@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Web.Api.DTOs.ResponseModels
 {
@@ -34,6 +35,7 @@ namespace Web.Api.DTOs.ResponseModels
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        [JsonPropertyName("username")]
         public string UserName { get; set; }
         public string Avatar { get; set; }
         public DateTime ClosureDate { get; set; }
