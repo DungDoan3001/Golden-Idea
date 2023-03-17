@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Box,
-  Divider,
   Drawer,
   IconButton,
   List,
@@ -35,71 +34,88 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import { useStoreContext } from "../context/ContextProvider";
+import { useAppSelector } from "../store/configureStore";
 
 const navItems = [
   {
     text: "Home",
     icon: <HomeOutlined />,
+    roles: ["Staff", "QA Coordinator", "Administrator", "QA Manager"],
   },
   {
     text: "My Ideas",
     icon: <LightbulbCircle />,
+    roles: ["Staff", "QA Coordinator", "Administrator", "QA Manager"],
   },
   {
     text: "Dashboard",
     icon: <DashboardIcon />,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Management",
     icon: null,
+    roles: ["Administrator", "QA Coordinator", "QA Manager"],
   },
   {
     text: "Staffs",
     icon: <Groups2Outlined />,
+    roles: ["Administrator"],
   },
   {
     text: "Admin",
     icon: <AdminPanelSettingsOutlined />,
+    roles: ["Administrator"],
   },
   {
     text: "Departments",
     icon: <RoomPreferences />,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Categories",
     icon: <Category />,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Topics",
     icon: <Topic />,
+    roles: ["Administrator", "QA Manager", "QA Coordinator"],
   },
   {
     text: "Comments",
     icon: <Forum />,
+    roles: ["Administrator"],
   },
   {
     text: "Data visualization",
     icon: null,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Overview",
     icon: <PointOfSaleOutlined />,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Contributors",
     icon: < SwitchAccount />,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Exception",
     icon: <AssignmentLate />,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Breakdown",
     icon: <PieChartOutlined />,
+    roles: ["Administrator", "QA Manager"],
   },
   {
     text: "Daily Report",
     icon: <TrendingUpOutlined />,
+    roles: ["Administrator", "QA Manager"],
   },
 ];
 interface sideBarProps {
@@ -110,6 +126,8 @@ const Sidebar = ({
   drawerWidth,
   isNonMobile,
 }: sideBarProps) => {
+  //Get user info here
+  const { user } = useAppSelector(state => state.account);
   const { pathname } = useLocation();
   const [active, setActive] = useState("");
   const navigate = useNavigate();
@@ -123,6 +141,11 @@ const Sidebar = ({
       setIsSidebarOpen(false);
     }
   }
+  // Filter the navItems array based on the user's role
+  const filteredNavItems = navItems.filter((item) =>
+    item.roles.includes(`${user?.role[0]}`)
+  );
+  console.log(filteredNavItems)
   return (
     <Box component="nav">
       {isSidebarOpen && (
@@ -158,7 +181,7 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon }) => {
+              {filteredNavItems.map(({ text, icon }) => {
                 if (!icon) {
                   return (
                     <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem" }}>
