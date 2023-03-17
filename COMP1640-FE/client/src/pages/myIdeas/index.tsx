@@ -41,9 +41,10 @@ const MyIdeas = () => {
               ml: '3%'
             },
             [theme.breakpoints.down('sm')]: {
-              width: '115%',
+              width: '465px',
               marginTop: 5,
-              ml: '9%'
+              ml: '25px',
+              mr: '15px'
             },
           }}
         >

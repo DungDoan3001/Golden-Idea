@@ -24,6 +24,7 @@ const TopicPage = () => {
     const { topics, loading } = useSelector((state: RootState) => state.topic);
     //Get user info here
     const { user } = useAppSelector(state => state.account);
+    const is_CRUD_Person = `${user?.role[0]}` === 'QA Coordinator' || `${user?.role[0]}` === 'Administrator'
     const dispatch = useAppDispatch();
     let fetchMount = true;
     useEffect(() => {
@@ -134,21 +135,26 @@ const TopicPage = () => {
                 const isAfterFinalClosure = today > new Date(params.row.finalClosureDate)
                 let isDownloadablePerson = false;
                 if (user) {
-                    isDownloadablePerson = user?.role[0] === 'Administrator' || user?.role[0] === 'QA Manager';
+                    isDownloadablePerson = user?.role[0] === 'QA Manager';
                 }
+
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
-                        <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
-                            <Edit fontSize="inherit" />
-                        </IconButton>
-                        <IconButton aria-label="delete" size="large" color="error" onClick={() => setConfirmDialog({
-                            isOpen: true,
-                            title: 'Are you sure to delete this record?',
-                            subTitle: "You can't undo this operation",
-                            onConfirm: () => { handleDelete(params.row.id) }
-                        })}>
-                            <Delete fontSize="inherit" />
-                        </IconButton>
+                        {is_CRUD_Person && (
+                            <>
+                                <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
+                                    <Edit fontSize="inherit" />
+                                </IconButton>
+                                <IconButton aria-label="delete" size="large" color="error" onClick={() => setConfirmDialog({
+                                    isOpen: true,
+                                    title: 'Are you sure to delete this record?',
+                                    subTitle: "You can't undo this operation",
+                                    onConfirm: () => { handleDelete(params.row.id) }
+                                })}>
+                                    <Delete fontSize="inherit" />
+                                </IconButton>
+                            </>
+                        )}
                         {isAfterFinalClosure && isDownloadablePerson && (
                             <IconButton aria-label="download" size="large" color="success" onClick={() => handleDownload(params.row.id)}>
                                 <GetApp fontSize="inherit" />
@@ -164,10 +170,12 @@ const TopicPage = () => {
             {loading ? (<Loading />) : (
                 <Box m="1.5rem 2.5rem">
                     <Header title="TOPICS" subtitle="List of Topics" />
-                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
-                        startIcon={<AddCircleOutline />}>
-                        Create a new Topic
-                    </Button>
+                    {is_CRUD_Person && (
+                        <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
+                            startIcon={<AddCircleOutline />}>
+                            Create a new Topic
+                        </Button>)
+                    }
                     <Box
                         mt="40px"
                         style={{ height: '55vh' }}
@@ -183,7 +191,7 @@ const TopicPage = () => {
                                     height: '40vh'
                                 },
                                 [theme.breakpoints.down('sm')]: {
-                                    width: '130%',
+                                    width: '450px',
                                     height: '50vh'
                                 },
                             },

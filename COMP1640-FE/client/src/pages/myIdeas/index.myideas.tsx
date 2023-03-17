@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { Box, Button, Typography } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
 import AppPagination from '../../app/components/AppPagination';
 import CategoryButton from '../../app/components/CategoryButton';
 import { useParams } from "react-router-dom";
-import { postData } from "../../dataTest.js"
 import { categoryData } from '../../dataTest.js';
 import { useTheme } from '@emotion/react';
 import { Idea } from '../../app/models/Idea';
@@ -13,7 +12,7 @@ import { AddCircleOutline } from '@mui/icons-material';
 import Filter from '../../app/components/filter/Filter';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
-import { getIdeas } from './ideasSlice';
+import { getMyIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
 const viewOptions = [
     { label: "Most Viewed", value: "most_viewed" },
@@ -30,13 +29,13 @@ const ListMyIdeas = () => {
     const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
     const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
     const { user } = useAppSelector(state => state.account);
-    const { ideas, loading } = useSelector((state: RootState) => state.idea);
-    const [idea, setIdea] = useState(ideas.filter((idea: any) => idea.user?.userName === user?.name)); // filter the ideas based on user's username
+    const { ideas_user, loading } = useSelector((state: RootState) => state.idea);
+    const [idea, setIdea] = useState(ideas_user); // filter the ideas based on user's username
     const dispatch = useAppDispatch();
     let fetchMount = true;
     useEffect(() => {
-        if (fetchMount) {
-            dispatch(getIdeas(id));
+        if (fetchMount && user) {
+            dispatch(getMyIdeas({ topicId: id, username: user?.name }));
         }
         return () => {
             fetchMount = false;
@@ -60,10 +59,11 @@ const ListMyIdeas = () => {
                 setIdea([...idea].sort((a, b) => b.downVote - a.downVote));
                 break;
             default:
-                setIdea(ideas.filter((idea: any) => idea.user?.userName === user?.name));
+                setIdea(ideas_user);
                 break;
         }
-    }, [selectedViewOption, ideas]);
+    }, [selectedViewOption, ideas_user]);
+    console.log(ideas_user)
     function cancelEdit() {
         if (recordForEdit) setRecordForEdit(undefined);
         setEditMode(false);
@@ -141,7 +141,7 @@ const ListMyIdeas = () => {
                     </Grid>
                     <AppPagination
                         setItem={(p: any) => setIdea(p)}
-                        data={ideas.filter((idea: any) => idea.user?.userName == user?.name)}
+                        data={ideas_user}
                         size={6}
                     />
                 </Box>
