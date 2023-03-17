@@ -37,12 +37,12 @@ namespace Web.Api.Controllers
             {
                 var result = await _reactionService.GetReactionOfUserInIdea(userReaction.Username, userReaction.IdeaId);
                 if(result == null) 
-                { 
-                    return NotFound(new MessageResponseModel
+                {
+                    return Ok(new GetUserReactionResponseModel
                     {
-                        Message = "Error",
-                        StatusCode = (int)HttpStatusCode.NotFound,
-                        Errors = new List<string> { "Can not find the reaction due to wrong user or idea!" }
+                        IdeaId = userReaction.IdeaId,
+                        Username= userReaction.Username,
+                        React = 0
                     });
                 }
                 return Ok(result);
