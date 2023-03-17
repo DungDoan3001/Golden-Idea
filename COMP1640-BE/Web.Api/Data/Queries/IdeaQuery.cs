@@ -16,7 +16,7 @@ namespace Web.Api.Data.Queries
         {
             return await dbSet
                 .Include(x => x.User)
-                .Include(x => x.Topic)
+                .Include(x => x.Topic).ThenInclude(x => x.User)
                 .Include(x => x.Category)
                 .Include(x => x.Files)
                 .Include(x => x.Views)
@@ -31,7 +31,7 @@ namespace Web.Api.Data.Queries
             {
                 return await dbSet
                 .Include(x => x.User)
-                .Include(x => x.Topic)
+                .Include(x => x.Topic).ThenInclude(x => x.User)
                 .Include(x => x.Category)
                 .Include(x => x.Files)
                 .Include(x => x.Views)
@@ -43,7 +43,7 @@ namespace Web.Api.Data.Queries
             {
                 return await dbSet
                 .Include(x => x.User)
-                .Include(x => x.Topic)
+                .Include(x => x.Topic).ThenInclude(x => x.User)
                 .Include(x => x.Category)
                 .Include(x => x.Files)
                 .Include(x => x.Views)
@@ -68,7 +68,7 @@ namespace Web.Api.Data.Queries
         {
             return await dbSet
                 .Include(x => x.User)
-                .Include(x => x.Topic)
+                .Include(x => x.Topic).ThenInclude(x => x.User)
                 .Include(x => x.Category)
                 .Include(x => x.Files)
                 .Include(x => x.Views)
@@ -82,7 +82,7 @@ namespace Web.Api.Data.Queries
         {
             return await dbSet
                 .Include(x => x.User)
-                .Include(x => x.Topic)
+                .Include(x => x.Topic).ThenInclude(x => x.User)
                 .Include(x => x.Category)
                 .Include(x => x.Files)
                 .Include(x => x.Views)
@@ -96,7 +96,7 @@ namespace Web.Api.Data.Queries
         {
             return await dbSet
                 .Include(x => x.User)
-                .Include(x => x.Topic)
+                .Include(x => x.Topic).ThenInclude(x => x.User)
                 .Include(x => x.Category)
                 .Include(x => x.Files)
                 .Include(x => x.Views)
@@ -120,7 +120,7 @@ namespace Web.Api.Data.Queries
         {
             var ideas = await dbSet
                 .Include(x => x.User)
-                .Include(x => x.Topic)
+                .Include(x => x.Topic).ThenInclude(x => x.User)
                 .Include(x => x.Category)
                 .Include(x => x.Files)
                 .Include(x => x.Views)
