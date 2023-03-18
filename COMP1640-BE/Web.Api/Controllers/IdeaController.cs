@@ -248,7 +248,7 @@ namespace Web.Api.Controllers
         /// <response code="409">There is a conflict while searched</response>
         [HttpPost("search")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<ActionResult<IdeaResponseModel>> SearchByTitle([FromBody] string searchTerm)
+        public async Task<ActionResult<IdeaResponseModel>> SearchByTitle([FromQuery] string searchTerm)
         {
             try
             {
