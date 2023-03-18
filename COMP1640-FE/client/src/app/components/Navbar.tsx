@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   LightModeOutlined,
   DarkModeOutlined,
@@ -26,11 +26,14 @@ import {
 import { useStoreContext } from "../context/ContextProvider";
 import { signOut } from "../../pages/account/accountSlice";
 import { useAppSelector } from "../store/configureStore";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const theme: any = useTheme();
   const { screenSize, setScreenSize, isSidebarOpen, setIsSidebarOpen } = useStoreContext();
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
   //Get user info here
   const { user } = useAppSelector(state => state.account);
   //Handle resize screen went the website resize or use on mobile devices
@@ -59,6 +62,12 @@ const Navbar = () => {
       width: '30rem',
     },
   }));
+  const handleSearch = () => {
+    if (searchRef && searchRef.current) {
+      const searchValue = searchRef.current.value;
+      navigate(`/search/${searchValue}`);
+    }
+  };
   return (
     <AppBar
       sx={{
@@ -80,8 +89,11 @@ const Navbar = () => {
               gap="3rem"
               p="0.1rem 1.5rem"
             >
-              <InputBase placeholder="Search..." />
-              <IconButton>
+              <InputBase
+                placeholder="Search..."
+                inputRef={searchRef}
+              />
+              <IconButton onClick={handleSearch}>
                 <Search />
               </IconButton>
             </FlexBetween>
@@ -96,9 +108,6 @@ const Navbar = () => {
             ) : (
               <LightModeOutlined sx={{ fontSize: "25px" }} />
             )}
-          </IconButton>
-          <IconButton>
-            <SettingsOutlined sx={{ fontSize: "25px" }} />
           </IconButton>
 
           <FlexBetween>

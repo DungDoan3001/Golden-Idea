@@ -10,7 +10,8 @@ export interface GetMyIdeasParams {
 interface IdeaState {
   ideas: Idea[];
   ideas_dashboard: Idea[];
-  ideas_user: Idea[]
+  ideas_user: Idea[];
+  ideas_search: Idea[];
   idea: Idea | null;
   loading: boolean;
   error: string | null;
@@ -20,6 +21,7 @@ const initialState: IdeaState = {
   ideas: [],
   ideas_dashboard: [],
   ideas_user: [],
+  ideas_search: [],
   idea: null,
   loading: false,
   error: null,
@@ -28,6 +30,13 @@ export const getIdeas: AsyncThunk<Idea[], any, {}> = createAsyncThunk(
   'ideas/getIdeas',
   async (topicId: any) => {
     const response = await agent.Idea.listIdeas(topicId);
+    return response;
+  }
+);
+export const getSearchIdeas: AsyncThunk<Idea[], any, {}> = createAsyncThunk(
+  'ideas/getSearchIdeas',
+  async (filter: any) => {
+    const response = await agent.Idea.searchIdeas(filter);
     return response;
   }
 );
@@ -82,6 +91,18 @@ export const ideaSlice: Slice<IdeaState> = createSlice({
         state.loading = false;
       })
       .addCase(getIdeas.rejected, (state) => {
+        state.loading = false;
+      });
+    // set get all ideas by search string
+    builder
+      .addCase(getSearchIdeas.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSearchIdeas.fulfilled, (state, action) => {
+        state.ideas_search = action.payload;
+        state.loading = false;
+      })
+      .addCase(getSearchIdeas.rejected, (state) => {
         state.loading = false;
       });
     // set get all ideas to dashboard
