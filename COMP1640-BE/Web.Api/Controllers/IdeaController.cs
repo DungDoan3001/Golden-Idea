@@ -246,7 +246,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully searched the idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while searched</response>
-        [HttpPost("search")]
+        [HttpGet("search")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<IdeaResponseModel>> SearchByTitle([FromQuery] string searchTerm)
         {
