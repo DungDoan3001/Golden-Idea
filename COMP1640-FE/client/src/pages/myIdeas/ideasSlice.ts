@@ -35,7 +35,6 @@ export const getMyIdeas: AsyncThunk<Idea[], GetMyIdeasParams, {}> = createAsyncT
   'ideas/getMyIdeas',
   async ({ topicId, username }) => {
     const response = await agent.Idea.listUserIdeas(topicId, username);
-    console.log(response);
     return response;
   }
 );
