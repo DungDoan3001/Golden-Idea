@@ -58,9 +58,8 @@ const IdeaDetail = () => {
         setLoadReaction(false);
       }
     }
-
     fetchData();
-  }, []);
+  }, [idea, user]);
 
   const ClickLike = async () => {
     try {
