@@ -9,7 +9,7 @@ const ExceptionBarChart = ({ isComment, dataChart }: Props) => {
 
     return (
         <Box height={"100%"}
-            width={"73rem"}
+            width={"74rem"}
             minHeight={"325px"}
             minWidth={"325px"}
             position="relative">
