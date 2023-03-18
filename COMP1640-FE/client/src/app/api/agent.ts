@@ -105,6 +105,9 @@ const Idea = {
     updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
     deleteCategory: (id: string) => requests.delete(`categories/${id}`),
     getIdeaBySlug: (slug: any) => requests.get(`ideas/slug/${slug}`),
+    postView: (ideaId: any, values: any) => requests.post(`View?ideaId=${ideaId}`, values),
+    getReaction: (ideaId: any, username: any) => requests.get(`Reaction?IdeaId=${ideaId}&Username=${username}`),
+    postReaction: (reactionType: any, values: any) => requests.post(`Reaction?reactionType=${reactionType}`, values)
 }
 const User = {
     listUsers: () => requests.get('User'),

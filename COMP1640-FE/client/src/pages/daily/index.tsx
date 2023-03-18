@@ -29,7 +29,7 @@ const DailyReport = () => {
         };
         fetchData();
     }, []);
-    console.log(dataDaily)
+
     const theme: any = useTheme();
 
     const [formattedData] = useMemo(() => {
@@ -65,7 +65,6 @@ const DailyReport = () => {
         return [formattedData];
     }, [dataDaily, startDate, endDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    console.log(formattedData);
     return (
         <Box m="1.5rem 2.5rem" >
             <Box sx={{

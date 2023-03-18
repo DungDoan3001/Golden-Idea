@@ -145,7 +145,7 @@ const Sidebar = ({
   const filteredNavItems = navItems.filter((item) =>
     item.roles.includes(`${user?.role[0]}`)
   );
-  console.log(filteredNavItems)
+
   return (
     <Box component="nav">
       {isSidebarOpen && (

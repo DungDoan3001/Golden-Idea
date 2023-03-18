@@ -67,7 +67,7 @@ const ListIdeas = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [idea, ideas, ideaData])
-
+  console.log(ideas[0]?.topic.username);
   function cancelEdit() {
     if (recordForEdit) setRecordForEdit(undefined);
     setEditMode(false);
@@ -105,12 +105,12 @@ const ListIdeas = () => {
               position: 'relative',
               display: 'inline-block',
               color: theme.palette.secondary.main,
+              width: "100%",
             }}
           >
             {name}
           </Typography>
-          <Divider variant="fullWidth" />
-          <Box m="1rem 0rem" display="flex" alignItems="center" justifyContent="right">
+          <Box m="0.5rem 0rem" display="flex" alignItems="center">
             <Box
               component="img"
               alt="profile"
@@ -118,13 +118,15 @@ const ListIdeas = () => {
               height="2.5rem"
               width="2.5rem"
               borderRadius="50%"
-              sx={{ objectFit: "cover" }}
+              sx={{ objectFit: "cover", mr: "1rem" }}
             />
-            <Box component="h4" m=".5rem 1rem">
-              Topic By: {ideas[0]?.topic.username}
-            </Box>
             <Box>
-              <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" }, alignItems: { xs: "center", sm: "flex-end" } }}>
+              <Box component="h4" mb=".5rem">
+                Creator: {ideas[0]?.topic.username}
+              </Box>
+            </Box>
+            <Box sx={{ ml: "auto" }}>
+              <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
                 <ListItemText
                   primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
                   secondary={`Final Closure Date: ${new Date(`${ideas[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
