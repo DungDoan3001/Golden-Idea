@@ -24,7 +24,7 @@ const PostAuthorInfo = ({ avatar, userName, lastUpdate }: PostAuthorInfoProps) =
         />
       </Grid>
       <Grid pl="1rem" item xs={10} md={10}>
-        <Box component="h4" m="0rem">Idea By: {userName}</Box>
+        <Box component="h4" m="0rem">Created by: {userName}</Box>
         <Box component="small">{new Date(lastUpdate).toLocaleDateString('en-GB')}</Box>
       </Grid>
     </Grid>
