@@ -144,9 +144,18 @@ const IdeaDetail = () => {
             </Box>
             <Box sx={{ backgroundColor: theme.palette.comment.main, borderRadius: "0.5rem" }}>
               <Box p="1rem 5%">
+                <Typography
+                  textAlign="justify"
+                  mb="1rem"
+                  variant="h2"
+                  color={theme.palette.content.main}
+                  fontWeight="bold"
+                >
+                  {idea?.title}
+                </Typography>
                 <Grid
                   display="bottom" alignItems="center" justifyContent="bottom"
-                  container spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}
+                  container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}
                 >
                   <Grid item xs={3} sm={4} md={6}>
                     <PostAuthorInfo
@@ -156,15 +165,6 @@ const IdeaDetail = () => {
                     />
                   </Grid>
                 </Grid>
-                <Typography
-                  textAlign="left"
-                  mb="1rem"
-                  variant="h2"
-                  color={theme.palette.content.main}
-                  fontWeight="bold"
-                >
-                  {idea?.title}
-                </Typography>
                 <Box m="2rem" display="flex" alignItems="center" justifyContent="center">
                   <Box
                     component="img"
