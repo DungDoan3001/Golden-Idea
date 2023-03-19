@@ -11,6 +11,7 @@ using System.Linq;
 using Web.Api.Extensions;
 using Web.Api.Services.User;
 using Web.Api.Entities;
+using Marvin.Cache.Headers;
 
 namespace Web.Api.Controllers
 {
@@ -36,6 +37,8 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all topics</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("")]
+        [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)]
+        [HttpCacheValidation(MustRevalidate = false)]
         public async Task<ActionResult<IEnumerable<TopicResponseModel>>> GetAll()
         {
             try

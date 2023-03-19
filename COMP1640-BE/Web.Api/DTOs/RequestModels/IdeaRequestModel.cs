@@ -22,7 +22,7 @@ namespace Web.Api.DTOs.RequestModels
         public bool IsAnonymous { get; set; } = true;
 
         [Required(ErrorMessage = "Must provide a user identity")]
-        public Guid UserId { get; set; }
+        public string Username { get; set; }
 
         [Required(ErrorMessage = "Must provide a category identity")]
         public Guid CategoryId { get; set; }

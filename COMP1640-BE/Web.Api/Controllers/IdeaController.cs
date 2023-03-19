@@ -199,9 +199,11 @@ namespace Web.Api.Controllers
                 {
                     return StatusCode(message.StatusCode, message);
                 }
-
                 // Map Idea.
                 Idea idea = _mapper.Map<Idea>(requestModel);
+                // Get userId
+                var user = await _userService.GetByUserName(requestModel.Username);
+                idea.UserId = user.Id;
                 // Upload thumbnail.
                 if (requestModel.File != null)
                 {
@@ -496,7 +498,7 @@ namespace Web.Api.Controllers
             }
 
             // Check if input user is valid
-            Entities.User user = await _userService.GetById(requestModel.UserId);
+            Entities.User user = await _userService.GetByUserName(requestModel.Username);
             if (user == null)
             {
                 return new MessageResponseModel

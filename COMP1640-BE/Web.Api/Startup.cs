@@ -39,6 +39,7 @@ using static Dropbox.Api.TeamLog.EventCategory;
 using Web.Api.Services.Chart;
 using Web.Api.Services.FakeData;
 using Web.Api.Services.ZipFile;
+using Marvin.Cache.Headers;
 
 namespace Web.Api
 {
@@ -54,7 +55,13 @@ namespace Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(config =>
+            {
+                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile
+                {
+                    Duration = 120
+                });
+            });
 
             services.Configure<ApiBehaviorOptions>(options
                 => options.SuppressModelStateInvalidFilter = true);
@@ -65,7 +72,7 @@ namespace Web.Api
             // Swagger service
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo {Title = "COMP1640 - GoldenIdea", Description = "This is a list of APIs we use to manage the GoldenIdea Application"});
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "COMP1640 - GoldenIdea", Description = "This is a list of APIs we use to manage the GoldenIdea Application" });
                 // using System.Reflection;
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
@@ -100,7 +107,7 @@ namespace Web.Api
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme= JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(jwt =>
             {
                 var key = Encoding.UTF8.GetBytes(Configuration["JwtSettings:Secret"]);
@@ -131,7 +138,7 @@ namespace Web.Api
                     }
                 };
             });
-    
+
             services.Configure<JwtConfig>(Configuration.GetSection("JwtSettings"));
             //services.Configure<IdentityOptions>(options =>
             //{
@@ -174,12 +181,25 @@ namespace Web.Api
             services.AddScoped<IZipFileService, ZipFileService>();
             //SignalR
             services.AddSignalR();
-            
+
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
             services.AddScoped<IIdeaQuery, IdeaQuery>();
             services.AddScoped<ICategoryQuery, CategoryQuery>();
             services.AddScoped<IDepartmentQuery, DepartmentQuery>();
+
+            //Caching
+            services.AddResponseCaching();
+            services.AddHttpCacheHeaders(
+                (expirationOpt) =>
+                {
+                    expirationOpt.MaxAge = 65;
+                    expirationOpt.CacheLocation = CacheLocation.Private;
+                },
+                (validationOpt) =>
+                {
+                    validationOpt.MustRevalidate = true;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -203,6 +223,9 @@ namespace Web.Api
                             .SetIsOriginAllowed(origin => true));
 
             app.UseHttpsRedirection();
+
+            app.UseResponseCaching();
+            app.UseHttpCacheHeaders();
 
             app.UseRouting();
 
