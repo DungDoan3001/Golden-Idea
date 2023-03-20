@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace Web.Api.Services.View
                 var addView = _viewRepo.Add(new Entities.View
                 {
                     IdeaId = idea.Id,
-                    UserId= user.Id,
+                    UserId = user.Id,
                     VisitTime = 1
                 });
                 await _unitOfWork.CompleteAsync();
@@ -59,5 +60,19 @@ namespace Web.Api.Services.View
                 throw;
             }
         }
+
+        public async void DeleteByIdeaAsync(Guid ideaId)
+        {
+            try
+            {
+                var views = await _context.Views.Where(x => x.IdeaId == ideaId).ToListAsync();
+                _viewRepo.DeleteRange(views);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }      
     }
 }
