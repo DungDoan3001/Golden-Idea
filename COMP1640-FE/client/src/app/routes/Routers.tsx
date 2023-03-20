@@ -24,6 +24,7 @@ import AdminPage from "../../pages/staffs/index.admin";
 import ListIdeas from "../../pages/myIdeas/index.ideas";
 import ListMyIdeas from "../../pages/myIdeas/index.myideas";
 import CommentPage from "../../pages/comment";
+import IdeaForm from "../../pages/ideaDetail/ideaForm";
 import SearchPage from "../../pages/home/index.search";
 
 export const router = createBrowserRouter([
@@ -41,7 +42,8 @@ export const router = createBrowserRouter([
               { path: 'myTopic/:id/:name', element: <ListMyIdeas /> },
               { path: 'myIdeas', element: <MyIdeas /> },
               { path: 'ideaDetail/:slug', element: <IdeaDetail /> },
-              { path: 'search/:filter', element: <SearchPage /> }
+              { path: 'search/:filter', element: <SearchPage /> },
+              { path: 'ideaform/:topicId/:slug', element: <IdeaForm /> },
             ]
           },
         ]
@@ -71,7 +73,7 @@ export const router = createBrowserRouter([
                   }
                 ]
               }
-
+              
             ]
           },
         ]

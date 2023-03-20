@@ -63,16 +63,37 @@ export const getIdea: AsyncThunk<Idea, string, {}> = createAsyncThunk(
   }
 );
 
-export const addIdea = createAsyncThunk('idea/addIdea', async (values: any) => {
+export const addIdea = createAsyncThunk('ideas/addIdea', async (values: any) => {
   const response = await agent.Idea.createIdea(values);
   return response;
 });
 
 export const getIdeaBySlug: AsyncThunk<Idea, any, {}> = createAsyncThunk(
-  'idea/getIdeaBySlug',
+  'ideas/getIdeaBySlug',
   async (slug: any) => {
     const response = await agent.Idea.getIdeaBySlug(slug);
     return response;
+  }
+);
+
+export const deleteIdea = createAsyncThunk(
+  'ideas/deleteIdea',
+  async (id: any) => {
+      try {
+          await agent.Idea.deleteIdea(id);
+          toast.success('Delete Record Successfully!', {
+              style: { marginTop: '50px' },
+              position: toast.POSITION.TOP_RIGHT
+          });
+          return { id };
+      } catch (error: any) {
+          // handle error
+          toast.error(' Sorry! We cannot delete the idea.', {
+              style: { marginTop: '50px' },
+              position: toast.POSITION.TOP_RIGHT
+          });
+          throw error;
+      }
   }
 );
 
@@ -159,6 +180,15 @@ export const ideaSlice: Slice<IdeaState> = createSlice({
     builder.addCase(addIdea.fulfilled, (state, action) => {
       state.ideas.push(action.payload);
     });
+    // set delete idea
+    builder.addCase(deleteIdea.fulfilled, (state, action) => {
+      const index = state.ideas.findIndex(
+          idea => idea.id === action.payload.id
+      );
+      if (index !== -1) {
+          state.ideas.splice(index, 1);
+      }
+  });
   }
 })
 export default ideaSlice.reducer;

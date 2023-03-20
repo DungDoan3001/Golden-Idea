@@ -36,7 +36,6 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const comments = useSelector((state: RootState) => state.comment.comments);
-  const [commentData, setCommentData] = useState(comments);
   const [comment, setComment] = useState([]);
   const theme: any = useTheme()
   useEffect(() => {
@@ -58,7 +57,6 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
 
       connection.on('LoadComments', (comments: any[]) => {
         dispatch(loadComments(comments));
-        setCommentData(comments);
       });
 
       connection.invoke('OnConnectedAsync');
@@ -185,7 +183,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
           }
           <AppPagination
             setItem={(p: any) => setComment(p)}
-            data={commentData}
+            data={comments}
             size={5}
           />
 

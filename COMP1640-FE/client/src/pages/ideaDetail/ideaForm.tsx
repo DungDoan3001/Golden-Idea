@@ -7,7 +7,7 @@ import AppImageInput from '../../app/components/AppImageInput'
 import AppSelect from '../../app/components/AppSelect'
 import AppTextInput from '../../app/components/AppTextInput'
 import { Idea } from '../../app/models/Idea';
-import { addIdea } from '../myIdeas/ideasSlice';
+import { addIdea, getIdeaBySlug } from '../myIdeas/ideasSlice';
 import { toast } from 'react-toastify'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -19,7 +19,10 @@ import axios from 'axios'
 import { Configuration, CreateImageRequestSizeEnum, OpenAIApi } from 'openai'
 import FileInput from '../../app/components/FileInput'
 import TermsAndConditionsDialog from '../../app/components/TermsAndConditionsDialog'
-import { useAppDispatch } from '../../app/store/configureStore'
+import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore'
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux'
+import { getCategories } from '../category/categorySlice'
 
 //Configuration of OpenAIApi
 const configuration = new Configuration({
@@ -30,10 +33,10 @@ const openAI = new OpenAIApi(configuration);
 interface FileObject extends File {
   size: number;
 }
-interface Props {
-  cancelEdit: () => void;
-  categories: Category[];
-}
+// interface Props {
+//   cancelEdit: () => void;
+//   categories: Category[];
+// }
 export const validationSchema = yup.object({
   Title: yup.string().min(2),
   Content: yup.string().min(2),
@@ -46,13 +49,31 @@ export const validationSchema = yup.object({
     }).notRequired(),
   UploadFiles: yup.mixed()
 })
-const IdeaForm = ({ cancelEdit, categories }: Props) => {
+const IdeaForm = () => {
   const theme: any = useTheme();
+  const navigate = useNavigate();
+  const { topicId, slug } = useParams();
+  const { user } = useAppSelector(state => state.account);
+  const { categories } = useSelector((state: RootState) => state.category);
+  const { idea } = useSelector((state: RootState) => state.idea);
+  console.log(slug);
+
   const dispatch = useAppDispatch();
   const [uploadOption, setUploadOption] = useState('upload');
   const [image, setImage] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
+
+  let fetchMount = true;
+  useEffect(() => {
+    if (fetchMount) {
+      dispatch(getCategories());
+      dispatch(getIdeaBySlug(slug));
+    }
+    return () => {
+      fetchMount = false;
+    };
+  }, []);
 
   const handleCheckboxClick = () => {
     setDialogOpen(true);
@@ -68,7 +89,7 @@ const IdeaForm = ({ cancelEdit, categories }: Props) => {
   }
   const handleFileSelect = (files: FileList) => {
     // Handle the selected files here
-    console.log('Selected Files:', files);
+    setValue('UploadFiles', files);
   };
   const modules = {
     toolbar: [
@@ -101,10 +122,11 @@ const IdeaForm = ({ cancelEdit, categories }: Props) => {
   }, [reset, watchFile, isDirty]);
   async function handleSubmitData(data: FieldValues) {
     try {
+      setValue('Username', user?.name);
+      setValue('TopicId', topicId);
+      console.log(data);
       let response: Idea;
       response = await dispatch(addIdea(data)).unwrap();
-      console.log("start here");
-      console.log(data);
       toast.success('Successfully', {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -135,7 +157,7 @@ const IdeaForm = ({ cancelEdit, categories }: Props) => {
         if (xhr.status === 200) {
           const generatedFile = new File([xhr.response], 'generated-image.jpg', { type: 'image/jpeg' });
           // set the generated file in the form
-          setValue('file', generatedFile);
+          setValue('File', generatedFile);
         }
       };
       xhr.send();
@@ -155,7 +177,7 @@ const IdeaForm = ({ cancelEdit, categories }: Props) => {
       <form onSubmit={handleSubmit(handleSubmitData)}>
         <Grid container spacing={0} sx={{
           [theme.breakpoints.up('sm')]: { mt: 5, mb: 2, width: '100%', },
-          [theme.breakpoints.down('sm')]: { mt: 3, height: '100vh', width: '130%', ml: 5 }
+          [theme.breakpoints.down('sm')]: { mt: 3, width: '130%', ml: 5 }
         }}>
           <Grid item xs={11} sm={6} px={2}>
             <AppTextInput control={control} name='Title' label='Title' multiline={true} />
@@ -186,7 +208,7 @@ const IdeaForm = ({ cancelEdit, categories }: Props) => {
           {uploadOption === "upload" ? (
             <Grid container item xs={12} sm={12} marginTop={3} display='flex' justifyContent='space-around' alignItems='center'>
               <Grid item>
-                <AppImageInput control={control} name='file' />
+                <AppImageInput control={control} name='File' />
               </Grid>
               <Grid item>
                 {watchFile ? (
@@ -244,8 +266,8 @@ const IdeaForm = ({ cancelEdit, categories }: Props) => {
             />
           </Grid>
         </Grid>
-        <Box display='flex' justifyContent='space-between' sx={{ ml: 10, mt: 5, mb: 1, [theme.breakpoints.up('sm')]: { ml: 25 }, [theme.breakpoints.down('sm')]: { mt: 35 } }}>
-          <Button onClick={cancelEdit} variant='contained' color='inherit' sx={{ marginRight: '0.5rem' }}>Cancel</Button>
+        <Box p="2rem 0rem" display='flex' justifyContent='space-between' sx={{ ml: 10, mt: 5, mb: 1, [theme.breakpoints.up('sm')]: { ml: 25 }, [theme.breakpoints.down('sm')]: { mt: 35 } }}>
+          <Button onClick={() => navigate(-1)} variant='contained' color='inherit' sx={{ marginRight: '0.5rem' }}>Cancel</Button>
           <LoadingButton loading={isSubmitting} type='submit' variant='contained' color='success' disabled={!termsAgreed}
           >Submit</LoadingButton>
         </Box>
