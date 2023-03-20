@@ -216,30 +216,33 @@ namespace Web.Api.Services.Chart
                 });
 
                 List<PercentageOfIdeaForEachDepartment> result = new List<PercentageOfIdeaForEachDepartment>();
-                decimal totalPercentage = 0;
-
-                for (int i = 0; i < totalIdeaOfEachDepartment.Count; i++)
+                if(totalIdea > 0)
                 {
-                    var department = totalIdeaOfEachDepartment[i];
-                    decimal realPercentage = (decimal)department.TotalIdea * 100 / totalIdea;
-                    Console.WriteLine(realPercentage.ToString());
-                    decimal ceilPercentage = Math.Floor(realPercentage);
-                    totalPercentage += ceilPercentage;
-                    PercentageOfIdeaForEachDepartment data = new PercentageOfIdeaForEachDepartment
+                    decimal totalPercentage = 0;
+
+                    for (int i = 0; i < totalIdeaOfEachDepartment.Count; i++)
                     {
-                        DepartmentName = department.DepartmentName,
-                        Percentage = ceilPercentage,
-                    };
-                    result.Add(data);
-                }
+                        var department = totalIdeaOfEachDepartment[i];
+                        decimal realPercentage = (decimal)department.TotalIdea * 100 / totalIdea;
+                        Console.WriteLine(realPercentage.ToString());
+                        decimal ceilPercentage = Math.Floor(realPercentage);
+                        totalPercentage += ceilPercentage;
+                        PercentageOfIdeaForEachDepartment data = new PercentageOfIdeaForEachDepartment
+                        {
+                            DepartmentName = department.DepartmentName,
+                            Percentage = ceilPercentage,
+                        };
+                        result.Add(data);
+                    }
 
-                if (100 - totalPercentage != 0)
-                {
-                    var surplus = 100 - totalPercentage;
-                    var smallestPercentage = result.Where(x => x.Percentage > 0).OrderBy(x => x.Percentage).Take(1).SingleOrDefault();
-                    smallestPercentage.Percentage += surplus;
-                }
-                return result;
+                    if (100 - totalPercentage != 0)
+                    {
+                        var surplus = 100 - totalPercentage;
+                        var smallestPercentage = result.Where(x => x.Percentage > 0).OrderBy(x => x.Percentage).Take(1).SingleOrDefault();
+                        smallestPercentage.Percentage += surplus;
+                    }
+                    return result;
+                } else { return result; }
             }
             catch (Exception)
             {

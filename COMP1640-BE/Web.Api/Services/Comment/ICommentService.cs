@@ -11,5 +11,6 @@ namespace Web.Api.Services.Comment
     {
         Task<CommentResponseModel> Create(CommentRequestModel comment);
         Task<List<CommentResponseModel>> GetAllCommentOfIdea(Guid ideaId);
+        Task<bool> DeleteByIdeaAsync(Guid ideaId);
     }
 }

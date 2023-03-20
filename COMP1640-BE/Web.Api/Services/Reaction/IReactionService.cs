@@ -9,5 +9,6 @@ namespace Web.Api.Services.ReactionService
     {
         Task<GetUserReactionResponseModel> GetReactionOfUserInIdea(string username, Guid ideaId);
         Task<Reaction> Reaction(string username, Guid ideaId, string reactionType);
+        Task<bool> DeleteByIdeaAsync(Guid ideaId);
     }
 }

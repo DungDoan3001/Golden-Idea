@@ -2,16 +2,15 @@
 using System;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
-using Web.Api.Entities;
 using Web.Api.Data.Context;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using Web.Api.DTOs;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.DTOs.RequestModels;
 using Microsoft.AspNetCore.Identity;
+using Web.Api.Data.Queries;
 
 namespace Web.Api.Services.Comment
 {
@@ -22,13 +21,16 @@ namespace Web.Api.Services.Comment
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<Entities.User> _userManager;
-        public CommentService(IUnitOfWork unitOfWork, AppDbContext context, IMapper mapper, UserManager<Entities.User> userManager)
+        private readonly ICommentQuery _commentQuery;
+
+        public CommentService(IUnitOfWork unitOfWork, AppDbContext context, IMapper mapper, UserManager<Entities.User> userManager, ICommentQuery commentQuery)
         {
             _unitOfWork = unitOfWork;
             _commentRepo = unitOfWork.GetBaseRepo<Entities.Comment>();
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
+            _commentQuery = commentQuery;
         }
 
         public async Task<CommentResponseModel> Create(CommentRequestModel comment)
@@ -90,6 +92,25 @@ namespace Web.Api.Services.Comment
                     }
                 }           
                 return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteByIdeaAsync(Guid ideaId)
+        {
+            try
+            {
+                var comments = await _commentQuery.GetAllByIdeaAsync(ideaId);
+                if (comments.Any())
+                {
+                    _commentRepo.DeleteRange(comments);
+                    await _unitOfWork.CompleteAsync();
+                    return true;
+                } else { return false; }
+
             }
             catch (Exception)
             {

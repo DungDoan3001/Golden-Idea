@@ -17,6 +17,9 @@ using System.Linq;
 using Web.Api.Services.Topic;
 using Web.Api.Services.Category;
 using Web.Api.Services.User;
+using Web.Api.Services.View;
+using Web.Api.Services.Comment;
+using Web.Api.Services.ReactionService;
 
 namespace Web.Api.Controllers
 {
@@ -31,10 +34,14 @@ namespace Web.Api.Controllers
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
         private readonly IUserService _userService;
+        private readonly IViewService _viewService;
+        private readonly ICommentService _commentService;
+        private readonly IReactionService _reactionService;
 
         public IdeaController(IMapper mapper, IIdeaService ideaService, IFileUploadService fileUploadService, 
                             IFileService fileService, ITopicService topicService, 
-                            ICategoryService categoryService, IUserService userService)
+                            ICategoryService categoryService, IUserService userService, IViewService viewService,
+                            ICommentService commentService, IReactionService reactionService)
         {
             _mapper = mapper;
             _ideaService = ideaService;
@@ -43,6 +50,9 @@ namespace Web.Api.Controllers
             _topicService = topicService;
             _categoryService = categoryService;
             _userService = userService;
+            _viewService = viewService;
+            _commentService = commentService;
+            _reactionService = reactionService;
         }
 
         /// <summary>
@@ -314,8 +324,7 @@ namespace Web.Api.Controllers
                     } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
                 }
                 await _fileService.DeleteRangeAsync(idea.Files);
-
-
+                
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);
                 // Upload thumbnail.
@@ -348,46 +357,6 @@ namespace Web.Api.Controllers
             }
         }
 
-        private async Task UpdateSlugAndLastUpdateTime(Idea idea)
-        {
-            // Update auto populate field.
-            // Create Slug.
-            string slug = new SlugHelper().GenerateSlug(idea.Title);
-            bool isDuplicateSlug = await _ideaService.CheckSlugExistedAsync(slug);
-            if (isDuplicateSlug)
-            {
-                var random = new Random();
-                slug += "-" + random.Next(1000, 9999);
-            }
-            idea.Slug = slug;
-            idea.IsFakeData = false;
-            // Update Lastupdate field.
-            idea.LastUpdate = DateTime.UtcNow;
-        }
-
-        private async Task<List<File>> UploadFileAsync(List<IFormFile> uploadFile, Idea idea)
-        {
-            List<File> files = new List<File>();
-            // Adding linked File.
-            if (uploadFile != null)
-            {
-                foreach (var file in uploadFile)
-                {
-                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file);
-                   File fileEntity = new File
-                    {
-                        FilePath = uploadFileResult.SecureUrl.ToString(),
-                        PublicId = uploadFileResult.PublicId,
-                        FileName = uploadFileResult.OriginalFilename,
-                        Format = uploadFileResult.Format,
-                        IdeaId = idea.Id
-                    };
-                    files.Add(fileEntity);
-                }
-            }
-            return files;
-        }
-
         /// <summary>
         /// Delete a idea
         /// </summary>
@@ -413,7 +382,12 @@ namespace Web.Api.Controllers
                     });
                 }
 
-                if(idea.IsFakeData == false)
+                // Delete Views, Comments, Reactions
+                await _reactionService.DeleteByIdeaAsync(id);
+                await _viewService.DeleteByIdeaAsync(id);
+                await _commentService.DeleteByIdeaAsync(id);
+
+                if (idea.IsFakeData == false)
                 {
                     if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
                     foreach (var file in idea.Files)
@@ -427,6 +401,7 @@ namespace Web.Api.Controllers
                     await _fileService.DeleteRangeAsync(idea.Files);
                 }
                 bool isDelete = await _ideaService.DeleteAsync(id);
+
                 if (!isDelete)
                     return Conflict(new MessageResponseModel
                     {
@@ -512,5 +487,44 @@ namespace Web.Api.Controllers
             return null;
         }
 
+        private async Task UpdateSlugAndLastUpdateTime(Idea idea)
+        {
+            // Update auto populate field.
+            // Create Slug.
+            string slug = new SlugHelper().GenerateSlug(idea.Title);
+            bool isDuplicateSlug = await _ideaService.CheckSlugExistedAsync(slug);
+            if (isDuplicateSlug)
+            {
+                var random = new Random();
+                slug += "-" + random.Next(1000, 9999);
+            }
+            idea.Slug = slug;
+            idea.IsFakeData = false;
+            // Update Lastupdate field.
+            idea.LastUpdate = DateTime.UtcNow;
+        }
+
+        private async Task<List<File>> UploadFileAsync(List<IFormFile> uploadFile, Idea idea)
+        {
+            List<File> files = new List<File>();
+            // Adding linked File.
+            if (uploadFile != null)
+            {
+                foreach (var file in uploadFile)
+                {
+                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file);
+                    File fileEntity = new File
+                    {
+                        FilePath = uploadFileResult.SecureUrl.ToString(),
+                        PublicId = uploadFileResult.PublicId,
+                        FileName = uploadFileResult.OriginalFilename,
+                        Format = uploadFileResult.Format,
+                        IdeaId = idea.Id
+                    };
+                    files.Add(fileEntity);
+                }
+            }
+            return files;
+        }
     }
 }

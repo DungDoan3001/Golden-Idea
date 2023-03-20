@@ -80,7 +80,6 @@ const IdeaDetail = () => {
       console.log(error);
     }
   }
-
   const ClickDislike = async () => {
     try {
       (isDislike ? setIsDislike(false) : setIsDislike(true));
@@ -293,5 +292,4 @@ const IdeaDetail = () => {
     </>
   );
 }
-
 export default IdeaDetail
