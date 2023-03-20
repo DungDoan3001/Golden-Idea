@@ -173,6 +173,7 @@ const Staffs = () => {
             mt="40px"
             style={{
               height: '55vh',
+              marginTop: '-0.05rem',
             }}
             sx={{
               "& .MuiDataGrid-root": {
@@ -186,8 +187,8 @@ const Staffs = () => {
                   height: '40vh'
                 },
                 [theme.breakpoints.down('sm')]: {
-                  width: '430px',
-                  height: '50vh'
+                  width: '130%',
+                  height: '70vh'
                 },
               },
               "& .MuiDataGrid-cell": {

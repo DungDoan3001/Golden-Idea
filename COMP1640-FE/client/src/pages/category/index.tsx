@@ -128,7 +128,7 @@ const CategoryPage = () => {
                                 },
                                 [theme.breakpoints.down('sm')]: {
                                     width: '430px',
-                                    height: '50vh'
+                                    height: '70vh'
                                 },
                             },
                             "& .MuiDataGrid-cell": {
