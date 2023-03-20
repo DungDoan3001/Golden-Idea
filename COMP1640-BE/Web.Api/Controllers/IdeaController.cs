@@ -324,7 +324,7 @@ namespace Web.Api.Controllers
                     } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
                 }
                 await _fileService.DeleteRangeAsync(idea.Files);
-
+                
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);
                 // Upload thumbnail.
