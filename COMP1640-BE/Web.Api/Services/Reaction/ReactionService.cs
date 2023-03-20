@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Web.Api.Services.ReactionService
 {
@@ -17,13 +17,15 @@ namespace Web.Api.Services.ReactionService
         private readonly IGenericRepository<Reaction> _reactionRepo;
         private readonly UserManager<Entities.User> _userManager;
         private readonly IMapper _mapper;
+        private readonly IReactionQuery _reactionQuery;
 
-        public ReactionService(IUnitOfWork unitOfWork, UserManager<Entities.User> userManager, IMapper mapper)
+        public ReactionService(IUnitOfWork unitOfWork, UserManager<Entities.User> userManager, IMapper mapper, IReactionQuery reactionQuery)
         {
             _unitOfWork = unitOfWork;
             _reactionRepo = unitOfWork.GetBaseRepo<Reaction>();
             _userManager = userManager;
             _mapper = mapper;
+            _reactionQuery = reactionQuery;
         }
 
         public async Task<Reaction> Reaction(string username, Guid ideaId, string reactionType)
@@ -114,13 +116,17 @@ namespace Web.Api.Services.ReactionService
             }
         }
 
-        public async void DeleteByIdeaAsync(Guid ideaId)
+        public async Task<bool> DeleteByIdeaAsync(Guid ideaId)
         {
             try
             {
-                var reactions = await _reactionRepo.Find(x => x.IdeaId== ideaId);
-                _reactionRepo.DeleteRange(reactions);
-                await _unitOfWork.CompleteAsync();
+                var reactions = await _reactionQuery.GetAllByIdeaAsync(ideaId);
+                if(reactions.Any())
+                {
+                    _reactionRepo.DeleteRange(reactions);
+                    await _unitOfWork.CompleteAsync();
+                    return true;
+                } else { return false; }
             }
             catch (Exception)
             {

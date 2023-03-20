@@ -324,12 +324,7 @@ namespace Web.Api.Controllers
                     } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
                 }
                 await _fileService.DeleteRangeAsync(idea.Files);
-
-                // Delete Views, Comments, Reactions
-                _viewService.DeleteByIdeaAsync(id);
-                _commentService.DeleteCommentByIdeaAsync(id);
-                _reactionService.DeleteByIdeaAsync(id);
-
+                
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);
                 // Upload thumbnail.
@@ -362,46 +357,6 @@ namespace Web.Api.Controllers
             }
         }
 
-        private async Task UpdateSlugAndLastUpdateTime(Idea idea)
-        {
-            // Update auto populate field.
-            // Create Slug.
-            string slug = new SlugHelper().GenerateSlug(idea.Title);
-            bool isDuplicateSlug = await _ideaService.CheckSlugExistedAsync(slug);
-            if (isDuplicateSlug)
-            {
-                var random = new Random();
-                slug += "-" + random.Next(1000, 9999);
-            }
-            idea.Slug = slug;
-            idea.IsFakeData = false;
-            // Update Lastupdate field.
-            idea.LastUpdate = DateTime.UtcNow;
-        }
-
-        private async Task<List<File>> UploadFileAsync(List<IFormFile> uploadFile, Idea idea)
-        {
-            List<File> files = new List<File>();
-            // Adding linked File.
-            if (uploadFile != null)
-            {
-                foreach (var file in uploadFile)
-                {
-                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file);
-                   File fileEntity = new File
-                    {
-                        FilePath = uploadFileResult.SecureUrl.ToString(),
-                        PublicId = uploadFileResult.PublicId,
-                        FileName = uploadFileResult.OriginalFilename,
-                        Format = uploadFileResult.Format,
-                        IdeaId = idea.Id
-                    };
-                    files.Add(fileEntity);
-                }
-            }
-            return files;
-        }
-
         /// <summary>
         /// Delete a idea
         /// </summary>
@@ -427,7 +382,12 @@ namespace Web.Api.Controllers
                     });
                 }
 
-                if(idea.IsFakeData == false)
+                // Delete Views, Comments, Reactions
+                await _reactionService.DeleteByIdeaAsync(id);
+                await _viewService.DeleteByIdeaAsync(id);
+                await _commentService.DeleteByIdeaAsync(id);
+
+                if (idea.IsFakeData == false)
                 {
                     if (idea.PublicId != null) await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
                     foreach (var file in idea.Files)
@@ -441,6 +401,7 @@ namespace Web.Api.Controllers
                     await _fileService.DeleteRangeAsync(idea.Files);
                 }
                 bool isDelete = await _ideaService.DeleteAsync(id);
+
                 if (!isDelete)
                     return Conflict(new MessageResponseModel
                     {
@@ -526,5 +487,44 @@ namespace Web.Api.Controllers
             return null;
         }
 
+        private async Task UpdateSlugAndLastUpdateTime(Idea idea)
+        {
+            // Update auto populate field.
+            // Create Slug.
+            string slug = new SlugHelper().GenerateSlug(idea.Title);
+            bool isDuplicateSlug = await _ideaService.CheckSlugExistedAsync(slug);
+            if (isDuplicateSlug)
+            {
+                var random = new Random();
+                slug += "-" + random.Next(1000, 9999);
+            }
+            idea.Slug = slug;
+            idea.IsFakeData = false;
+            // Update Lastupdate field.
+            idea.LastUpdate = DateTime.UtcNow;
+        }
+
+        private async Task<List<File>> UploadFileAsync(List<IFormFile> uploadFile, Idea idea)
+        {
+            List<File> files = new List<File>();
+            // Adding linked File.
+            if (uploadFile != null)
+            {
+                foreach (var file in uploadFile)
+                {
+                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file);
+                    File fileEntity = new File
+                    {
+                        FilePath = uploadFileResult.SecureUrl.ToString(),
+                        PublicId = uploadFileResult.PublicId,
+                        FileName = uploadFileResult.OriginalFilename,
+                        Format = uploadFileResult.Format,
+                        IdeaId = idea.Id
+                    };
+                    files.Add(fileEntity);
+                }
+            }
+            return files;
+        }
     }
 }

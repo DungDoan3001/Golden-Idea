@@ -9,6 +9,9 @@ using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 using Web.Api.Entities;
 using Web.Api.Helpers;
+using Web.Api.Services.Comment;
+using Web.Api.Services.ReactionService;
+using Web.Api.Services.View;
 
 namespace Web.Api.Services.FakeData
 {
@@ -17,6 +20,9 @@ namespace Web.Api.Services.FakeData
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Idea> _ideaRepo;
         private readonly IAppDbContext _context;
+        private readonly IViewService _viewService;
+        private readonly IReactionService _reactionService;
+        private readonly ICommentService _commentService;
         private SlugHelper _slugHelper = new SlugHelper();
         private RandomDateTime randomDateTime = new RandomDateTime();
 
@@ -122,11 +128,14 @@ namespace Web.Api.Services.FakeData
 
 
 
-        public FakeDataService(IUnitOfWork unitOfWork, IAppDbContext context)
+        public FakeDataService(IUnitOfWork unitOfWork, IAppDbContext context, ICommentService commentService, IViewService viewService, IReactionService reactionService)
         {
             _unitOfWork = unitOfWork;
             _ideaRepo = unitOfWork.GetBaseRepo<Idea>();
             _context = context;
+            _viewService = viewService;
+            _reactionService = reactionService;
+            _commentService = commentService;
         }
 
         public async Task<bool> CreateFakeIdeaData(int numberOfIdeaToCreate)
@@ -193,10 +202,20 @@ namespace Web.Api.Services.FakeData
         {
             try
             {
-                IEnumerable<Idea> fakeIdeas = await _context.Ideas.Where(x => x.IsFakeData).ToListAsync();
-                _ideaRepo.DeleteRange(fakeIdeas);
-                await _unitOfWork.CompleteAsync();
-                return true;
+                List<Idea> fakeIdeas = await _context.Ideas.Where(x => x.IsFakeData).ToListAsync();
+                if (fakeIdeas.Any())
+                {
+                    foreach(var idea in fakeIdeas)
+                    {
+                        await _reactionService.DeleteByIdeaAsync(idea.Id);
+                        await _viewService.DeleteByIdeaAsync(idea.Id);
+                        await _commentService.DeleteByIdeaAsync(idea.Id);
+                    }
+                    _ideaRepo.DeleteRange(fakeIdeas);
+                    await _unitOfWork.CompleteAsync();
+                    return true;
+                }
+                else return false;
             }
             catch (Exception)
             {
