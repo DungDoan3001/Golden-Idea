@@ -73,7 +73,7 @@ const ListIdeas = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [idea, ideas, ideaData])
-
+  console.log(ideas[0]?.topic.username);
   function cancelEdit() {
     if (recordForEdit) setRecordForEdit(undefined);
     setEditMode(false);
@@ -83,119 +83,119 @@ const ListIdeas = () => {
   };
   return (
     <>
-      {loading ? 
-      <Loading /> : 
-      (<Box alignItems="center" justifyContent="center"
-        width="100%"
-        sx={{
-          [theme.breakpoints.up('sm')]: {
-            width: '90%',
-            m: '3rem',
-          },
-          [theme.breakpoints.down('sm')]: {
-            width: '100%',
-            m: '3.5rem',
-          },
-        }}
-      >
-        <BackButton/>
-        <Box sx={{
-          position: 'center',
-          mb: "2rem",
-          mx: 'auto',
-        }}>
-          <Typography
-            variant="h1"
-            color={theme.palette.content.main}
-            fontWeight="bold"
-            sx={{
-              textAlign: 'center',
-              textTransform: 'uppercase',
-              position: 'relative',
-              display: 'inline-block',
-              color: theme.palette.secondary.main,
-            }}
-          >
-            {name}
-          </Typography>
-          <Divider variant="fullWidth" />
-          <Box m="1rem 0rem" display="flex" alignItems="center" justifyContent="right">
-            <Box
-              component="img"
-              alt="profile"
-              src={ideas[0]?.topic.avatar}
-              height="2.5rem"
-              width="2.5rem"
-              borderRadius="50%"
-              sx={{ objectFit: "cover" }}
-            />
-            <Box component="h4" m=".5rem 1rem">
-              Topic By: {ideas[0]?.topic.username}
-            </Box>
-            <Box>
-              <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" }, alignItems: { xs: "center", sm: "flex-end" } }}>
-                <ListItemText
-                  primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
-                  secondary={`Final Closure Date: ${new Date(`${ideas[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                  primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
-                  secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
-                />
-              </List>
-            </Box>
-          </Box>
-          <Divider variant="fullWidth" />
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ mr: 2 }}>
-            <Button
-              variant="contained"
-              size="medium"
-              color="success"
-              onClick={() => navigate(`/ideaform/${id}/slug`)}
-              startIcon={<AddCircleOutline />}
-            >
-              Create a new Idea
-            </Button>
-          </Box>
-          <Box sx={{ ml: 2 }}>
-            <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
-          </Box>
-        </Box>
-        <Box mt="5%" display="flex" alignContent="center" alignItems="center">
-          <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
-            {idea.map((item: any) => (
-              <HomePageItem data={item} />
-            )
-            )}
-          </Grid>
-        </Box>
-        <AppPagination
-          setItem={setIdea} // Update this line
-          data={ideaData} // Update this line
-          size={6}
-        />
-
-        <Box sx={{
-          [theme.breakpoints.up('sm')]: {
-            p: '4rem',
-          },
-          [theme.breakpoints.down('sm')]: {
-            p: '1rem',
-            pb: '4rem',
-          },
-        }}
+      {loading ? <Loading /> : (
+        <Box alignItems="center" justifyContent="center"
+          width="100%"
+          sx={{
+            [theme.breakpoints.up('sm')]: {
+              width: '90%',
+              m: '3rem',
+            },
+            [theme.breakpoints.down('sm')]: {
+              width: '100%',
+              m: '3.5rem',
+            },
+          }}
         >
-          <Grid container spacing={0.5}>
-            {
-              categories.map((item: any) => (
-                <Grid item xs={6} sm={4} md={2.4}>
-                  <CategoryButton search={true} category={item.name} />
-                </Grid>
-              ))
-            }
-          </Grid>
-        </Box>
-      </Box >
+          <Box sx={{
+            position: 'center',
+            mb: "2rem",
+            mx: 'auto',
+          }}>
+            <Typography
+              variant="h1"
+              color={theme.palette.content.main}
+              fontWeight="bold"
+              sx={{
+                textAlign: 'center',
+                textTransform: 'uppercase',
+                position: 'relative',
+                display: 'inline-block',
+                color: theme.palette.secondary.main,
+                width: "100%",
+              }}
+            >
+              {name}
+            </Typography>
+            <Box m="0.5rem 0rem" display="flex" alignItems="center">
+              <Box
+                component="img"
+                alt="profile"
+                src={ideas[0]?.topic.avatar}
+                height="2.5rem"
+                width="2.5rem"
+                borderRadius="50%"
+                sx={{ objectFit: "cover", mr: "1rem" }}
+              />
+              <Box>
+                <Box component="h4" mb=".5rem">
+                  Creator: {ideas[0]?.topic.username}
+                </Box>
+              </Box>
+              <Box sx={{ ml: "auto" }}>
+                <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
+                  <ListItemText
+                    primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                    secondary={`Final Closure Date: ${new Date(`${ideas[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
+                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
+                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
+                  />
+                </List>
+              </Box>
+            </Box>
+            <Divider variant="fullWidth" />
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ mr: 2 }}>
+              <Button
+                variant="contained"
+                size="medium"
+                color="success"
+                onClick={() => navigate(`/ideaform/${id}/slug`)}
+                startIcon={<AddCircleOutline />}
+              >
+                Create a new Idea
+              </Button>
+            </Box>
+            <Box sx={{ ml: 2 }}>
+              <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
+            </Box>
+          </Box>
+          <Box mt="5%" display="flex" alignContent="center" alignItems="center">
+            <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
+              {idea.map((item: any) => (
+                <HomePageItem data={item} />
+              )
+              )}
+            </Grid>
+          </Box>
+          <AppPagination
+            setItem={setIdea} // Update this line
+            data={ideaData} // Update this line
+            size={6}
+          />
+
+          <Box sx={{
+            [theme.breakpoints.up('sm')]: {
+              p: '4rem',
+            },
+            [theme.breakpoints.down('sm')]: {
+              p: '1rem',
+              pb: '4rem',
+            },
+          }}
+          >
+            <Grid container spacing={0.5}>
+              {
+                categoryData.map((item: any) => (
+                  <Grid item xs={6} sm={4} md={2.4}>
+                    <CategoryButton search={true} category={item.name} />
+                  </Grid>
+                ))
+              }
+            </Grid>
+          </Box>
+        </Box >
       )}
     </>
   );

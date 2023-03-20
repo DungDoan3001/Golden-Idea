@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Divider, List, ListItemText, Typography } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
 import AppPagination from '../../app/components/AppPagination';
 import CategoryButton from '../../app/components/CategoryButton';
 import { useParams } from "react-router-dom";
-import { postData } from "../../dataTest.js"
 import { categoryData } from '../../dataTest.js';
 import { useTheme } from '@emotion/react';
 import { Idea } from '../../app/models/Idea';
@@ -13,7 +12,7 @@ import { AddCircleOutline } from '@mui/icons-material';
 import Filter from '../../app/components/filter/Filter';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
-import { getIdeas } from './ideasSlice';
+import { getMyIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
 const viewOptions = [
     { label: "Most Viewed", value: "most_viewed" },
@@ -30,13 +29,13 @@ const ListMyIdeas = () => {
     const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
     const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
     const { user } = useAppSelector(state => state.account);
-    const { ideas, loading } = useSelector((state: RootState) => state.idea);
-    const [idea, setIdea] = useState(ideas.filter((idea: any) => idea.user?.userName === user?.name)); // filter the ideas based on user's username
+    const { ideas_user, loading } = useSelector((state: RootState) => state.idea);
+    const [idea, setIdea] = useState(ideas_user); // filter the ideas based on user's username
     const dispatch = useAppDispatch();
     let fetchMount = true;
     useEffect(() => {
-        if (fetchMount) {
-            dispatch(getIdeas(id));
+        if (fetchMount && user) {
+            dispatch(getMyIdeas({ topicId: id, username: user?.name }));
         }
         return () => {
             fetchMount = false;
@@ -60,10 +59,11 @@ const ListMyIdeas = () => {
                 setIdea([...idea].sort((a, b) => b.downVote - a.downVote));
                 break;
             default:
-                setIdea(ideas.filter((idea: any) => idea.user?.userName === user?.name));
+                setIdea(ideas_user);
                 break;
         }
-    }, [selectedViewOption, ideas]);
+    }, [selectedViewOption, ideas_user]);
+
     function cancelEdit() {
         if (recordForEdit) setRecordForEdit(undefined);
         setEditMode(false);
@@ -100,21 +100,39 @@ const ListMyIdeas = () => {
                             textTransform: 'uppercase',
                             position: 'relative',
                             display: 'inline-block',
-                            '&:after': {
-                                content: '""',
-                                position: 'absolute',
-                                top: '-10px',
-                                left: '-10px',
-                                right: '-10px',
-                                bottom: '-10px',
-                                border: `4px solid ${theme.palette.secondary.main}`,
-                                borderStyle: 'dashed',
-                                borderRadius: '10px',
-                            },
+                            color: theme.palette.secondary.main,
+                            width: "100%",
                         }}
                     >
                         {name}
                     </Typography>
+                    <Box m="0.5rem 0rem" display="flex" alignItems="center">
+                        <Box
+                            component="img"
+                            alt="profile"
+                            src={ideas_user[0]?.topic.avatar}
+                            height="2.5rem"
+                            width="2.5rem"
+                            borderRadius="50%"
+                            sx={{ objectFit: "cover", mr: "1rem" }}
+                        />
+                        <Box>
+                            <Box component="h4" mb=".5rem">
+                                Creator: {ideas_user[0]?.topic.username}
+                            </Box>
+                        </Box>
+                        <Box sx={{ ml: "auto" }}>
+                            <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
+                                <ListItemText
+                                    primary={`Closure Date: ${new Date(`${ideas_user[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                                    secondary={`Final Closure Date: ${new Date(`${ideas_user[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
+                                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
+                                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
+                                />
+                            </List>
+                        </Box>
+                    </Box>
+                    <Divider variant="fullWidth" />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ mr: 2 }}>
@@ -141,7 +159,7 @@ const ListMyIdeas = () => {
                     </Grid>
                     <AppPagination
                         setItem={(p: any) => setIdea(p)}
-                        data={ideas.filter((idea: any) => idea.user?.userName == user?.name)}
+                        data={ideas_user}
                         size={6}
                     />
                 </Box>

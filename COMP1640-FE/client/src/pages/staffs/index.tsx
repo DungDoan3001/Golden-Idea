@@ -186,7 +186,7 @@ const Staffs = () => {
                   height: '40vh'
                 },
                 [theme.breakpoints.down('sm')]: {
-                  width: '130%',
+                  width: '450px',
                   height: '50vh'
                 },
               },

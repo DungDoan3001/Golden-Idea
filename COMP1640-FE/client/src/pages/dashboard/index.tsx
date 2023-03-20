@@ -23,7 +23,7 @@ import Loading from "../../app/components/Loading";
 import React, { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../../app/store/configureStore";
+import { RootState, useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { getDashboardIdeas } from "../myIdeas/ideasSlice";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -37,6 +37,8 @@ interface IData {
 const Dashboard = () => {
   const theme: any = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
+  //Get user info here
+  const { user } = useAppSelector(state => state.account);
   const dispatch = useAppDispatch();
   const { ideas_dashboard } = useSelector((state: RootState) => state.idea);
   const [pageSize, setPageSize] = React.useState<number>(10);
@@ -86,6 +88,10 @@ const Dashboard = () => {
       console.error(error);
     }
   };
+  let isDownloadablePerson = false;
+  if (user) {
+    isDownloadablePerson = user?.role[0] === 'QA Manager';
+  }
   const columns: any = [
     {
       field: "ordinal",
@@ -169,29 +175,31 @@ const Dashboard = () => {
     }}>
       <FlexBetween>
         <Header title="DASHBOARD" subtitle="Welcome to Summary of Golden Idea Statistic" />
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: theme.palette.secondary.light,
-              color: theme.palette.background.alt,
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              [theme.breakpoints.down('sm')]: {
-                marginLeft: "3.5rem",
-              },
-              '&:hover': {
-                backgroundColor: theme.palette.secondary.light,
-                opacity: 0.8,
-                boxShadow: 'none',
-              },
-            }}
-            onClick={handleDownload}
-          >
-            <DownloadOutlined sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-        </Box>
+        {isDownloadablePerson && (
+          <Box>
+            <Button
+              sx={{
+                backgroundColor: theme.palette.secondary[300],
+                color: theme.palette.background.alt,
+                fontSize: "14px",
+                fontWeight: "bold",
+                padding: "10px 20px",
+                [theme.breakpoints.down('sm')]: {
+                  marginLeft: "3.5rem",
+                },
+                '&:hover': {
+                  backgroundColor: theme.palette.secondary[300],
+                  opacity: 0.8,
+                  boxShadow: 'none',
+                },
+              }}
+              onClick={handleDownload}
+            >
+              <DownloadOutlined sx={{ mr: "10px" }} />
+              Download Reports
+            </Button>
+          </Box>
+        )}
       </FlexBetween>
 
       <Box

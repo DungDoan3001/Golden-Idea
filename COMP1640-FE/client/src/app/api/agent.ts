@@ -97,12 +97,20 @@ const Topic = {
 }
 const Idea = {
     listIdeas: (id: any) => requests.get(`ideas/topic/${id}`),
+    listUserIdeas: (topicId: any, userName: string) => requests.get(`ideas/user/${userName}?topicId=${topicId}`),
     listDashboardIdeas: () => requests.get('ideas'),
     getIdeaDetail: (id: any) => requests.get(`ideas/id/${id}`),
     getIdeaBySlug: (slug:any) =>requests.get(`ideas/slug/${slug}`),
-    createIdea: (idea: any) => requests.postForm('ideas', createFormData(idea)),
     deleteIdea: (id:string) => requests.delete(`ideas/${id}`),
-    
+    createIdea: (idea: any) => requests.postForm('ideas', createFormData(idea)),
+    createCategory: (values: any) => requests.post('categories', values),
+    updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
+    deleteCategory: (id: string) => requests.delete(`categories/${id}`),
+    getIdeaBySlug: (slug: any) => requests.get(`ideas/slug/${slug}`),
+    searchIdeas: (filter: any) => requests.get(`ideas/search?searchTerm=${filter}`),
+    postView: (ideaId: any, values: any) => requests.post(`View?ideaId=${ideaId}`, values),
+    getReaction: (ideaId: any, username: any) => requests.get(`Reaction?IdeaId=${ideaId}&Username=${username}`),
+    postReaction: (reactionType: any, values: any) => requests.post(`Reaction?reactionType=${reactionType}`, values)
 }
 const User = {
     listUsers: () => requests.get('User'),

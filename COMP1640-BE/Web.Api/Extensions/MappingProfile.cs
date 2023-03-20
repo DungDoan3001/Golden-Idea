@@ -67,7 +67,9 @@ namespace Web.Api.Extensions
                 .ForMember(dest => dest.User_Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.Topic, opt => opt.MapFrom(src => src.Topic.Name));
             //
-            CreateMap<Topic, IdeaResponseModel_Topic>();
+            CreateMap<Topic, IdeaResponseModel_Topic>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.User.Avatar));
             CreateMap<User, IdeaResponseModel_User>();
             CreateMap<Category, IdeaResponseModel_Category>();
             CreateMap<File, IdeaResponseModel_File>()
@@ -84,7 +86,7 @@ namespace Web.Api.Extensions
             // Reaction
             CreateMap<Reaction, ReactionResponseModel>();
             CreateMap<Reaction, GetUserReactionResponseModel>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email));
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
 
             //Comment
             CreateMap<Comment, CommentResponseModel>();

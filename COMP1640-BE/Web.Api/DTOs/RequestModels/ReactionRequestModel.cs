@@ -4,7 +4,7 @@ namespace Web.Api.DTOs.RequestModels
 {
     public class ReactionRequestModel
     {
-        public Guid userId { get; set; }
-        public Guid ideaId { get; set; }
+        public string Username { get; set; }
+        public Guid IdeaId { get; set; }
     }
 }

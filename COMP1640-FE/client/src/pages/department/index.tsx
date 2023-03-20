@@ -55,7 +55,7 @@ const DepartmentPage = () => {
             field: "id",
             headerName: "ID",
             flex: 1,
-            minWidth: 50,
+            minWidth: 300,
         },
         {
             field: "name",
@@ -126,7 +126,7 @@ const DepartmentPage = () => {
                                     height: '40vh'
                                 },
                                 [theme.breakpoints.down('sm')]: {
-                                    width: '130%',
+                                    width: '450px',
                                     height: '50vh'
                                 },
                             },

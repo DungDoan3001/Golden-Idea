@@ -3,9 +3,15 @@ import { Idea } from '../../app/models/Idea';
 import agent from '../../app/api/agent';
 import { toast } from 'react-toastify';
 
+export interface GetMyIdeasParams {
+  topicId: any;
+  username: string;
+}
 interface IdeaState {
   ideas: Idea[];
   ideas_dashboard: Idea[];
+  ideas_user: Idea[];
+  ideas_search: Idea[];
   idea: Idea | null;
   loading: boolean;
   error: string | null;
@@ -14,6 +20,8 @@ interface IdeaState {
 const initialState: IdeaState = {
   ideas: [],
   ideas_dashboard: [],
+  ideas_user: [],
+  ideas_search: [],
   idea: null,
   loading: false,
   error: null,
@@ -22,6 +30,20 @@ export const getIdeas: AsyncThunk<Idea[], any, {}> = createAsyncThunk(
   'ideas/getIdeas',
   async (topicId: any) => {
     const response = await agent.Idea.listIdeas(topicId);
+    return response;
+  }
+);
+export const getSearchIdeas: AsyncThunk<Idea[], any, {}> = createAsyncThunk(
+  'ideas/getSearchIdeas',
+  async (filter: any) => {
+    const response = await agent.Idea.searchIdeas(filter);
+    return response;
+  }
+);
+export const getMyIdeas: AsyncThunk<Idea[], GetMyIdeasParams, {}> = createAsyncThunk(
+  'ideas/getMyIdeas',
+  async ({ topicId, username }) => {
+    const response = await agent.Idea.listUserIdeas(topicId, username);
     return response;
   }
 );
@@ -92,6 +114,18 @@ export const ideaSlice: Slice<IdeaState> = createSlice({
       .addCase(getIdeas.rejected, (state) => {
         state.loading = false;
       });
+    // set get all ideas by search string
+    builder
+      .addCase(getSearchIdeas.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSearchIdeas.fulfilled, (state, action) => {
+        state.ideas_search = action.payload;
+        state.loading = false;
+      })
+      .addCase(getSearchIdeas.rejected, (state) => {
+        state.loading = false;
+      });
     // set get all ideas to dashboard
     builder
       .addCase(getDashboardIdeas.pending, (state) => {
@@ -115,6 +149,18 @@ export const ideaSlice: Slice<IdeaState> = createSlice({
         state.loading = false;
       })
       .addCase(getIdea.rejected, (state) => {
+        state.loading = false;
+      });
+    // set get ideas by user
+    builder
+      .addCase(getMyIdeas.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getMyIdeas.fulfilled, (state, action) => {
+        state.ideas_user = action.payload;
+        state.loading = false;
+      })
+      .addCase(getMyIdeas.rejected, (state) => {
         state.loading = false;
       });
     // set get idea by slug
@@ -145,3 +191,4 @@ export const ideaSlice: Slice<IdeaState> = createSlice({
   });
   }
 })
+export default ideaSlice.reducer;

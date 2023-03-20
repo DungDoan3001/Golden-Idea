@@ -170,7 +170,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
                       </Grid>
                       <Grid item xs zeroMinWidth>
                         <Box mt="0.25rem" fontSize="0.8rem" display="flex" justifyContent="right" alignItems="center" color="gray">
-                          {moment(item.createdDate).format("hh:mm | DD/MM/YYYY")}
+                          {moment.utc(item.createdDate).utcOffset(moment().utcOffset()).format("hh:mm A | DD/MM/YYYY")}
                         </Box>
                       </Grid>
                     </Grid>
