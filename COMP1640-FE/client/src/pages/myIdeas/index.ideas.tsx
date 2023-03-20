@@ -187,7 +187,7 @@ const ListIdeas = () => {
           >
             <Grid container spacing={0.5}>
               {
-                categoryData.map((item: any) => (
+                categories.map((item: any) => (
                   <Grid item xs={6} sm={4} md={2.4}>
                     <CategoryButton search={true} category={item.name} />
                   </Grid>
