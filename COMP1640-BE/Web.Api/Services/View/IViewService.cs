@@ -6,6 +6,6 @@ namespace Web.Api.Services.View
     public interface IViewService
     {
         Task<Entities.View> ViewCount(Guid ideaId, string username);
-        void DeleteByIdeaAsync(Guid ideaId);
+        Task<bool> DeleteByIdeaAsync(Guid ideaId);
     }
 }

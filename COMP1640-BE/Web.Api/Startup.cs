@@ -187,6 +187,9 @@ namespace Web.Api
             services.AddScoped<IIdeaQuery, IdeaQuery>();
             services.AddScoped<ICategoryQuery, CategoryQuery>();
             services.AddScoped<IDepartmentQuery, DepartmentQuery>();
+            services.AddScoped<IViewQuery, ViewQuery>();
+            services.AddScoped<IReactionQuery, ReactionQuery>();
+            services.AddScoped<ICommentQuery, CommentQuery>();
 
             //Caching
             services.AddResponseCaching();

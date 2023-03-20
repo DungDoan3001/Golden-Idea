@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Api.Data.Context;
+using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
 
@@ -15,12 +16,15 @@ namespace Web.Api.Services.View
         private readonly UserManager<Entities.User> _userManager;
         private readonly IGenericRepository<Entities.View> _viewRepo;
         protected AppDbContext _context;
-        public ViewService(IUnitOfWork unitOfWork, UserManager<Entities.User> userManager, AppDbContext context)
+        private readonly IViewQuery _viewQuery;
+
+        public ViewService(IUnitOfWork unitOfWork, UserManager<Entities.User> userManager, AppDbContext context, IViewQuery viewQuery)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _viewRepo = unitOfWork.GetBaseRepo<Entities.View>();
             _context = context;
+            _viewQuery = viewQuery;
         }
 
         public async Task<Entities.View> ViewCount(Guid ideaId, string username)
@@ -61,13 +65,18 @@ namespace Web.Api.Services.View
             }
         }
 
-        public async void DeleteByIdeaAsync(Guid ideaId)
+        public async Task<bool> DeleteByIdeaAsync(Guid ideaId)
         {
             try
             {
-                var views = await _context.Views.Where(x => x.IdeaId == ideaId).ToListAsync();
-                _viewRepo.DeleteRange(views);
-                await _unitOfWork.CompleteAsync();
+                var views = await _viewQuery.GetAllByIdeaAsync(ideaId);
+                if(views.Any())
+                {
+                    _viewRepo.DeleteRange(views);
+                    await _unitOfWork.CompleteAsync();
+                    return true;
+                }
+                else { return false; }
             }
             catch (Exception)
             {
