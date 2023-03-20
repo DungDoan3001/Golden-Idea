@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Box, Button, Typography, List, ListItemText, Divider } from '@mui/material';
+import { Box, Button, Typography, List, ListItemText, Divider, IconButton } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
 import AppPagination from '../../app/components/AppPagination';
 import CategoryButton from '../../app/components/CategoryButton';
 import { useParams } from "react-router-dom";
-import { categoryData } from '../../dataTest.js';
 import { useTheme } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 import { Idea } from '../../app/models/Idea';
 import { AddCircleOutline } from '@mui/icons-material';
 import Filter from '../../app/components/filter/Filter';
@@ -14,6 +14,9 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { getIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
+import BackButton from '../../app/components/BackButton';
+import { get } from 'http';
+import { getCategories } from '../category/categorySlice';
 const viewOptions = [
   { label: "Most Viewed", value: "most_viewed" },
   { label: "Latest", value: "latest" },
@@ -24,11 +27,13 @@ const viewOptions = [
 
 const ListIdeas = () => {
   const theme: any = useTheme();
-  const { name, id, username, closureDate, finalClosureDate } = useParams();
+  const navigate = useNavigate();
+  const { name, id } = useParams();
   const [editMode, setEditMode] = useState(false);
   const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
   const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
   const { ideas, loading } = useSelector((state: RootState) => state.idea);
+  const { categories } = useSelector((state: RootState) => state.category);
   const [ideaData, setIdeaData] = useState(ideas)
   const [idea, setIdea] = useState([]);
   const dispatch = useAppDispatch();
@@ -36,6 +41,7 @@ const ListIdeas = () => {
   useEffect(() => {
     if (fetchMount) {
       dispatch(getIdeas(id));
+      dispatch(getCategories());
     }
     return () => {
       fetchMount = false;
@@ -77,7 +83,9 @@ const ListIdeas = () => {
   };
   return (
     <>
-      {loading ? <Loading /> : (<Box alignItems="center" justifyContent="center"
+      {loading ? 
+      <Loading /> : 
+      (<Box alignItems="center" justifyContent="center"
         width="100%"
         sx={{
           [theme.breakpoints.up('sm')]: {
@@ -90,6 +98,7 @@ const ListIdeas = () => {
           },
         }}
       >
+        <BackButton/>
         <Box sx={{
           position: 'center',
           mb: "2rem",
@@ -142,7 +151,7 @@ const ListIdeas = () => {
               variant="contained"
               size="medium"
               color="success"
-              onClick={() => setEditMode(true)}
+              onClick={() => navigate(`/ideaform/${id}/slug`)}
               startIcon={<AddCircleOutline />}
             >
               Create a new Idea
@@ -178,7 +187,7 @@ const ListIdeas = () => {
         >
           <Grid container spacing={0.5}>
             {
-              categoryData.map((item: any) => (
+              categories.map((item: any) => (
                 <Grid item xs={6} sm={4} md={2.4}>
                   <CategoryButton search={true} category={item.name} />
                 </Grid>

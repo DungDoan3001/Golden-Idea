@@ -24,6 +24,7 @@ import AdminPage from "../../pages/staffs/index.admin";
 import ListIdeas from "../../pages/myIdeas/index.ideas";
 import ListMyIdeas from "../../pages/myIdeas/index.myideas";
 import CommentPage from "../../pages/comment";
+import IdeaForm from "../../pages/ideaDetail/ideaForm";
 
 export const router = createBrowserRouter([
   {
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
               { path: 'breakdown', element: <Breakdown /> },
               { path: 'contributors', element: <Contributors /> },
               { path: 'dailyreport', element: <DailyReport /> },
+              { path: 'ideaform/:topicId/:slug', element: <IdeaForm /> },
               { path: 'exception', element: <Exception /> },
             ]
           },

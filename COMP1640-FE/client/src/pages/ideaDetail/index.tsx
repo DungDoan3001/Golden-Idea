@@ -1,34 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography, ListItemText, List } from '@mui/material';
-import Service from '../../app/utils/Service';
 import { useTheme } from '@emotion/react';
-import moment from 'moment';
 
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import ThumbDownTwoToneIcon from '@mui/icons-material/ThumbDownTwoTone';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-
-
-import { postData } from "../../dataTest.js"
-import { commentData } from '../../dataTest.js';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import PostAuthorInfo from '../../app/components/PostAuthorInfo';
-import AppPagination from '../../app/components/AppPagination';
 
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
-import { getIdeaBySlug } from '../myIdeas/ideasSlice';
+import { deleteIdea, getIdeaBySlug } from '../myIdeas/ideasSlice';
 import { useSelector } from 'react-redux';
 import Loading from '../../app/components/Loading';
 import Comment from '../../app/components/Comment';
+import BackButton from '../../app/components/BackButton';
+import { toast } from 'react-toastify';
+import ConfirmDialog from '../../app/components/ConfirmDialog';
 
 const IdeaDetail = () => {
   const theme: any = useTheme();
+  const navigate = useNavigate();
   const { slug } = useParams();
   const [isLike, setIslike] = useState(false);
   const [isDislike, setisDislike] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
   const { idea, loading } = useSelector((state: RootState) => state.idea);
   const dispatch = useAppDispatch();
   let fetchMount = true;
@@ -41,11 +41,6 @@ const IdeaDetail = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (idea != null) {
-    }
-  }, []);
-
   const ClickLike = () => {
     (isLike ? setIslike(false) : setIslike(true));
     setisDislike(false);
@@ -53,6 +48,21 @@ const IdeaDetail = () => {
   const ClickDislike = () => {
     (isDislike ? setisDislike(false) : setisDislike(true));
     setIslike(false);
+  }
+
+  const handleDelete = (id: any) => {
+    dispatch(deleteIdea(id))
+      .catch((error: any) => {
+        // handle error
+        toast.error(error.toString(), {
+          style: { marginTop: '50px' },
+          position: toast.POSITION.TOP_RIGHT
+        });
+      });
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+    });
   }
 
   return (
@@ -72,6 +82,7 @@ const IdeaDetail = () => {
               },
             }}
           >
+            <BackButton />
             <Typography
               m="2rem 0rem"
               variant="h1"
@@ -126,6 +137,29 @@ const IdeaDetail = () => {
                       lastUpdate={idea?.lastUpdate}
                     />
                   </Grid>
+                  <Grid item xs={9} sm={8} md={6}>
+                    <Box display="flex" justifyContent="right" alignItems="right">
+                      <IconButton
+                        color="info"
+                        style={{ marginRight: "1rem" }}
+                        onClick={() => navigate(`/ideaform/${idea?.topic.id}/${slug}`)}
+                      >
+                        <EditIcon style={{ fontSize: "1.25rem" }} />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        style={{ marginRight: "1rem" }}
+                        onClick={() => setConfirmDialog({
+                          isOpen: true,
+                          title: 'Are you sure to delete this record?',
+                          subTitle: "You can't undo this operation",
+                          onConfirm: () => { handleDelete(idea?.id) }
+                        })}
+                      >
+                        <DeleteIcon style={{ fontSize: "1.25rem" }} />
+                      </IconButton>
+                    </Box>
+                  </Grid>
                 </Grid>
                 <Typography
                   textAlign="left"
@@ -140,12 +174,12 @@ const IdeaDetail = () => {
                   <Box
                     component="img"
                     alt="thumbnail"
-                    src={idea?.image}                   
-                    sx={{ 
-                      width: {xs:"85vw", sm:"50vw"},
-                      height: {xs:"65vw", sm:"35vw"},
+                    src={idea?.image}
+                    sx={{
+                      width: { xs: "85vw", sm: "50vw" },
+                      height: { xs: "65vw", sm: "35vw" },
                       objectFit: "cover",
-                     }}
+                    }}
                   >
                   </Box>
                 </Box>
@@ -221,6 +255,10 @@ const IdeaDetail = () => {
           <Comment ideaId={idea?.id} />
         </>
       }
+      <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
     </>
   );
 }

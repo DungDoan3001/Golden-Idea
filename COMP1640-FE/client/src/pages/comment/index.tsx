@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { getCategories } from '../category/categorySlice';
 import Comment from '../../app/components/Comment';
+import { Navigate } from 'react-router-dom';
 
 const CommentPage = () => {
     const theme: any = useTheme();
@@ -80,17 +81,15 @@ const CommentPage = () => {
     if (!data) {
         setLoading(true);
     }
-    if (editMode)
-        return <IdeaForm cancelEdit={cancelEdit} categories={categories} />
     return (
         <>
             {loading ? (<Loading />) : (
                 <Box m="1.5rem 2.5rem">
                     <Header title="COMMENTS" subtitle="List of Comments" />
-                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)}
+                    {/* <Button variant="contained" size="medium" color="success" onClick={() => Navigate("/ideaForm/d12c24cb-3c69-4dbc-bfcb-3cf602830700")}
                         startIcon={<AddCircleOutline />}>
                         Create a new Idea
-                    </Button>
+                    </Button> */}
                     <Box
                         mt="40px"
                         style={{ height: '55vh' }}
