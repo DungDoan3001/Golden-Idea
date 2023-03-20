@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 import { getMyIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
+import BackButton from '../../app/components/BackButton';
 const viewOptions = [
     { label: "Most Viewed", value: "most_viewed" },
     { label: "Latest", value: "latest" },
@@ -91,6 +92,7 @@ const ListMyIdeas = () => {
                     mb: "2rem",
                     mx: 'auto',
                 }}>
+                  <BackButton/>
                     <Typography
                         variant="h1"
                         color={theme.palette.content.main}
