@@ -21,6 +21,7 @@ import Comment from '../../app/components/Comment';
 import BackButton from '../../app/components/BackButton';
 import { toast } from 'react-toastify';
 import ConfirmDialog from '../../app/components/ConfirmDialog';
+import agent from '../../app/api/agent';
 
 const IdeaDetail = () => {
   const theme: any = useTheme();
@@ -28,7 +29,7 @@ const IdeaDetail = () => {
   const { user } = useAppSelector(state => state.account);
   const { slug } = useParams();
   const [isLike, setIslike] = useState(false);
-  const [isDislike, setisDislike] = useState(false);
+  const [isDislike, setIsDislike] = useState(false);
   const [loadReaction, setLoadReaction] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
   const { idea, loading } = useSelector((state: RootState) => state.idea);
@@ -43,7 +44,7 @@ const IdeaDetail = () => {
       fetchMount = false;
     };
   }, []);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       if (idea != null) {
@@ -78,6 +79,7 @@ const IdeaDetail = () => {
     } catch (error) {
       console.log(error);
     }
+  }
 
   const ClickDislike = async () => {
     try {

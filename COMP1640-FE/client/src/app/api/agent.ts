@@ -106,7 +106,6 @@ const Idea = {
     createCategory: (values: any) => requests.post('categories', values),
     updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
     deleteCategory: (id: string) => requests.delete(`categories/${id}`),
-    getIdeaBySlug: (slug: any) => requests.get(`ideas/slug/${slug}`),
     searchIdeas: (filter: any) => requests.get(`ideas/search?searchTerm=${filter}`),
     postView: (ideaId: any, values: any) => requests.post(`View?ideaId=${ideaId}`, values),
     getReaction: (ideaId: any, username: any) => requests.get(`Reaction?IdeaId=${ideaId}&Username=${username}`),
