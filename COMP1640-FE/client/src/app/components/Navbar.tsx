@@ -62,6 +62,11 @@ const Navbar = () => {
       width: '30rem',
     },
   }));
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
   const handleSearch = () => {
     if (searchRef && searchRef.current) {
       const searchValue = searchRef.current.value;
@@ -92,6 +97,12 @@ const Navbar = () => {
               <InputBase
                 placeholder="Search..."
                 inputRef={searchRef}
+                onKeyPress={handleKeyPress}
+                sx={{
+                  [theme.breakpoints.down('sm')]: {
+                    width: '3rem',
+                  },
+                }}
               />
               <IconButton onClick={handleSearch}>
                 <Search />

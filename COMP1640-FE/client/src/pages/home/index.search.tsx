@@ -35,6 +35,7 @@ const SearchPage = () => {
                         [theme.breakpoints.up('sm')]: {
                             width: '90%',
                             m: '3rem',
+                            pb: '1rem',
                         },
                         [theme.breakpoints.down('sm')]: {
                             width: '100%',
@@ -42,6 +43,9 @@ const SearchPage = () => {
                         },
                     }}
                 >
+                    <Typography variant="h2" align="left" fontWeight={'bold'} marginLeft={4.5} marginTop={3}>
+                        TOP RESULTS
+                    </Typography>
                     <Box mt="5%" alignItems="center" justifyContent="center">
                         <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
                             {idea.map((item: any) => (

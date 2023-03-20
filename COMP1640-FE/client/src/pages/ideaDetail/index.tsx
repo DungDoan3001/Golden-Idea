@@ -32,6 +32,7 @@ const IdeaDetail = () => {
   const [loadReaction, setLoadReaction] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
   const { idea, loading } = useSelector((state: RootState) => state.idea);
+  const [isCommentAvailable, setIsCommentAvailable] = useState(true);
   const dispatch = useAppDispatch();
   let fetchMount = true;
   useEffect(() => {
@@ -59,7 +60,14 @@ const IdeaDetail = () => {
     }
     fetchData();
   }, [idea, user]);
-
+  useEffect(() => {
+    const finalClosureDate = idea?.topic.finalClosureDate;
+    if (finalClosureDate) {
+      const today = new Date().getTime();
+      const CommentDate = new Date(finalClosureDate).getTime();
+      setIsCommentAvailable(today < CommentDate);
+    }
+  }, [idea]);
   const ClickLike = async () => {
     try {
       (isLike ? setIslike(false) : setIslike(true));
@@ -273,7 +281,7 @@ const IdeaDetail = () => {
             </Box>
           </Box>
           <Divider variant="fullWidth" />
-          <Comment ideaId={idea?.id} />
+          <Comment ideaId={idea?.id} isComment={isCommentAvailable} />
         </>
       }
       <ConfirmDialog

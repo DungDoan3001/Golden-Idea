@@ -142,7 +142,7 @@ const CommentPage = () => {
                             }}
                         />
                     </Box>
-                    <Comment ideaId='e306eecb-4499-4426-b4af-4443663f7adb' />
+                    {/* <Comment ideaId='e306eecb-4499-4426-b4af-4443663f7adb' /> */}
                 </Box>
             )
             }

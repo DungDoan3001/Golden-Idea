@@ -14,6 +14,7 @@ import AppPagination from './AppPagination';
 import { GenericHTMLFormElement } from 'axios';
 interface CommentProps {
   ideaId: any;
+  isComment: boolean;
 }
 const useStyles = makeStyles((theme: any) => ({
   form: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme: any) => ({
     marginLeft: theme.spacing(1),
   },
 }));
-const Comment: React.FC<CommentProps> = ({ ideaId }) => {
+const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { user } = useAppSelector(state => state.account);
@@ -119,7 +120,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
       </Typography>
       {isLoading ? <Loading /> : (
         <Box paddingBottom={4}>
-          <form className={classes.form} onSubmit={handleSubmit}>
+          {isComment ? (<form className={classes.form} onSubmit={handleSubmit}>
             <Grid container spacing={2} alignItems="center" marginTop={3}>
               <Grid item xs={12} sm={12}>
                 <TextField
@@ -150,7 +151,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId }) => {
                 Post as anonymous
               </Grid>
             </Grid>
-          </form>
+          </form>) : (null)}
           {
             comment.map((item: any) => (
               <Paper
