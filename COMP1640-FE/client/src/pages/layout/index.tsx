@@ -16,7 +16,7 @@ const Layout = () => {
       onCommand: (commandData: any) => {
         if (commandData.command === 'search') {
           // Call the client code that will react to the received command
-          navigate(`/search/${commandData.TITLE.value}`);
+          navigate(`/search/${commandData.searchString}`);
         }
         else if (commandData.command === 'navigate') {
           if (commandData.page !== "") navigate(`/${commandData.page}`);

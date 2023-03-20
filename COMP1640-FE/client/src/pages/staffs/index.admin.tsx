@@ -173,6 +173,7 @@ const AdminPage = () => {
                         mt="40px"
                         style={{
                             height: '55vh',
+                            marginTop: '-0.05rem',
                         }}
                         sx={{
                             "& .MuiDataGrid-root": {
@@ -187,7 +188,7 @@ const AdminPage = () => {
                                 },
                                 [theme.breakpoints.down('sm')]: {
                                     width: '430px',
-                                    height: '50vh'
+                                    height: '70vh'
                                 },
                             },
                             "& .MuiDataGrid-cell": {

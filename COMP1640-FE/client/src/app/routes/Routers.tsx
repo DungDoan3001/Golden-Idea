@@ -23,7 +23,6 @@ import Login from "../../pages/account/login";
 import AdminPage from "../../pages/staffs/index.admin";
 import ListIdeas from "../../pages/myIdeas/index.ideas";
 import ListMyIdeas from "../../pages/myIdeas/index.myideas";
-import CommentPage from "../../pages/comment";
 import IdeaForm from "../../pages/ideaDetail/ideaForm";
 import SearchPage from "../../pages/home/index.search";
 
@@ -59,7 +58,6 @@ export const router = createBrowserRouter([
                   { path: 'dashboard', element: <Dashboard /> },
                   { path: 'categories', element: <Category /> },
                   { path: 'departments', element: <Department /> },
-                  { path: 'comments', element: <CommentPage /> },
                   { path: 'overview', element: <Overview /> },
                   { path: 'breakdown', element: <Breakdown /> },
                   { path: 'contributors', element: <Contributors /> },

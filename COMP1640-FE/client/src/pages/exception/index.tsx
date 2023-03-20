@@ -17,6 +17,7 @@ const Exception = () => {
             const response = await agent.Chart.exceptionChart();
             const res = await agent.Chart.commentChart();
             setDataExceptions(response);
+            console.log(res)
             setDataComments(res);
             setLoading(false);
         };
@@ -50,7 +51,7 @@ const Exception = () => {
                 sx={{
                     width: '100%',
                     [theme.breakpoints.down('sm')]: {
-                        width: '130%',
+                        width: '430px',
                         overflow: 'auto'
                     },
                 }} >

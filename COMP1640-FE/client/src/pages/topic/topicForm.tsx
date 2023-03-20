@@ -49,6 +49,7 @@ const TopicForm = ({ topic, cancelEdit }: Props) => {
                     closureDate: new Date(data.closureDate), // convert string to date object
                     finalClosureDate: new Date(data.finalClosureDate), // convert string to date object
                 };
+                console.log(updatedTopic);
                 response = await dispatch(updateTopic(updatedTopic)).unwrap();
             } else {
                 const newTopic: Topic = {

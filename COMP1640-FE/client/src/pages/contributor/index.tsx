@@ -58,7 +58,7 @@ const Contributors = () => {
                     sx={{
                         width: '100%',
                         [theme.breakpoints.down('sm')]: {
-                            width: '130%',
+                            width: '430px',
                             overflow: 'auto'
                         },
                     }} >

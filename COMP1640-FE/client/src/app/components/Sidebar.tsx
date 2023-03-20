@@ -83,11 +83,6 @@ const navItems = [
     roles: ["Administrator", "QA Manager", "QA Coordinator"],
   },
   {
-    text: "Comments",
-    icon: <Forum />,
-    roles: ["Administrator"],
-  },
-  {
     text: "Data visualization",
     icon: null,
     roles: ["Administrator", "QA Manager"],
