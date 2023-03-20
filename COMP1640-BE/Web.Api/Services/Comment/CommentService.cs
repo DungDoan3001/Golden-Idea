@@ -96,5 +96,19 @@ namespace Web.Api.Services.Comment
                 throw;
             }
         }
+
+        public async void DeleteCommentByIdeaAsync(Guid ideaId)
+        {
+            try
+            {
+                var comments = await _context.Comments.Where(x => x.IdeaId == ideaId).ToListAsync();
+                _commentRepo.DeleteRange(comments);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

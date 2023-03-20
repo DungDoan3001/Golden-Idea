@@ -17,6 +17,9 @@ using System.Linq;
 using Web.Api.Services.Topic;
 using Web.Api.Services.Category;
 using Web.Api.Services.User;
+using Web.Api.Services.View;
+using Web.Api.Services.Comment;
+using Web.Api.Services.ReactionService;
 
 namespace Web.Api.Controllers
 {
@@ -31,10 +34,14 @@ namespace Web.Api.Controllers
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
         private readonly IUserService _userService;
+        private readonly IViewService _viewService;
+        private readonly ICommentService _commentService;
+        private readonly IReactionService _reactionService;
 
         public IdeaController(IMapper mapper, IIdeaService ideaService, IFileUploadService fileUploadService, 
                             IFileService fileService, ITopicService topicService, 
-                            ICategoryService categoryService, IUserService userService)
+                            ICategoryService categoryService, IUserService userService, IViewService viewService,
+                            ICommentService commentService, IReactionService reactionService)
         {
             _mapper = mapper;
             _ideaService = ideaService;
@@ -43,6 +50,9 @@ namespace Web.Api.Controllers
             _topicService = topicService;
             _categoryService = categoryService;
             _userService = userService;
+            _viewService = viewService;
+            _commentService = commentService;
+            _reactionService = reactionService;
         }
 
         /// <summary>
@@ -315,6 +325,10 @@ namespace Web.Api.Controllers
                 }
                 await _fileService.DeleteRangeAsync(idea.Files);
 
+                // Delete Views, Comments, Reactions
+                _viewService.DeleteByIdeaAsync(id);
+                _commentService.DeleteCommentByIdeaAsync(id);
+                _reactionService.DeleteByIdeaAsync(id);
 
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);

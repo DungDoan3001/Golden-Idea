@@ -113,5 +113,19 @@ namespace Web.Api.Services.ReactionService
                 throw;
             }
         }
+
+        public async void DeleteByIdeaAsync(Guid ideaId)
+        {
+            try
+            {
+                var reactions = await _reactionRepo.Find(x => x.IdeaId== ideaId);
+                _reactionRepo.DeleteRange(reactions);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
