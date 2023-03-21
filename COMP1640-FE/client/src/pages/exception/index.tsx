@@ -28,7 +28,7 @@ const Exception = () => {
         <Box m="1.5rem 2.5rem" >
             <Box sx={{
                 [theme.breakpoints.down('sm')]: {
-                    width: "150%"
+                    width: '21rem',
                 }
             }}>
                 <Header title="EXCEPTION REPORT" subtitle={view === 'ideas' ? "Non Comment & Anonymous Ideas Bar Chart" : "Comments by Department Bar Chart"} />
@@ -51,7 +51,7 @@ const Exception = () => {
                 sx={{
                     width: '100%',
                     [theme.breakpoints.down('sm')]: {
-                        width: '430px',
+                        width: '21rem',
                         overflow: 'auto'
                     },
                 }} >

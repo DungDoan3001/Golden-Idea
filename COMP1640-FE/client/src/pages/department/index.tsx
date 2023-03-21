@@ -126,7 +126,7 @@ const DepartmentPage = () => {
                                     height: '40vh'
                                 },
                                 [theme.breakpoints.down('sm')]: {
-                                    width: '430px',
+                                    width: '21rem',
                                     height: '70vh'
                                 },
                             },
