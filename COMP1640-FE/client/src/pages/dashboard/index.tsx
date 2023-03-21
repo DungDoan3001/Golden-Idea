@@ -169,7 +169,7 @@ const Dashboard = () => {
   return (
     <Box m="1.5rem 2.5rem" sx={{
       [theme.breakpoints.down('sm')]: {
-        width: '120%',
+        width: '22.5rem',
         margin: '1.5rem 1rem',
       },
     }}>

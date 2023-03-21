@@ -82,11 +82,12 @@ const ListMyIdeas = () => {
                         m: '3rem',
                     },
                     [theme.breakpoints.down('sm')]: {
-                        width: '100%',
-                        m: '3.5rem',
+                        width: '21rem',
+                        m: '2rem',
                     },
                 }}
             >
+                <BackButton />
                 <Box sx={{
                     position: 'center',
                     mb: "2rem",
@@ -108,7 +109,13 @@ const ListMyIdeas = () => {
                     >
                         {name}
                     </Typography>
-                    <Box m="0.5rem 0rem" display="flex" alignItems="center">
+                    <Box
+                        m="0.5rem 0rem"
+                        display="flex"
+                        alignItems="center"
+                        flexDirection={{ xs: "column", sm: "row" }}
+                        textAlign={{ xs: "center", sm: "left" }}
+                    >
                         <Box
                             component="img"
                             alt="profile"
@@ -116,20 +123,26 @@ const ListMyIdeas = () => {
                             height="2.5rem"
                             width="2.5rem"
                             borderRadius="50%"
-                            sx={{ objectFit: "cover", mr: "1rem" }}
+                            sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
                         />
                         <Box>
                             <Box component="h4" mb=".5rem">
                                 Creator: {ideas_user[0]?.topic.username}
                             </Box>
-                        </Box>
-                        <Box sx={{ ml: "auto" }}>
-                            <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
+                            <List>
                                 <ListItemText
                                     primary={`Closure Date: ${new Date(`${ideas_user[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                                    primaryTypographyProps={{
+                                        variant: "body1",
+                                        mb: { xs: "0.5rem", sm: 0 },
+                                    }}
+                                />
+                                <ListItemText
                                     secondary={`Final Closure Date: ${new Date(`${ideas_user[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
-                                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
+                                    primaryTypographyProps={{
+                                        variant: "body1",
+                                        mb: { xs: "0.5rem", sm: 0 },
+                                    }}
                                 />
                             </List>
                         </Box>
@@ -153,7 +166,12 @@ const ListMyIdeas = () => {
                     </Box>
                 </Box>
                 <Box mt="5%" alignItems="center" justifyContent="center">
-                    <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
+                    <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }} sx={{
+                        [theme.breakpoints.down('sm')]: {
+                            mr: '2rem',
+                            width: '80%',
+                        },
+                    }}>
                         {idea.map((item: any) => (
                             <HomePageItem data={item} />
                         )

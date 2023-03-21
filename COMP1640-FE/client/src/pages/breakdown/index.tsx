@@ -27,7 +27,7 @@ const Breakdown = () => {
             width: '90%',
           },
           [theme.breakpoints.down('sm')]: {
-            width: '110%',
+            width: '21rem',
           },
         }}  >
         <Header title="BREAKDOWN" subtitle="Breakdown of Ideas By Department" />

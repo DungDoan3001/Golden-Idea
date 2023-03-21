@@ -103,6 +103,7 @@ const Idea = {
     getIdeaBySlug: (slug: any) => requests.get(`ideas/slug/${slug}`),
     deleteIdea: (id: string) => requests.delete(`ideas/${id}`),
     createIdea: (idea: any) => requests.postForm('ideas', createFormData(idea)),
+    updateIdea: (idea: any, id: string) => requests.put(`ideas/${id}`, idea),
     createCategory: (values: any) => requests.post('categories', values),
     updateCategory: (values: any, id: string) => requests.put(`categories/${id}`, values),
     deleteCategory: (id: string) => requests.delete(`categories/${id}`),

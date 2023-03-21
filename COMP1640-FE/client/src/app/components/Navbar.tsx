@@ -139,9 +139,18 @@ const Navbar = () => {
                 height="32px"
                 width="32px"
                 borderRadius="50%"
-                sx={{ objectFit: "cover" }}
+                sx={{
+                  objectFit: "cover",
+                  [theme.breakpoints.down('sm')]: {
+                    marginRight: "-1rem"
+                  },
+                }}
               />
-              <Box textAlign="left">
+              <Box textAlign="left" sx={{
+                [theme.breakpoints.down('sm')]: {
+                  display: 'none',
+                },
+              }}>
                 <Typography
                   fontWeight="bold"
                   fontSize="0.85rem"
