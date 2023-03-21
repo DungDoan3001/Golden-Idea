@@ -79,20 +79,21 @@ const IdeaDetail = () => {
       const today = new Date().getTime();
       const closureDate = new Date(idea?.topic.closureDate).getTime();
       setIsEditable(today < closureDate && user?.name === idea?.user.userName);
-
-      switch (idea?.files[0].fileExtention) {
-        case "pdf":
-          setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750328423829575/pdf.png");
-          break;
-        case "doc":
-          setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
-          break;
-        case "docx":
-          setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
-          break;
-        case "zip":
-          setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750329292050462/zip.png");
-          break;
+      if (idea?.files[0] != null) {
+        switch (idea?.files[0].fileExtention) {
+          case "pdf":
+            setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750328423829575/pdf.png");
+            break;
+          case "doc":
+            setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
+            break;
+          case "docx":
+            setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
+            break;
+          case "zip":
+            setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750329292050462/zip.png");
+            break;
+        }
       }
       const regex = /(<([^>]+)>)/ig;
       const newString = idea.content.replace(regex, '');
