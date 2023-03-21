@@ -87,7 +87,6 @@ const ListMyIdeas = () => {
                     },
                 }}
             >
-                <BackButton />
                 <Box sx={{
                     position: 'center',
                     mb: "2rem",
