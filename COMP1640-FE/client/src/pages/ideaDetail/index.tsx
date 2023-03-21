@@ -284,7 +284,7 @@ const IdeaDetail = () => {
                     {content}
                   </Typography>
                 </Box>
-                {(idea?.files) ?
+                {(idea?.files[0] != null) ?
                   <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
                     <Box
                       component="img"
