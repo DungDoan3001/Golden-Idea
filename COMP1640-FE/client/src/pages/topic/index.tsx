@@ -98,13 +98,13 @@ const TopicPage = () => {
             field: "name",
             headerName: "Topic Name",
             flex: 0.5,
-            minWidth: 600,
+            minWidth: 450,
         },
         {
             field: "closureDate",
             headerName: "Closure Date",
             flex: 1,
-            minWidth: 50,
+            minWidth: 100,
             renderCell: (params: { value: string; }) => {
                 return Moment(params.value).format('DD-MM-YYYY');
             },
@@ -113,7 +113,7 @@ const TopicPage = () => {
             field: "finalClosureDate",
             headerName: "Final Closure Date",
             flex: 1,
-            minWidth: 50,
+            minWidth: 120,
             renderCell: (params: { value: string; }) => {
                 return Moment(params.value).format('DD-MM-YYYY');
             },
@@ -122,7 +122,7 @@ const TopicPage = () => {
             field: "username",
             headerName: "User Name",
             flex: 1,
-            minWidth: 50,
+            minWidth: 130,
         },
     ];
     const actionColumn = [

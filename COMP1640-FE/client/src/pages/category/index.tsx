@@ -108,12 +108,12 @@ const CategoryPage = () => {
             {loading ? (<Loading />) : (
                 <Box m="1.5rem 2.5rem">
                     <Header title="CATEGORIES" subtitle="List of Categories" />
-                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
+                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 10 }}
                         startIcon={<AddCircleOutline />}>
                         Create a new category
                     </Button>
                     <Box
-                        mt="12px"
+                        mt="5px"
                         style={{ height: '55vh' }}
                         sx={{
                             "& .MuiDataGrid-root": {
