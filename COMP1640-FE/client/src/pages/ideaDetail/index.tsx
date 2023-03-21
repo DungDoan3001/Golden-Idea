@@ -145,6 +145,23 @@ const IdeaDetail = () => {
     navigate(-1);
   }
 
+  const handleDownload = () => {
+    if (idea && idea.files[0] && idea.files[0].filePath) {
+      // using Java Script method to get PDF file
+      fetch(idea?.files[0].filePath).then(response => {
+        response.blob().then(blob => {
+          // Creating new object of PDF file
+          const fileURL = window.URL.createObjectURL(blob);
+          // Setting various property values
+          let alink = document.createElement('a');
+          alink.href = fileURL;
+          alink.download = idea?.files[0].filePath;
+          alink.click();
+        })
+      })
+    }
+  }
+
   return (
     <>
       {(loading || loadReaction) && user && user.name ? <Loading /> :
@@ -291,7 +308,6 @@ const IdeaDetail = () => {
                       component="img"
                       alt="fileIcon"
                       src={fileIcon}
-                      // src="https://cdn.discordapp.com/attachments/1074670576809033798/1087750328423829575/pdf.png"
                       height="2.5rem"
                       width="2.5rem"
                       sx={{
@@ -300,7 +316,7 @@ const IdeaDetail = () => {
                     <Typography width="15rem" noWrap>
                       {`${idea.files[0].fileName}.${idea.files[0].fileExtention}`}
                     </Typography>
-                    <IconButton sx={{ ml: "1rem" }}>
+                    <IconButton onClick={handleDownload} sx={{ ml: "1rem" }}>
                       <DownloadIcon />
                     </IconButton>
                   </Box> : (null)}
