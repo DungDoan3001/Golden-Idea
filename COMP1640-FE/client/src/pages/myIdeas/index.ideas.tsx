@@ -14,9 +14,9 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { getIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
-import BackButton from '../../app/components/BackButton';
 import { get } from 'http';
 import { getCategories } from '../category/categorySlice';
+import BackButton from '../../app/components/BackButton';
 const viewOptions = [
   { label: "Most Viewed", value: "most_viewed" },
   { label: "Latest", value: "latest" },
@@ -92,11 +92,12 @@ const ListIdeas = () => {
               m: '3rem',
             },
             [theme.breakpoints.down('sm')]: {
-              width: '100%',
-              m: '3.5rem',
+              width: '21rem',
+              m: '2rem',
             },
           }}
         >
+          <BackButton />
           <Box sx={{
             position: 'center',
             mb: "2rem",
@@ -117,7 +118,13 @@ const ListIdeas = () => {
             >
               {name}
             </Typography>
-            <Box m="0.5rem 0rem" display="flex" alignItems="center">
+            <Box
+              m="0.5rem 0rem"
+              display="flex"
+              alignItems="center"
+              flexDirection={{ xs: "column", sm: "row" }}
+              textAlign={{ xs: "center", sm: "left" }}
+            >
               <Box
                 component="img"
                 alt="profile"
@@ -125,20 +132,26 @@ const ListIdeas = () => {
                 height="2.5rem"
                 width="2.5rem"
                 borderRadius="50%"
-                sx={{ objectFit: "cover", mr: "1rem" }}
+                sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
               />
               <Box>
                 <Box component="h4" mb=".5rem">
                   Creator: {ideas[0]?.topic.username}
                 </Box>
-              </Box>
-              <Box sx={{ ml: "auto" }}>
-                <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
+                <List>
                   <ListItemText
                     primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                    primaryTypographyProps={{
+                      variant: "body1",
+                      mb: { xs: "0.5rem", sm: 0 },
+                    }}
+                  />
+                  <ListItemText
                     secondary={`Final Closure Date: ${new Date(`${ideas[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
-                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
+                    primaryTypographyProps={{
+                      variant: "body1",
+                      mb: { xs: "0.5rem", sm: 0 },
+                    }}
                   />
                 </List>
               </Box>

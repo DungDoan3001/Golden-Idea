@@ -10,7 +10,7 @@ const BackButton = () => {
   const navigate = useNavigate();
 
   return (
-    <Box p="1rem 0rem" fontSize="1rem" color={theme.palette.content.main}>
+    <Box p="0.5rem 0rem" fontSize="1rem" color={theme.palette.content.main}>
       <IconButton onClick={() => navigate(-1)}>
         <ArrowBackIosIcon
           style={{

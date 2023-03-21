@@ -105,7 +105,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
           m: "1rem 6rem",
         },
         [theme.breakpoints.down('sm')]: {
-          width: '110%',
+          width: '21rem',
           m: "1rem 2rem",
         },
       }}
