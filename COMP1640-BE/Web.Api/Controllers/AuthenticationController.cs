@@ -1,11 +1,13 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using Web.Api.Configuration;
 using Web.Api.Data.Context;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
@@ -14,6 +16,7 @@ using Web.Api.Extensions;
 using Web.Api.Services.Authentication;
 using Web.Api.Services.FileUploadService;
 using Web.Api.Services.ResetPassword;
+using static Web.Api.Configuration.CacheKey;
 
 namespace Web.Api.Controllers
 {
@@ -27,8 +30,9 @@ namespace Web.Api.Controllers
         private readonly IAuthenticationManager _authManager;
         private readonly IResetPasswordService _resetPasswordService;
         private readonly IFileUploadService _fileUploadService;
-
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService)
+        private readonly IMemoryCache _cache;
+        private UserCacheKey UserCacheKey = new UserCacheKey();
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService, IMemoryCache cache)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -36,6 +40,7 @@ namespace Web.Api.Controllers
             _authManager = authManager;
             _resetPasswordService = resetPasswordService;
             _fileUploadService = fileUploadService;
+            _cache = cache;
         }
         /// <summary>
         /// Create a user.
@@ -91,6 +96,12 @@ namespace Web.Api.Controllers
                 var data = await _userManager.FindByNameAsync(user.UserName);
                 var result = _mapper.Map<UserResponseModel>(data);
                 result.Role = userForRegistration.Role;
+                // Delete all user cache
+                var keyCache = UserCacheKey.GetType().GetProperties();
+                foreach (var key in keyCache)
+                {
+                    _cache.Remove(key.GetValue(UserCacheKey));
+                }
                 return Ok(result);
             }
             catch (Exception ex)

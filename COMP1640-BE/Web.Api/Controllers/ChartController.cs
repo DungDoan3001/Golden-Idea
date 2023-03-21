@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -13,9 +14,11 @@ namespace Web.Api.Controllers
     public class ChartController : ControllerBase
     {
         public readonly IChartService _chartService;
-        public ChartController(IChartService chartService)
+        private readonly IMemoryCache _cache;
+        public ChartController(IChartService chartService, IMemoryCache cache)
         {
             _chartService = chartService;
+            _cache = cache;
         }
         /// <summary>
         /// Get all needed information for Contributors Chart.

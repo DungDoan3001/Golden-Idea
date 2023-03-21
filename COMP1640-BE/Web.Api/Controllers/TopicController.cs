@@ -11,7 +11,11 @@ using System.Linq;
 using Web.Api.Extensions;
 using Web.Api.Services.User;
 using Web.Api.Entities;
-using Marvin.Cache.Headers;
+using Microsoft.Extensions.Caching.Memory;
+using Web.Api.Configuration;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static Web.Api.Configuration.CacheKey;
 
 namespace Web.Api.Controllers
 {
@@ -22,12 +26,14 @@ namespace Web.Api.Controllers
         private readonly IMapper _mapper;
         private readonly ITopicService _topicService;
         private readonly IUserService _userService;
-
-        public TopicController(IMapper mapper, ITopicService topicService, IUserService userService)
+        private readonly IMemoryCache _cache;
+        private TopicCacheKey topicCachekey = new TopicCacheKey();
+        public TopicController(IMapper mapper, ITopicService topicService, IUserService userService, IMemoryCache cache)
         {
             _mapper = mapper;
             _topicService = topicService;
             _userService = userService;
+            _cache = cache;
         }
 
         /// <summary>
@@ -37,15 +43,23 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all topics</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("")]
-        [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)]
-        [HttpCacheValidation(MustRevalidate = false)]
         public async Task<ActionResult<IEnumerable<TopicResponseModel>>> GetAll()
         {
             try
             {
-                IEnumerable<Entities.Topic> topics = await _topicService.GetAllAsync();
-                IEnumerable<TopicResponseModel> TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
+                if(_cache.TryGetValue(topicCachekey.GetAllCacheKey,out IEnumerable<TopicResponseModel> TopicResponses)) { }
+                else
+                {
+                    IEnumerable<Entities.Topic> topics = await _topicService.GetAllAsync();
+                    TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(topicCachekey.GetAllCacheKey, TopicResponses.OrderBy(x => x.Name), cacheEntryOptions);
+                }
                 return Ok(TopicResponses.OrderBy(x => x.Name));
+
             }
             catch (Exception ex)
             {
@@ -69,8 +83,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserName(userName);
-                IEnumerable<TopicResponseModel> TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
+                if (_cache.TryGetValue(topicCachekey.GetByUserIdCacheKey, out IEnumerable<TopicResponseModel> TopicResponses)) { }
+                else
+                {
+                    IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserName(userName);
+                    TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(topicCachekey.GetByUserIdCacheKey, TopicResponses.OrderBy(x => x.Name), cacheEntryOptions);
+                } 
                 return Ok(TopicResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
@@ -97,18 +120,27 @@ namespace Web.Api.Controllers
         {
             try
             {
-                Entities.Topic topic = await _topicService.GetByIdAsync(id);
-                if (topic == null)
+                if (_cache.TryGetValue(topicCachekey.GetByIdCacheKey, out TopicResponseModel TopicResponse)) { }
+                else
                 {
-                    return NotFound(new MessageResponseModel 
-                    { 
-                        Message = "Not found.", 
-                        StatusCode = (int)HttpStatusCode.NotFound,
-                        Errors = new List<string> { "Can not find the topic with the given id."}
-                    });
+                    Entities.Topic topic = await _topicService.GetByIdAsync(id);
+                    if (topic == null)
+                    {
+                        return NotFound(new MessageResponseModel
+                        {
+                            Message = "Not found.",
+                            StatusCode = (int)HttpStatusCode.NotFound,
+                            Errors = new List<string> { "Can not find the topic with the given id." }
+                        });
+                    }
+                    TopicResponse = _mapper.Map<TopicResponseModel>(topic);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(topicCachekey.GetByIdCacheKey, TopicResponse, cacheEntryOptions);
                 }
-                TopicResponseModel topicRespone = _mapper.Map<TopicResponseModel>(topic);
-                return Ok(topicRespone);
+                return Ok(TopicResponse);
             }
             catch (Exception ex)
             {
@@ -167,7 +199,13 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.Conflict,
                         Errors= new List<string> { "Error while create new." }
                     });
-
+                // Delete all topic cache
+                var keyCache = topicCachekey.GetType().GetProperties();
+                foreach (var key in keyCache)
+                {
+                    _cache.Remove(key.GetValue(topicCachekey));
+                }
+                
                 return Created(createdTopic.Id.ToString(), _mapper.Map<TopicResponseModel>(createdTopic));
             }
             catch (Exception ex)
@@ -231,6 +269,12 @@ namespace Web.Api.Controllers
                 else topic.UserId = user.Id;
 
                 Entities.Topic updatedTopic = await _topicService.UpdateAsync(topic);
+                // Delete all topic cache
+                var keyCache = topicCachekey.GetType().GetProperties();
+                foreach (var key in keyCache)
+                {
+                    _cache.Remove(key.GetValue(topicCachekey));
+                }
                 return Ok(_mapper.Map<TopicResponseModel>(updatedTopic));
             }
             catch (Exception ex)
@@ -286,7 +330,12 @@ namespace Web.Api.Controllers
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors= new List<string> { "Error while delete." }
                     });
-
+                // Delete all topic cache
+                var keyCache = topicCachekey.GetType().GetProperties();
+                foreach (var key in keyCache)
+                {
+                    _cache.Remove(key.GetValue(topicCachekey));
+                }
                 return NoContent();
             }
             catch (Exception ex)
