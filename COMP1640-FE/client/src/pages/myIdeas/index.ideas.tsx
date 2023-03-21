@@ -36,6 +36,8 @@ const ListIdeas = () => {
   const { categories } = useSelector((state: RootState) => state.category);
   const [ideaData, setIdeaData] = useState(ideas)
   const [idea, setIdea] = useState([]);
+  const [creatatble, setIsCreatable] = useState(true);
+
   const dispatch = useAppDispatch();
   let fetchMount = true;
   useEffect(() => {
@@ -47,6 +49,13 @@ const ListIdeas = () => {
       fetchMount = false;
     };
   }, []);
+
+  useEffect(() => {
+    const today = new Date().getTime();
+    const closureDate = new Date(ideas[0]?.topic.closureDate).getTime();
+    setIsCreatable(today < closureDate)
+  }, [ideas])
+
   useEffect(() => {
     switch (selectedViewOption) {
       case 'most_viewed':
@@ -73,7 +82,6 @@ const ListIdeas = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [idea, ideas, ideaData])
-  console.log(ideas[0]?.topic.username);
   function cancelEdit() {
     if (recordForEdit) setRecordForEdit(undefined);
     setEditMode(false);
@@ -158,22 +166,23 @@ const ListIdeas = () => {
             </Box>
             <Divider variant="fullWidth" />
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ mr: 2 }}>
-              <Button
-                variant="contained"
-                size="medium"
-                color="success"
-                onClick={() => navigate(`/ideaform/${id}/slug`)}
-                startIcon={<AddCircleOutline />}
-              >
-                Create a new Idea
-              </Button>
-            </Box>
-            <Box sx={{ ml: 2 }}>
-              <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
-            </Box>
-          </Box>
+          {(creatatble) ?
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ mr: 2 }}>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  color="success"
+                  onClick={() => navigate(`/ideaform/${id}/slug`)}
+                  startIcon={<AddCircleOutline />}
+                >
+                  Create a new Idea
+                </Button>
+              </Box>
+              <Box sx={{ ml: 2 }}>
+                <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
+              </Box>
+            </Box> : (null)}
           <Box mt="5%" display="flex" alignContent="center" alignItems="center">
             <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
               {idea.map((item: any) => (

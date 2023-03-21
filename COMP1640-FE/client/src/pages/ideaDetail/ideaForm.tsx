@@ -7,7 +7,7 @@ import AppImageInput from '../../app/components/AppImageInput'
 import AppSelect from '../../app/components/AppSelect'
 import AppTextInput from '../../app/components/AppTextInput'
 import { Idea } from '../../app/models/Idea';
-import { addIdea, getIdeaBySlug } from '../myIdeas/ideasSlice';
+import { addIdea, getIdeaBySlug, updateIdea } from '../myIdeas/ideasSlice';
 import { toast } from 'react-toastify'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -41,7 +41,7 @@ export const validationSchema = yup.object({
   Title: yup.string().min(2),
   Content: yup.string().min(2),
   CategoryId: yup.mixed().required(),
-  file: yup.mixed()
+  File: yup.mixed()
     .test('fileSize', 'File size too large', function (value) {
       if (!value) return true;
       const file = value as FileObject;
@@ -56,7 +56,6 @@ const IdeaForm = () => {
   const { user } = useAppSelector(state => state.account);
   const { categories } = useSelector((state: RootState) => state.category);
   const { idea } = useSelector((state: RootState) => state.idea);
-  console.log(slug);
 
   const dispatch = useAppDispatch();
   const [uploadOption, setUploadOption] = useState('upload');
@@ -89,7 +88,7 @@ const IdeaForm = () => {
   }
   const handleFileSelect = (files: FileList) => {
     // Handle the selected files here
-    setValue('UploadFiles', files);
+    setValue('UploadFiles', files[0]);
   };
   const modules = {
     toolbar: [
@@ -113,20 +112,28 @@ const IdeaForm = () => {
   const { control, reset, handleSubmit, formState: { isDirty, isSubmitting }, watch, setValue, register } = useForm({
     resolver: yupResolver<any>(validationSchema),
   });
-  const watchFile = watch('file', null);
+  const watchFile = watch('File', null);
   useEffect(() => {
     if (!watchFile && !isDirty)
       return () => {
         if (watchFile) URL.revokeObjectURL(watchFile.preview);
       }
   }, [reset, watchFile, isDirty]);
+
+  function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   async function handleSubmitData(data: FieldValues) {
     try {
       setValue('Username', user?.name);
       setValue('TopicId', topicId);
-      console.log(data);
       let response: Idea;
-      response = await dispatch(addIdea(data)).unwrap();
+      if (slug === "slug") {
+        response = await dispatch(updateIdea(data)).unwrap();
+      } else {
+        response = await dispatch(addIdea(data)).unwrap();
+      }
       toast.success('Successfully', {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -135,7 +142,10 @@ const IdeaForm = () => {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
+    delay(1000);
+    navigate(-1)
   }
+
   const handleGenerateImage = async () => {
     const prompt = watch('Title');
     if (!prompt) return;
@@ -147,6 +157,7 @@ const IdeaForm = () => {
       size: '512x512' as CreateImageRequestSizeEnum,
     }
     const response = await openAI.createImage(imageParameters);
+    console.log(response);
     const imageUrl = response.data.data[0].url;
     // create a new file object from the generated image URL
     if (imageUrl) {
@@ -163,6 +174,7 @@ const IdeaForm = () => {
       xhr.send();
     }
     setImage(imageUrl);
+    console.log(imageUrl);
   }
   return (
     <Box sx={{
