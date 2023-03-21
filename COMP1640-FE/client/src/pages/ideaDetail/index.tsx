@@ -119,7 +119,7 @@ const IdeaDetail = () => {
                 m: "1rem 6rem",
               },
               [theme.breakpoints.down('sm')]: {
-                width: '110%',
+                width: '22rem',
                 m: "1rem 2rem",
               },
             }}
@@ -140,7 +140,13 @@ const IdeaDetail = () => {
             >
               {idea?.topic.name}
             </Typography>
-            <Box m="0.5rem 0rem" display="flex" alignItems="center">
+            <Box
+              m="0.5rem 0rem"
+              display="flex"
+              alignItems="center"
+              flexDirection={{ xs: "column", sm: "row" }}
+              textAlign={{ xs: "center", sm: "left" }}
+            >
               <Box
                 component="img"
                 alt="profile"
@@ -148,20 +154,26 @@ const IdeaDetail = () => {
                 height="2.5rem"
                 width="2.5rem"
                 borderRadius="50%"
-                sx={{ objectFit: "cover", mr: "1rem" }}
+                sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
               />
               <Box>
                 <Box component="h4" mb=".5rem">
                   Creator: {idea?.topic.username}
                 </Box>
-              </Box>
-              <Box sx={{ ml: "auto" }}>
-                <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
+                <List>
                   <ListItemText
                     primary={`Closure Date: ${new Date(`${idea?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                    primaryTypographyProps={{
+                      variant: "body1",
+                      mb: { xs: "0.5rem", sm: 0 },
+                    }}
+                  />
+                  <ListItemText
                     secondary={`Final Closure Date: ${new Date(`${idea?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
-                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
+                    primaryTypographyProps={{
+                      variant: "body1",
+                      mb: { xs: "0.5rem", sm: 0 },
+                    }}
                   />
                 </List>
               </Box>

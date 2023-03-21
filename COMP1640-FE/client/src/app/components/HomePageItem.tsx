@@ -33,9 +33,9 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                   },
                   [theme.breakpoints.down('sm')]: {
                     height: "68vw",
-                    width: "92vw",
+                    width: "100%",
                   },
-                  backgroundColor: theme.palette.thumbnail.main, p: {xs:"3vw", sm:"0.75vw"}, borderRadius: "4rem 0rem"
+                  backgroundColor: theme.palette.thumbnail.main, p: { xs: "3vw", sm: "0.75vw" }, borderRadius: "4rem 0rem"
                 }}
               >
                 <Link to={`/ideaDetail/${data.slug}`}>
@@ -50,7 +50,7 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                       },
                       [theme.breakpoints.down('sm')]: {
                         height: "62vw",
-                        width: "86vw",
+                        width: "18rem",
                       },
                       objectFit: "cover",
                       borderRadius: "4rem 0rem",
