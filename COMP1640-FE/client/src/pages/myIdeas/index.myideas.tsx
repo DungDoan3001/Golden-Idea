@@ -81,7 +81,7 @@ const ListMyIdeas = () => {
                         m: '3rem',
                     },
                     [theme.breakpoints.down('sm')]: {
-                        width: '100%',
+                        width: '21rem',
                         m: '3.5rem',
                     },
                 }}

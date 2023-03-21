@@ -34,7 +34,7 @@ const Contributors = () => {
             <Box m="1.5rem 2.5rem">
                 <Box sx={{
                     [theme.breakpoints.down('sm')]: {
-                        width: "150%"
+                        width: "21rem"
                     }
                 }}>
                     <Header title="CONTRIBUTOR" subtitle="Number of Contributors within each Department." />
@@ -58,7 +58,7 @@ const Contributors = () => {
                     sx={{
                         width: '100%',
                         [theme.breakpoints.down('sm')]: {
-                            width: '430px',
+                            width: '100%',
                             overflow: 'auto'
                         },
                     }} >

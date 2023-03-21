@@ -66,21 +66,31 @@ const DailyReport = () => {
     }, [dataDaily, startDate, endDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <Box m="1.5rem 2.5rem" >
+        <Box m="1.5rem 2.5rem" sx={{
+            [theme.breakpoints.down('sm')]: {
+                width: '21rem',
+            }
+        }}>
             <Box sx={{
                 [theme.breakpoints.down('sm')]: {
-                    width: "150%"
+                    width: '21rem',
                 }
             }}>
                 <Header title="DAILY REPORT" subtitle="Chart of Daily Ideas and Comments" />
             </Box>
-            <Box display="flex" justifyContent="flex-start" flexDirection="row" alignItems='center' sx={{
+            <Box display="flex" justifyContent="flex-start" alignItems='center' flexDirection="row" sx={{
                 marginTop: "1rem",
                 [theme.breakpoints.down('sm')]: {
-                    marginTop: "3rem",
+                    width: '5rem',
+                    flexDirection: "column",
                 },
             }}>
-                <Box>
+                <Box sx={{
+                    [theme.breakpoints.down('sm')]: {
+                        width: '5rem',
+                        marginLeft: "0.5rem"
+                    },
+                }}>
                     <DatePicker
                         selected={startDate}
                         onChange={date => date && setStartDate(date)}
@@ -89,7 +99,7 @@ const DailyReport = () => {
                         endDate={endDate}
                     />
                 </Box>
-                <Box>
+                <Box sx={{ [theme.breakpoints.down('sm')]: { width: "5rem", marginLeft: "0.5rem" } }}>
                     <DatePicker
                         selected={endDate}
                         onChange={date => date && setEndDate(date)}
@@ -97,21 +107,20 @@ const DailyReport = () => {
                         startDate={startDate}
                         endDate={endDate}
                         minDate={startDate}
-
                     />
                 </Box>
             </Box>
             <Box
                 sx={{
                     [theme.breakpoints.down('sm')]: {
-                        maxWidth: '140%',
+                        maxWidth: '100%',
                         width: '180%',
                         overflow: 'auto'
                     },
                 }} >
                 <Box mt="40px" height="75vh" sx={{
                     [theme.breakpoints.down('sm')]: {
-                        width: '200%',
+                        width: '300%',
                         overflow: 'auto'
                     },
                 }}>
