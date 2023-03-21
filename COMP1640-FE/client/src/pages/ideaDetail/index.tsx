@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import parse from 'html-react-parser';
 import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography, ListItemText, List } from '@mui/material';
 import { useTheme } from '@emotion/react';
 
@@ -213,7 +212,7 @@ const IdeaDetail = () => {
                   color={theme.palette.content.main}
                   fontWeight="bold"
                 >
-                  {parse(`${idea?.title}`)}
+                  {idea?.title}
                 </Typography>
                 <Grid
                   display="bottom" alignItems="center" justifyContent="bottom"
@@ -285,8 +284,8 @@ const IdeaDetail = () => {
                       sx={{
                         objectFit: "cover", mr: "1rem"
                       }} />
-                      <Typography width="15rem" noWrap>
-                    {`${idea.files[0].fileName}.${idea.files[0].fileExtention}`}
+                    <Typography width="15rem" noWrap>
+                      {`${idea.files[0].fileName}.${idea.files[0].fileExtention}`}
                     </Typography>
                     <IconButton sx={{ ml: "1rem" }}>
                       <DownloadIcon />

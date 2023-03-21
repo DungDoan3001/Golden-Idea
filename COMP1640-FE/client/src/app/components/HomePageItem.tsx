@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import parse from 'html-react-parser';
 import Grid from '@mui/material/Grid';
 import { Box, Typography, useTheme } from '@mui/material';
 import CategoryButton from '../../app/components/CategoryButton';
@@ -93,7 +92,7 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                     WebkitBoxOrient: "vertical",
                   }}
                 >
-                  {parse(data.title)}
+                  {data.title}
                 </Typography>
               </Link>
               <Box component="line" display="flex" alignItems="center" justifyContent="left">
