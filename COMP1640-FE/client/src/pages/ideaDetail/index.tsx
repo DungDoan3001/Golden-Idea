@@ -119,7 +119,7 @@ const IdeaDetail = () => {
                 m: "1rem 6rem",
               },
               [theme.breakpoints.down('sm')]: {
-                width: '22rem',
+                width: '21rem',
                 m: "1rem 2rem",
               },
             }}
