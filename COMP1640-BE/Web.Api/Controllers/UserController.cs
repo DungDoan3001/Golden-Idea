@@ -181,33 +181,23 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(UserCacheKey.GetByIdCacheKey, out UserResponseModel result)) { }
-                else
+                var user = await _userService.GetById(id);
+                if (user == null)
                 {
-                    var user = await _userService.GetById(id);
-                    if (user == null)
+                    return NotFound(new MessageResponseModel
                     {
-                        return NotFound(new MessageResponseModel
-                        {
-                            Message = "Not Found",
-                            StatusCode = (int)HttpStatusCode.BadRequest,
-                            Errors = new List<string> { "Can not find the user" }
-                        });
-                    }
-                    result = _mapper.Map<UserResponseModel>(user);
-                    //Get role
-                    var role = _userManager.GetRolesAsync(user);
-                    foreach (var r in role.Result)
-                    {
-                        result.Role = r;
-                    }
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                        .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(UserCacheKey.GetByIdCacheKey, result, cacheEntryOptions);
+                        Message = "Not Found",
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Errors = new List<string> { "Can not find the user" }
+                    });
                 }
-               
+                UserResponseModel result = _mapper.Map<UserResponseModel>(user);
+                //Get role
+                var role = _userManager.GetRolesAsync(user);
+                foreach (var r in role.Result)
+                {
+                    result.Role = r;
+                }           
                 return Ok(result);
             }
             catch (Exception ex)

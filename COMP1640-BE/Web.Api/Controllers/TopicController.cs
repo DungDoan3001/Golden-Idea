@@ -83,17 +83,8 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(topicCachekey.GetByUserIdCacheKey, out IEnumerable<TopicResponseModel> TopicResponses)) { }
-                else
-                {
-                    IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserName(userName);
-                    TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                        .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(topicCachekey.GetByUserIdCacheKey, TopicResponses.OrderBy(x => x.Name), cacheEntryOptions);
-                } 
+                IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserName(userName);
+                IEnumerable<TopicResponseModel>  TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
                 return Ok(TopicResponses.OrderBy(x => x.Name));
             }
             catch (Exception ex)
@@ -120,26 +111,18 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(topicCachekey.GetByIdCacheKey, out TopicResponseModel TopicResponse)) { }
-                else
+                Entities.Topic topic = await _topicService.GetByIdAsync(id);
+                if (topic == null)
                 {
-                    Entities.Topic topic = await _topicService.GetByIdAsync(id);
-                    if (topic == null)
+                    return NotFound(new MessageResponseModel
                     {
-                        return NotFound(new MessageResponseModel
-                        {
-                            Message = "Not found.",
-                            StatusCode = (int)HttpStatusCode.NotFound,
-                            Errors = new List<string> { "Can not find the topic with the given id." }
-                        });
-                    }
-                    TopicResponse = _mapper.Map<TopicResponseModel>(topic);
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                        .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(topicCachekey.GetByIdCacheKey, TopicResponse, cacheEntryOptions);
+                        Message = "Not found.",
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find the topic with the given id." }
+                    });
                 }
+                TopicResponseModel TopicResponse = _mapper.Map<TopicResponseModel>(topic);
+
                 return Ok(TopicResponse);
             }
             catch (Exception ex)

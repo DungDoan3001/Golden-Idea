@@ -14,11 +14,9 @@ namespace Web.Api.Controllers
     public class ChartController : ControllerBase
     {
         public readonly IChartService _chartService;
-        private readonly IMemoryCache _cache;
-        public ChartController(IChartService chartService, IMemoryCache cache)
+        public ChartController(IChartService chartService)
         {
             _chartService = chartService;
-            _cache = cache;
         }
         /// <summary>
         /// Get all needed information for Contributors Chart.

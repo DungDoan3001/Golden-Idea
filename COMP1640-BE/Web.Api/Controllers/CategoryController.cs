@@ -86,27 +86,19 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(CategoryCacheKey.GetByIdCacheKey, out CategoryResponseModel departmentResponse)) { }
-                else
+                _logger.LogInformation("Called");
+                Category category = await _categoryService.GetByIdAsync(id);
+                if (category == null)
                 {
-                    _logger.LogInformation("Called");
-                    Category category = await _categoryService.GetByIdAsync(id);
-                    if (category == null)
+                    return NotFound(new MessageResponseModel
                     {
-                        return NotFound(new MessageResponseModel
-                        {
-                            Message = "Not found.",
-                            StatusCode = (int)HttpStatusCode.NotFound,
-                            Errors = new List<string> { "Can not find the category with the given id" }
-                        });
-                    }
-                    departmentResponse = _mapper.Map<CategoryResponseModel>(category);
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                        .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(CategoryCacheKey.GetByIdCacheKey, departmentResponse, cacheEntryOptions);
-                } 
+                        Message = "Not found.",
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find the category with the given id" }
+                    });
+                }
+                CategoryResponseModel departmentResponse = _mapper.Map<CategoryResponseModel>(category);
+
                 return Ok(departmentResponse);
             }
             catch (Exception ex)

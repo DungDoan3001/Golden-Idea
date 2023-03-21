@@ -79,26 +79,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(DepartmentCacheKey.GetByIdCacheKey, out DepartmentResponseModel departmentResponse)) { }
-                else
+                Department department = await _departmentService.GetByIdAsync(id);
+                if (department == null)
                 {
-                    Department department = await _departmentService.GetByIdAsync(id);
-                    if (department == null)
+                    return NotFound(new MessageResponseModel
                     {
-                        return NotFound(new MessageResponseModel
-                        {
-                            Message = "Not found.",
-                            StatusCode = (int)HttpStatusCode.NotFound,
-                            Errors = new List<string> { "Can not find department with the given id" }
-                        });
-                    }
-                    departmentResponse = _mapper.Map<DepartmentResponseModel>(department);
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                        .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(DepartmentCacheKey.GetByIdCacheKey, departmentResponse, cacheEntryOptions);
+                        Message = "Not found.",
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Errors = new List<string> { "Can not find department with the given id" }
+                    });
                 }
+                DepartmentResponseModel departmentResponse = _mapper.Map<DepartmentResponseModel>(department);
                 
                 return Ok(departmentResponse);
             }
