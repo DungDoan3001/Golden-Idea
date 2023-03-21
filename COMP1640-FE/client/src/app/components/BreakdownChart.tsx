@@ -75,7 +75,7 @@ const BreakdownChart = ({ isDashboard = false, data }: Props) => {
             },
           }}
           motionConfig={"stiff"}
-          colors={{ datum: "data.color" }}
+          colors={{ "scheme": "nivo" }}
           margin={
             isDashboard
               ? { top: 40, right: 80, bottom: 100, left: 50 }
