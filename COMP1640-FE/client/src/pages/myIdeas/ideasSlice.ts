@@ -79,23 +79,28 @@ export const getIdeaBySlug: AsyncThunk<Idea, any, {}> = createAsyncThunk(
 export const deleteIdea = createAsyncThunk(
   'ideas/deleteIdea',
   async (id: any) => {
-      try {
-          await agent.Idea.deleteIdea(id);
-          toast.success('Delete Record Successfully!', {
-              style: { marginTop: '50px' },
-              position: toast.POSITION.TOP_RIGHT
-          });
-          return { id };
-      } catch (error: any) {
-          // handle error
-          toast.error(' Sorry! We cannot delete the idea.', {
-              style: { marginTop: '50px' },
-              position: toast.POSITION.TOP_RIGHT
-          });
-          throw error;
-      }
+    try {
+      await agent.Idea.deleteIdea(id);
+      toast.success('Delete Record Successfully!', {
+        style: { marginTop: '50px' },
+        position: toast.POSITION.TOP_RIGHT
+      });
+      return { id };
+    } catch (error: any) {
+      // handle error
+      toast.error(' Sorry! We cannot delete the idea.', {
+        style: { marginTop: '50px' },
+        position: toast.POSITION.TOP_RIGHT
+      });
+      throw error;
+    }
   }
 );
+
+export const updateIdea = createAsyncThunk('ideas/updateIdea', async (values: any) => {
+  const response = await agent.Idea.updateIdea(values, values.id);
+  return response;
+});
 
 export const ideaSlice: Slice<IdeaState> = createSlice({
   name: 'ideas',
@@ -183,12 +188,21 @@ export const ideaSlice: Slice<IdeaState> = createSlice({
     // set delete idea
     builder.addCase(deleteIdea.fulfilled, (state, action) => {
       const index = state.ideas.findIndex(
-          idea => idea.id === action.payload.id
+        idea => idea.id === action.payload.id
       );
       if (index !== -1) {
-          state.ideas.splice(index, 1);
+        state.ideas.splice(index, 1);
       }
-  });
+    });
+    //set update idea
+    builder.addCase(updateIdea.fulfilled, (state, action) => {
+      const index = state.ideas.findIndex(
+        idea => idea.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.ideas[index] = action.payload;
+      }
+    });
   }
 })
 export default ideaSlice.reducer;

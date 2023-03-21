@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import parse from 'html-react-parser';
 import Grid from '@mui/material/Grid';
 import { Box, Typography, useTheme } from '@mui/material';
 import CategoryButton from '../../app/components/CategoryButton';
@@ -16,6 +17,14 @@ interface HomePageItemProps {
 
 const HomePageItem = ({ data }: HomePageItemProps) => {
   const theme: any = useTheme();
+  const [content,setContent] = useState("");
+
+  useEffect(() => {
+    const regex = /(<([^>]+)>)/ig;
+    const newString = data.content.replace(regex, '');
+    setContent(newString);
+  },[data])
+
   return (
     <Grid item xs={4} >
       <Box display="flex" alignContent="center" alignItems="center">
@@ -35,7 +44,7 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                     height: "68vw",
                     width: "92vw",
                   },
-                  backgroundColor: theme.palette.thumbnail.main, p: {xs:"3vw", sm:"0.75vw"}, borderRadius: "4rem 0rem"
+                  backgroundColor: theme.palette.thumbnail.main, p: { xs: "3vw", sm: "0.75vw" }, borderRadius: "4rem 0rem"
                 }}
               >
                 <Link to={`/ideaDetail/${data.slug}`}>
@@ -75,9 +84,16 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                   color={theme.palette.content.main}
                   fontWeight="bold"
                   textAlign="justify"
-                  sx={{ '&:hover': { color: theme.palette.secondary.main } }}
+                  sx={{
+                    '&:hover': { color: theme.palette.secondary.main },
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: "2",
+                    WebkitBoxOrient: "vertical",
+                  }}
                 >
-                  {data.title.length <= 50 ? data.title : data.title.substring(0, 50) + "..."}
+                  {parse(data.title)}
                 </Typography>
               </Link>
               <Box component="line" display="flex" alignItems="center" justifyContent="left">
@@ -100,8 +116,15 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                 color={theme.palette.content.main}
                 fontSize="1rem"
                 textAlign="justify"
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "4",
+                  WebkitBoxOrient: "vertical",
+                }}
               >
-                {data.content.length <= 90 ? data.content : data.content.substring(0, 90) + "..."}
+                {content}
               </Typography>
               <PostAuthorInfo
                 avatar={data.user.avatar}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import parse from 'html-react-parser';
 import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography, ListItemText, List } from '@mui/material';
 import { useTheme } from '@emotion/react';
 
@@ -9,6 +10,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import PostAuthorInfo from '../../app/components/PostAuthorInfo';
 
@@ -26,14 +28,18 @@ import agent from '../../app/api/agent';
 const IdeaDetail = () => {
   const theme: any = useTheme();
   const navigate = useNavigate();
-  const { user } = useAppSelector(state => state.account);
   const { slug } = useParams();
   const [isLike, setIslike] = useState(false);
   const [isDislike, setIsDislike] = useState(false);
   const [loadReaction, setLoadReaction] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
   const { idea, loading } = useSelector((state: RootState) => state.idea);
+  const { user } = useAppSelector(state => state.account);
   const [isCommentAvailable, setIsCommentAvailable] = useState(true);
+  const [isEditable, setIsEditable] = useState(true);
+  const [fileIcon, setFileIcon] = useState<any>();
+  const [content, setContent] = useState("");
+
   const dispatch = useAppDispatch();
   let fetchMount = true;
   useEffect(() => {
@@ -47,7 +53,7 @@ const IdeaDetail = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (idea != null) {
+      if (idea != null && user && user.name) {
         setLoadReaction(true);
         const data = {
           username: user?.name
@@ -61,37 +67,67 @@ const IdeaDetail = () => {
     }
     fetchData();
   }, [idea, user]);
+
   useEffect(() => {
-    const finalClosureDate = idea?.topic.finalClosureDate;
-    if (finalClosureDate) {
+    if (idea != null && user && user.name) {
+      const finalClosureDate = idea?.topic.finalClosureDate;
+      if (finalClosureDate) {
+        const today = new Date().getTime();
+        const CommentDate = new Date(finalClosureDate).getTime();
+        setIsCommentAvailable(today < CommentDate);
+      }
+
       const today = new Date().getTime();
-      const CommentDate = new Date(finalClosureDate).getTime();
-      setIsCommentAvailable(today < CommentDate);
+      const closureDate = new Date(idea?.topic.closureDate).getTime();
+      setIsEditable(today < closureDate && user?.name === idea?.user.userName);
+
+      switch (idea?.files[0].fileExtention) {
+        case "pdf":
+          setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750328423829575/pdf.png");
+          break;
+        case "doc":
+          setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
+          break;
+        case "docx":
+          setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
+          break;
+        case "zip":
+          setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750329292050462/zip.png");
+          break;
+      }
+      const regex = /(<([^>]+)>)/ig;
+      const newString = idea.content.replace(regex, '');
+      setContent(newString);
     }
-  }, [idea]);
+  }, [idea, user]);
   const ClickLike = async () => {
-    try {
-      (isLike ? setIslike(false) : setIslike(true));
-      setIsDislike(false);
-      const data = { ideaId: idea?.id, username: user?.name };
-      const response = await agent.Idea.postReaction("upvote", data);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+    if (idea != null && user && user.name) {
+      try {
+        (isLike ? setIslike(false) : setIslike(true));
+        setIsDislike(false);
+        const data = { ideaId: idea?.id, username: user?.name };
+        const response = await agent.Idea.postReaction("upvote", data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
   const ClickDislike = async () => {
-    try {
-      (isDislike ? setIsDislike(false) : setIsDislike(true));
-      setIslike(false);
-      const data = { ideaId: idea?.id, username: user?.name };
-      const response = await agent.Idea.postReaction("downvote", data);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+    if (idea != null && user && user.name) {
+      try {
+        (isDislike ? setIsDislike(false) : setIsDislike(true));
+        setIslike(false);
+        const data = { ideaId: idea?.id, username: user?.name };
+        const response = await agent.Idea.postReaction("downvote", data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
+  function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   const handleDelete = (id: any) => {
     dispatch(deleteIdea(id))
       .catch((error: any) => {
@@ -105,11 +141,13 @@ const IdeaDetail = () => {
       ...confirmDialog,
       isOpen: false
     });
+    delay(1000);
+    navigate(-1);
   }
 
   return (
     <>
-      {loading || loadReaction ? <Loading /> :
+      {(loading || loadReaction) && user && user.name ? <Loading /> :
         <>
           <Box alignItems="center" justifyContent="center"
             width="100%"
@@ -175,7 +213,7 @@ const IdeaDetail = () => {
                   color={theme.palette.content.main}
                   fontWeight="bold"
                 >
-                  {idea?.title}
+                  {parse(`${idea?.title}`)}
                 </Typography>
                 <Grid
                   display="bottom" alignItems="center" justifyContent="bottom"
@@ -189,7 +227,7 @@ const IdeaDetail = () => {
                     />
                   </Grid>
                   <Grid item xs={9} sm={8} md={6}>
-                    <Box display="flex" justifyContent="right" alignItems="right">
+                    {(isEditable) ? (<Box display="flex" justifyContent="right" alignItems="right">
                       <IconButton
                         color="info"
                         style={{ marginRight: "1rem" }}
@@ -209,7 +247,7 @@ const IdeaDetail = () => {
                       >
                         <DeleteIcon style={{ fontSize: "1.25rem" }} />
                       </IconButton>
-                    </Box>
+                    </Box>) : (null)}
                   </Grid>
                 </Grid>
                 <Box m="2rem" display="flex" alignItems="center" justifyContent="center">
@@ -225,14 +263,35 @@ const IdeaDetail = () => {
                   >
                   </Box>
                 </Box>
-                <Typography
-                  textAlign="justify"
-                  variant="h5"
-                  color={theme.palette.content.main}
-                  fontSize="1rem"
-                >
-                  {idea?.content}
-                </Typography>
+                <Box>
+                  <Typography
+                    textAlign="justify"
+                    variant="h5"
+                    color={theme.palette.content.main}
+                    fontSize="1rem"
+                  >
+                    {content}
+                  </Typography>
+                </Box>
+                {(idea?.files) ?
+                  <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
+                    <Box
+                      component="img"
+                      alt="fileIcon"
+                      src={fileIcon}
+                      // src="https://cdn.discordapp.com/attachments/1074670576809033798/1087750328423829575/pdf.png"
+                      height="2.5rem"
+                      width="2.5rem"
+                      sx={{
+                        objectFit: "cover", mr: "1rem"
+                      }} />
+                      <Typography width="15rem" noWrap>
+                    {`${idea.files[0].fileName}.${idea.files[0].fileExtention}`}
+                    </Typography>
+                    <IconButton sx={{ ml: "1rem" }}>
+                      <DownloadIcon />
+                    </IconButton>
+                  </Box> : (null)}
                 <Box m="1rem 0rem">
                   <IconButton onClick={ClickLike}>
                     {(isLike) ?
