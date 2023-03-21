@@ -153,7 +153,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
             </Grid>
           </form>) : (null)}
           {
-            comment.map((item: any) => (
+            !comments.length ? (<Typography>No comment</Typography>) : (comment.map((item: any) => (
               <Paper
                 sx={{ backgroundColor: theme.palette.comment.main }}
                 style={{ padding: "1rem 1rem 0rem" }}
@@ -180,7 +180,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
                 </Grid>
                 <Divider variant="fullWidth" style={{ margin: "1rem 0rem" }} />
               </Paper>
-            ))
+            )))
           }
           <AppPagination
             setItem={(p: any) => setComment(p)}

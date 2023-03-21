@@ -108,12 +108,12 @@ const DepartmentPage = () => {
             {loading ? (<Loading />) : (
                 <Box m="1.5rem 2.5rem">
                     <Header title="DEPARTMENT" subtitle="List of Departments" />
-                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 15 }}
+                    <Button variant="contained" size="medium" color="success" onClick={() => setEditMode(true)} style={{ marginTop: 10 }}
                         startIcon={<AddCircleOutline />}>
                         Create a new department
                     </Button>
                     <Box
-                        mt="12px"
+                        mt="1px"
                         sx={{
                             "& .MuiDataGrid-root": {
                                 border: "none",
