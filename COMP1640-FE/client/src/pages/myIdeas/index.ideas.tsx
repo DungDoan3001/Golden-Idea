@@ -126,7 +126,7 @@ const ListIdeas = () => {
             >
               {name}
             </Typography>
-            <Box
+            {(ideas[0]) ? <Box
               m="0.5rem 0rem"
               display="flex"
               alignItems="center"
@@ -146,6 +146,7 @@ const ListIdeas = () => {
                 <Box component="h4" mb=".5rem">
                   Creator: {ideas[0]?.topic.username}
                 </Box>
+                <Box>
                 <List>
                   <ListItemText
                     primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
@@ -162,12 +163,13 @@ const ListIdeas = () => {
                     }}
                   />
                 </List>
+                </Box>
               </Box>
-            </Box>
+            </Box> : (null)}
             <Divider variant="fullWidth" />
           </Box>
           {(creatatble) ?
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            (<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ mr: 2 }}>
                 <Button
                   variant="contained"
@@ -182,21 +184,31 @@ const ListIdeas = () => {
               <Box sx={{ ml: 2 }}>
                 <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
               </Box>
-            </Box> : (null)}
-          <Box mt="5%" display="flex" alignContent="center" alignItems="center">
-            <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
-              {idea.map((item: any) => (
-                <HomePageItem data={item} />
-              )
-              )}
-            </Grid>
+            </Box>) : (null)}
+
+          < Box mt="5%" display="flex" alignContent="center" alignItems="center">
+            {(ideas[0]) ?
+              <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
+                {idea.map((item: any) => (
+                  <HomePageItem data={item} />
+                )
+                )}
+              </Grid> :
+              <Typography
+              mt="0.5rem"
+              variant="h3"
+              color={theme.palette.content.main}
+              fontWeight="bold"
+              textAlign="justify"
+            >
+              This Topic hasn't have any idea yet, be the first one to post an idea!
+            </Typography>}
           </Box>
           <AppPagination
             setItem={setIdea} // Update this line
             data={ideaData} // Update this line
             size={6}
           />
-
           <Box sx={{
             [theme.breakpoints.up('sm')]: {
               p: '4rem',
@@ -218,7 +230,8 @@ const ListIdeas = () => {
             </Grid>
           </Box>
         </Box >
-      )}
+      )
+      }
     </>
   );
 }
