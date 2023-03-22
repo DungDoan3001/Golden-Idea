@@ -191,7 +191,7 @@ namespace Web.Api.Services.IdeaService
             {
                 ToName = ownerTopic.Name,
                 ToEmail = ownerTopic.Email,
-                Body = string.Format(html + mainHtml, idea.TopicId, idea.Slug),
+                Body = string.Format(html + mainHtml, idea.Slug),
                 Subject = "[Golden Idea] Notify to your topic"
             };
             var result = await _emailService.SendEmailAsync(option.ToName, option.ToEmail, option.Subject, option.Body);
