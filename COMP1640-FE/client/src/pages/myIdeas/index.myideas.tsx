@@ -115,7 +115,7 @@ const ListMyIdeas = () => {
             flexDirection={{ xs: "column", sm: "row" }}
             textAlign={{ xs: "center", sm: "left" }}
           >
-            <Grid container>
+            {(ideas_user[0]) ? <Grid container>
               <Grid item xs={12} sm={6}>
                 <Box pt="5%" display={{ xs: "block", sm: "flex" }} justifyContent={{ xs: "center", sm: "left" }} textAlign={{ xs: "center", sm: "left" }} alignItems="center">
                   <Box
@@ -152,7 +152,7 @@ const ListMyIdeas = () => {
                   </List>
                 </Box>
               </Grid>
-            </Grid>
+            </Grid> : (null)}
           </Box>
           <Divider variant="fullWidth" />
         </Box>
