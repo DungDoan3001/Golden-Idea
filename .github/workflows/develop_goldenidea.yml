@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'GoldenIdea'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9AAD2DCB04A647F78836497D043AC9AD }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4A3EBC7A93DA45EC9D374FFB0BF5EA1D }}
           package: .
