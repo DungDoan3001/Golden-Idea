@@ -38,7 +38,7 @@ const Overview = () => {
           maxWidth: '50%',
         },
         [theme.breakpoints.down('sm')]: {
-          width: "150%"
+          width: '21rem',
         }
       }}> <Header title="OVERVIEW" subtitle="Number of ideas made by each Department." />
       </Box>
@@ -61,7 +61,7 @@ const Overview = () => {
         sx={{
           width: '100%',
           [theme.breakpoints.down('sm')]: {
-            width: '130%',
+            width: '100%',
             overflow: 'auto'
           },
         }} >

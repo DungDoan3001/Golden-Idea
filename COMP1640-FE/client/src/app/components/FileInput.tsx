@@ -3,7 +3,7 @@ import { IconButton } from '@mui/material';
 import React, { useState } from 'react';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
-const MAX_FILES = 5;
+const MAX_FILES = 1;
 
 interface FileInputProps {
     onFileSelect: (files: FileList) => void;

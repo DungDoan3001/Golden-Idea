@@ -9,6 +9,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import PostAuthorInfo from '../../app/components/PostAuthorInfo';
 
@@ -26,14 +27,18 @@ import agent from '../../app/api/agent';
 const IdeaDetail = () => {
   const theme: any = useTheme();
   const navigate = useNavigate();
-  const { user } = useAppSelector(state => state.account);
   const { slug } = useParams();
   const [isLike, setIslike] = useState(false);
   const [isDislike, setIsDislike] = useState(false);
   const [loadReaction, setLoadReaction] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })
   const { idea, loading } = useSelector((state: RootState) => state.idea);
+  const { user } = useAppSelector(state => state.account);
   const [isCommentAvailable, setIsCommentAvailable] = useState(true);
+  const [isEditable, setIsEditable] = useState(true);
+  const [fileIcon, setFileIcon] = useState<any>();
+  const [content, setContent] = useState("");
+
   const dispatch = useAppDispatch();
   let fetchMount = true;
   useEffect(() => {
@@ -47,7 +52,7 @@ const IdeaDetail = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (idea != null) {
+      if (idea != null && user && user.name) {
         setLoadReaction(true);
         const data = {
           username: user?.name
@@ -61,37 +66,68 @@ const IdeaDetail = () => {
     }
     fetchData();
   }, [idea, user]);
+
   useEffect(() => {
-    const finalClosureDate = idea?.topic.finalClosureDate;
-    if (finalClosureDate) {
+    if (idea != null && user && user.name) {
+      const finalClosureDate = idea?.topic.finalClosureDate;
+      if (finalClosureDate) {
+        const today = new Date().getTime();
+        const CommentDate = new Date(finalClosureDate).getTime();
+        setIsCommentAvailable(today < CommentDate);
+      }
+
       const today = new Date().getTime();
-      const CommentDate = new Date(finalClosureDate).getTime();
-      setIsCommentAvailable(today < CommentDate);
+      const closureDate = new Date(idea?.topic.closureDate).getTime();
+      setIsEditable(today < closureDate && user?.name === idea?.user.userName);
+      if (idea?.files[0] != null) {
+        switch (idea?.files[0].fileExtention) {
+          case "pdf":
+            setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750328423829575/pdf.png");
+            break;
+          case "doc":
+            setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
+            break;
+          case "docx":
+            setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
+            break;
+          case "zip":
+            setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750329292050462/zip.png");
+            break;
+        }
+      }
+      const regex = /(<([^>]+)>)/ig;
+      const newString = idea.content.replace(regex, '');
+      setContent(newString);
     }
-  }, [idea]);
+  }, [idea, user]);
   const ClickLike = async () => {
-    try {
-      (isLike ? setIslike(false) : setIslike(true));
-      setIsDislike(false);
-      const data = { ideaId: idea?.id, username: user?.name };
-      const response = await agent.Idea.postReaction("upvote", data);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+    if (idea != null && user && user.name) {
+      try {
+        (isLike ? setIslike(false) : setIslike(true));
+        setIsDislike(false);
+        const data = { ideaId: idea?.id, username: user?.name };
+        const response = await agent.Idea.postReaction("upvote", data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
   const ClickDislike = async () => {
-    try {
-      (isDislike ? setIsDislike(false) : setIsDislike(true));
-      setIslike(false);
-      const data = { ideaId: idea?.id, username: user?.name };
-      const response = await agent.Idea.postReaction("downvote", data);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+    if (idea != null && user && user.name) {
+      try {
+        (isDislike ? setIsDislike(false) : setIsDislike(true));
+        setIslike(false);
+        const data = { ideaId: idea?.id, username: user?.name };
+        const response = await agent.Idea.postReaction("downvote", data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
+  function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   const handleDelete = (id: any) => {
     dispatch(deleteIdea(id))
       .catch((error: any) => {
@@ -105,11 +141,30 @@ const IdeaDetail = () => {
       ...confirmDialog,
       isOpen: false
     });
+    delay(1000);
+    navigate(-1);
+  }
+
+  const handleDownload = () => {
+    if (idea && idea.files[0] && idea.files[0].filePath) {
+      // using Java Script method to get PDF file
+      fetch(idea?.files[0].filePath).then(response => {
+        response.blob().then(blob => {
+          // Creating new object of PDF file
+          const fileURL = window.URL.createObjectURL(blob);
+          // Setting various property values
+          let alink = document.createElement('a');
+          alink.href = fileURL;
+          alink.download = idea?.files[0].filePath;
+          alink.click();
+        })
+      })
+    }
   }
 
   return (
     <>
-      {loading || loadReaction ? <Loading /> :
+      {(loading || loadReaction) && user && user.name ? <Loading /> :
         <>
           <Box alignItems="center" justifyContent="center"
             width="100%"
@@ -119,7 +174,7 @@ const IdeaDetail = () => {
                 m: "1rem 6rem",
               },
               [theme.breakpoints.down('sm')]: {
-                width: '110%',
+                width: '21rem',
                 m: "1rem 2rem",
               },
             }}
@@ -140,31 +195,51 @@ const IdeaDetail = () => {
             >
               {idea?.topic.name}
             </Typography>
-            <Box m="0.5rem 0rem" display="flex" alignItems="center">
-              <Box
-                component="img"
-                alt="profile"
-                src={idea?.topic.avatar}
-                height="2.5rem"
-                width="2.5rem"
-                borderRadius="50%"
-                sx={{ objectFit: "cover", mr: "1rem" }}
-              />
-              <Box>
-                <Box component="h4" mb=".5rem">
-                  Creator: {idea?.topic.username}
-                </Box>
-              </Box>
-              <Box sx={{ ml: "auto" }}>
-                <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
-                  <ListItemText
-                    primary={`Closure Date: ${new Date(`${idea?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
-                    secondary={`Final Closure Date: ${new Date(`${idea?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
-                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
-                  />
-                </List>
-              </Box>
+            <Box
+              m="0.5rem 0rem"
+              display="flex"
+              alignItems="center"
+              flexDirection={{ xs: "column", sm: "row" }}
+              textAlign={{ xs: "center", sm: "left" }}
+            >
+              <Grid container>
+                <Grid item xs={12} sm={6}>
+                  <Box pt="5%" display={{ xs: "block", sm: "flex" }} justifyContent={{ xs: "center", sm: "left" }} textAlign={{ xs: "center", sm: "left" }} alignItems="center">
+                    <Box
+                      component="img"
+                      alt="profile"
+                      src={idea?.topic.avatar}
+                      height="2.5rem"
+                      width="2.5rem"
+                      borderRadius="50%"
+                      sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
+                    />
+                    <Box component="h4" mb=".5rem">
+                      Creator: {idea?.topic.username}
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box display="flex" justifyContent={{ xs: "center", sm: "right" }} textAlign={{ xs: "center", sm: "right" }} alignItems="center">
+                    <List>
+                      <ListItemText
+                        primary={`Closure Date: ${new Date(`${idea?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                        primaryTypographyProps={{
+                          variant: "body1",
+                          mb: { xs: "0.5rem", sm: 0 },
+                        }}
+                      />
+                      <ListItemText
+                        secondary={`Final Closure Date: ${new Date(`${idea?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
+                        primaryTypographyProps={{
+                          variant: "body1",
+                          mb: { xs: "0.5rem", sm: 0 },
+                        }}
+                      />
+                    </List>
+                  </Box>
+                </Grid>
+              </Grid>
             </Box>
             <Box sx={{ backgroundColor: theme.palette.comment.main, borderRadius: "0.5rem" }}>
               <Box p="1rem 5%">
@@ -189,7 +264,7 @@ const IdeaDetail = () => {
                     />
                   </Grid>
                   <Grid item xs={9} sm={8} md={6}>
-                    <Box display="flex" justifyContent="right" alignItems="right">
+                    {(isEditable) ? (<Box display="flex" justifyContent="right" alignItems="right">
                       <IconButton
                         color="info"
                         style={{ marginRight: "1rem" }}
@@ -209,7 +284,7 @@ const IdeaDetail = () => {
                       >
                         <DeleteIcon style={{ fontSize: "1.25rem" }} />
                       </IconButton>
-                    </Box>
+                    </Box>) : (null)}
                   </Grid>
                 </Grid>
                 <Box m="2rem" display="flex" alignItems="center" justifyContent="center">
@@ -225,14 +300,34 @@ const IdeaDetail = () => {
                   >
                   </Box>
                 </Box>
-                <Typography
-                  textAlign="justify"
-                  variant="h5"
-                  color={theme.palette.content.main}
-                  fontSize="1rem"
-                >
-                  {idea?.content}
-                </Typography>
+                <Box>
+                  <Typography
+                    textAlign="justify"
+                    variant="h5"
+                    color={theme.palette.content.main}
+                    fontSize="1rem"
+                  >
+                    {content}
+                  </Typography>
+                </Box>
+                {(idea?.files[0] != null) ?
+                  <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
+                    <Box
+                      component="img"
+                      alt="fileIcon"
+                      src={fileIcon}
+                      height="2.5rem"
+                      width="2.5rem"
+                      sx={{
+                        objectFit: "cover", mr: "1rem"
+                      }} />
+                    <Typography width="15rem" noWrap>
+                      {`${idea.files[0].fileName}.${idea.files[0].fileExtention}`}
+                    </Typography>
+                    <IconButton onClick={handleDownload} sx={{ ml: "1rem" }}>
+                      <DownloadIcon />
+                    </IconButton>
+                  </Box> : (null)}
                 <Box m="1rem 0rem">
                   <IconButton onClick={ClickLike}>
                     {(isLike) ?

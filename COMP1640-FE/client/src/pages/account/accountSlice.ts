@@ -11,7 +11,7 @@ interface AccountState {
 }
 
 const initialState: AccountState = {
-  user: null
+  user: null,
 }
 export const signInUser = createAsyncThunk<UserLogin, FieldValues>(
   'account/signInUser',

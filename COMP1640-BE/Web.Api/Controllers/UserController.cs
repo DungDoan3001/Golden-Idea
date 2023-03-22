@@ -14,6 +14,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Web.Api.Services.FileUploadService;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using Web.Api.Configuration;
+using static Web.Api.Configuration.CacheKey;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,11 +30,14 @@ namespace Web.Api.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly UserManager<Entities.User> _userManager;
-        public UserController(IUserService userService, IMapper mapper, UserManager<Entities.User> userManager)
+        private readonly IMemoryCache _cache;
+        private UserCacheKey UserCacheKey = new UserCacheKey();
+        public UserController(IUserService userService, IMapper mapper, UserManager<Entities.User> userManager, IMemoryCache cache)
         {
             _userService = userService;
             _mapper = mapper;
             _userManager = userManager;
+            _cache = cache;
         }
         /// <summary>
         /// Get all users.
@@ -43,17 +49,27 @@ namespace Web.Api.Controllers
         {
             try
             {
-                var users = await _userService.GetAll();
-                var result = _mapper.Map<List<UserResponseModel>>(users);
-                //Get role for all user
-                for(int i = 0; i < users.Count; i++)
+                if (_cache.TryGetValue(UserCacheKey.GetAllCacheKey, out List<UserResponseModel> result)) { }
+                else
                 {
-                    var role = await _userManager.GetRolesAsync(users[i]);
-                    foreach(var r in role)
+                    var users = await _userService.GetAll();
+                    result = _mapper.Map<List<UserResponseModel>>(users);
+                    //Get role for all user
+                    for (int i = 0; i < users.Count; i++)
                     {
-                        result[i].Role = r;
+                        var role = await _userManager.GetRolesAsync(users[i]);
+                        foreach (var r in role)
+                        {
+                            result[i].Role = r;
+                        }
                     }
-                }                
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(UserCacheKey.GetAllCacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
+                }
+                              
                 return Ok(result.OrderBy(x => x.Name));
             }
             catch (Exception ex)
@@ -77,17 +93,27 @@ namespace Web.Api.Controllers
         {
             try
             {
-                var users = await _userService.GetAllStaff();
-                var result = _mapper.Map<List<UserResponseModel>>(users);
-                //Get role for all user
-                for (int i = 0; i < users.Count; i++)
+                if (_cache.TryGetValue(UserCacheKey.GetAllStaffCacheKey, out List<UserResponseModel> result)) { }
+                else
                 {
-                    var role = await _userManager.GetRolesAsync(users[i]);
-                    foreach (var r in role)
+                    var users = await _userService.GetAllStaff();
+                    result = _mapper.Map<List<UserResponseModel>>(users);
+                    //Get role for all user
+                    for (int i = 0; i < users.Count; i++)
                     {
-                        result[i].Role = r;
+                        var role = await _userManager.GetRolesAsync(users[i]);
+                        foreach (var r in role)
+                        {
+                            result[i].Role = r;
+                        }
                     }
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(UserCacheKey.GetAllStaffCacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
                 }
+               
                 return Ok(result.OrderBy(x => x.Name));
             }
             catch (Exception ex)
@@ -110,17 +136,27 @@ namespace Web.Api.Controllers
         {
             try
             {
-                var users = await _userService.GetAllAdminQA();
-                var result = _mapper.Map<List<UserResponseModel>>(users);
-                //Get role for all user
-                for (int i = 0; i < users.Count; i++)
+                if (_cache.TryGetValue(UserCacheKey.GetAllAdminQACacheKey, out List<UserResponseModel> result)) { }
+                else
                 {
-                    var role = await _userManager.GetRolesAsync(users[i]);
-                    foreach (var r in role)
+                    var users = await _userService.GetAllAdminQA();
+                    result = _mapper.Map<List<UserResponseModel>>(users);
+                    //Get role for all user
+                    for (int i = 0; i < users.Count; i++)
                     {
-                        result[i].Role = r;
+                        var role = await _userManager.GetRolesAsync(users[i]);
+                        foreach (var r in role)
+                        {
+                            result[i].Role = r;
+                        }
                     }
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(UserCacheKey.GetAllAdminQACacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
                 }
+                
                 return Ok(result.OrderBy(x => x.Name));
             }
             catch (Exception ex)
@@ -146,22 +182,22 @@ namespace Web.Api.Controllers
             try
             {
                 var user = await _userService.GetById(id);
-                if(user == null)
+                if (user == null)
                 {
-                    return NotFound(new MessageResponseModel 
-                    { 
-                        Message = "Not Found", 
+                    return NotFound(new MessageResponseModel
+                    {
+                        Message = "Not Found",
                         StatusCode = (int)HttpStatusCode.BadRequest,
                         Errors = new List<string> { "Can not find the user" }
                     });
                 }
-                var result = _mapper.Map<UserResponseModel>(user);
+                UserResponseModel result = _mapper.Map<UserResponseModel>(user);
                 //Get role
                 var role = _userManager.GetRolesAsync(user);
-                foreach(var r in role.Result)
+                foreach (var r in role.Result)
                 {
                     result.Role = r;
-                }
+                }           
                 return Ok(result);
             }
             catch (Exception ex)
@@ -202,6 +238,12 @@ namespace Web.Api.Controllers
                 }
                 var result = _mapper.Map<UserResponseModel>(updateUser);
                 result.Role = user.Role;
+                // Delete all user cache
+                var keyCache = UserCacheKey.GetType().GetProperties();
+                foreach (var key in keyCache)
+                {
+                    _cache.Remove(key.GetValue(UserCacheKey));
+                }
                 return Ok(result);
             }
             catch (Exception ex)
@@ -230,6 +272,12 @@ namespace Web.Api.Controllers
             try
             {
                 var result = await _userService.Delete(id);
+                // Delete all user cache
+                var keyCache = UserCacheKey.GetType().GetProperties();
+                foreach (var key in keyCache)
+                {
+                    _cache.Remove(key.GetValue(UserCacheKey));
+                }
                 return Ok(result);
             }
             catch (Exception ex)

@@ -35,11 +35,9 @@ using Web.Api.SignalR;
 using System.Threading.Tasks;
 using Web.Api.Services.FileService;
 using Web.Api.Services.View;
-using static Dropbox.Api.TeamLog.EventCategory;
 using Web.Api.Services.Chart;
 using Web.Api.Services.FakeData;
 using Web.Api.Services.ZipFile;
-using Marvin.Cache.Headers;
 
 namespace Web.Api
 {
@@ -192,17 +190,18 @@ namespace Web.Api
             services.AddScoped<ICommentQuery, CommentQuery>();
 
             //Caching
+            services.AddMemoryCache();
             services.AddResponseCaching();
-            services.AddHttpCacheHeaders(
-                (expirationOpt) =>
-                {
-                    expirationOpt.MaxAge = 65;
-                    expirationOpt.CacheLocation = CacheLocation.Private;
-                },
-                (validationOpt) =>
-                {
-                    validationOpt.MustRevalidate = true;
-                });
+            //services.AddHttpCacheHeaders(
+            //    (expirationOpt) =>
+            //    {
+            //        expirationOpt.MaxAge = 65;
+            //        expirationOpt.CacheLocation = CacheLocation.Private;
+            //    },
+            //    (validationOpt) =>
+            //    {
+            //        validationOpt.MustRevalidate = true;
+            //    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -228,7 +227,7 @@ namespace Web.Api
             app.UseHttpsRedirection();
 
             app.UseResponseCaching();
-            app.UseHttpCacheHeaders();
+            //app.UseHttpCacheHeaders();
 
             app.UseRouting();
 

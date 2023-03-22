@@ -14,9 +14,9 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { getIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
-import BackButton from '../../app/components/BackButton';
 import { get } from 'http';
 import { getCategories } from '../category/categorySlice';
+import BackButton from '../../app/components/BackButton';
 const viewOptions = [
   { label: "Most Viewed", value: "most_viewed" },
   { label: "Latest", value: "latest" },
@@ -36,6 +36,8 @@ const ListIdeas = () => {
   const { categories } = useSelector((state: RootState) => state.category);
   const [ideaData, setIdeaData] = useState(ideas)
   const [idea, setIdea] = useState([]);
+  const [creatatble, setIsCreatable] = useState(true);
+
   const dispatch = useAppDispatch();
   let fetchMount = true;
   useEffect(() => {
@@ -47,6 +49,13 @@ const ListIdeas = () => {
       fetchMount = false;
     };
   }, []);
+
+  useEffect(() => {
+    const today = new Date().getTime();
+    const closureDate = new Date(ideas[0]?.topic.closureDate).getTime();
+    setIsCreatable(today < closureDate)
+  }, [ideas])
+
   useEffect(() => {
     switch (selectedViewOption) {
       case 'most_viewed':
@@ -73,7 +82,6 @@ const ListIdeas = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [idea, ideas, ideaData])
-  console.log(ideas[0]?.topic.username);
   function cancelEdit() {
     if (recordForEdit) setRecordForEdit(undefined);
     setEditMode(false);
@@ -92,12 +100,12 @@ const ListIdeas = () => {
               m: '3rem',
             },
             [theme.breakpoints.down('sm')]: {
-              width: '100%',
-              m: '3.5rem',
+              width: '21rem',
+              m: '2rem',
             },
           }}
         >
-          <BackButton/>
+          <BackButton />
           <Box sx={{
             position: 'center',
             mb: "2rem",
@@ -118,64 +126,96 @@ const ListIdeas = () => {
             >
               {name}
             </Typography>
-            <Box m="0.5rem 0rem" display="flex" alignItems="center">
-              <Box
-                component="img"
-                alt="profile"
-                src={ideas[0]?.topic.avatar}
-                height="2.5rem"
-                width="2.5rem"
-                borderRadius="50%"
-                sx={{ objectFit: "cover", mr: "1rem" }}
-              />
-              <Box>
-                <Box component="h4" mb=".5rem">
-                  Creator: {ideas[0]?.topic.username}
-                </Box>
-              </Box>
-              <Box sx={{ ml: "auto" }}>
-                <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
-                  <ListItemText
-                    primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
-                    secondary={`Final Closure Date: ${new Date(`${ideas[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
-                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
-                  />
-                </List>
-              </Box>
-            </Box>
+            {(ideas[0]) ? <Box
+              m="0.5rem 0rem"
+              display="flex"
+              alignItems="center"
+              flexDirection={{ xs: "column", sm: "row" }}
+              textAlign={{ xs: "center", sm: "left" }}
+            >
+              <Grid container>
+                <Grid item xs={12} sm={6}>
+                  <Box pt="5%" display={{ xs: "block", sm: "flex" }} justifyContent={{ xs: "center", sm: "left" }} textAlign={{ xs: "center", sm: "left" }} alignItems="center">
+                    <Box
+                      component="img"
+                      alt="profile"
+                      src={ideas[0].topic.avatar}
+                      height="2.5rem"
+                      width="2.5rem"
+                      borderRadius="50%"
+                      sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
+                    />
+                    <Box component="h4" mb=".5rem">
+                      Creator: {ideas[0].topic.username}
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box display="flex" justifyContent={{ xs: "center", sm: "right" }} textAlign={{ xs: "center", sm: "right" }} alignItems="center">
+                    <List>
+                      <ListItemText
+                        primary={`Closure Date: ${new Date(`${ideas[0].topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                        primaryTypographyProps={{
+                          variant: "body1",
+                          mb: { xs: "0.5rem", sm: 0 },
+                        }}
+                      />
+                      <ListItemText
+                        secondary={`Final Closure Date: ${new Date(`${ideas[0].topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
+                        primaryTypographyProps={{
+                          variant: "body1",
+                          mb: { xs: "0.5rem", sm: 0 },
+                        }}
+                      />
+                    </List>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box> : (null)}
             <Divider variant="fullWidth" />
           </Box>
+
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ mr: 2 }}>
-              <Button
-                variant="contained"
-                size="medium"
-                color="success"
-                onClick={() => navigate(`/ideaform/${id}/slug`)}
-                startIcon={<AddCircleOutline />}
-              >
-                Create a new Idea
-              </Button>
+              {(creatatble) ?
+                <Button
+                  variant="contained"
+                  size="medium"
+                  color="success"
+                  onClick={() => navigate(`/ideaform/${id}/slug`)}
+                  startIcon={<AddCircleOutline />}
+                >
+                  Create a new Idea
+                </Button> : (null)}
             </Box>
             <Box sx={{ ml: 2 }}>
               <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
             </Box>
           </Box>
-          <Box mt="5%" display="flex" alignContent="center" alignItems="center">
-            <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
-              {idea.map((item: any) => (
-                <HomePageItem data={item} />
-              )
-              )}
-            </Grid>
+
+          < Box mt="5%" display="flex" alignContent="center" alignItems="center">
+            {(ideas[0]) ?
+              <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
+                {idea.map((item: any) => (
+                  <HomePageItem data={item} />
+                )
+                )}
+              </Grid> :
+              <Typography
+                mt="0.5rem"
+                variant="h3"
+                color={theme.palette.content.main}
+                fontWeight="bold"
+                textAlign="justify"
+              >
+                This Topic hasn't have any idea yet, be the first one to post an idea!
+              </Typography>}
           </Box>
           <AppPagination
             setItem={setIdea} // Update this line
             data={ideaData} // Update this line
             size={6}
           />
-
           <Box sx={{
             [theme.breakpoints.up('sm')]: {
               p: '4rem',
@@ -190,14 +230,15 @@ const ListIdeas = () => {
               {
                 categories.map((item: any) => (
                   <Grid item xs={6} sm={4} md={2.4}>
-                    <CategoryButton search={true} category={item.name} />
+                    <CategoryButton search={true} category={item} />
                   </Grid>
                 ))
               }
             </Grid>
           </Box>
         </Box >
-      )}
+      )
+      }
     </>
   );
 }
