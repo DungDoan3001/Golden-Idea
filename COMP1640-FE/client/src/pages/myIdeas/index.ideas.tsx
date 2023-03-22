@@ -126,13 +126,7 @@ const ListIdeas = () => {
             >
               {name}
             </Typography>
-            {(ideas[0]) ? <Box
-              m="0.5rem 0rem"
-              display="flex"
-              alignItems="center"
-              flexDirection={{ xs: "column", sm: "row" }}
-              textAlign={{ xs: "center", sm: "left" }}
-            >
+            {(ideas[0]) ? <Box m="0.5rem 0rem" display="flex" alignItems="center">
               <Box
                 component="img"
                 alt="profile"
@@ -140,30 +134,22 @@ const ListIdeas = () => {
                 height="2.5rem"
                 width="2.5rem"
                 borderRadius="50%"
-                sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
+                sx={{ objectFit: "cover", mr: "1rem" }}
               />
               <Box>
                 <Box component="h4" mb=".5rem">
                   Creator: {ideas[0]?.topic.username}
                 </Box>
-                <Box>
-                <List>
+              </Box>
+              <Box sx={{ ml: "auto" }}>
+                <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
                   <ListItemText
                     primary={`Closure Date: ${new Date(`${ideas[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
-                    primaryTypographyProps={{
-                      variant: "body1",
-                      mb: { xs: "0.5rem", sm: 0 },
-                    }}
-                  />
-                  <ListItemText
                     secondary={`Final Closure Date: ${new Date(`${ideas[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                    primaryTypographyProps={{
-                      variant: "body1",
-                      mb: { xs: "0.5rem", sm: 0 },
-                    }}
+                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
+                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
                   />
                 </List>
-                </Box>
               </Box>
             </Box> : (null)}
             <Divider variant="fullWidth" />
@@ -195,14 +181,14 @@ const ListIdeas = () => {
                 )}
               </Grid> :
               <Typography
-              mt="0.5rem"
-              variant="h3"
-              color={theme.palette.content.main}
-              fontWeight="bold"
-              textAlign="justify"
-            >
-              This Topic hasn't have any idea yet, be the first one to post an idea!
-            </Typography>}
+                mt="0.5rem"
+                variant="h3"
+                color={theme.palette.content.main}
+                fontWeight="bold"
+                textAlign="justify"
+              >
+                This Topic hasn't have any idea yet, be the first one to post an idea!
+              </Typography>}
           </Box>
           <AppPagination
             setItem={setIdea} // Update this line

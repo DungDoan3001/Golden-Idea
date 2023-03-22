@@ -92,7 +92,7 @@ const ListMyIdeas = () => {
                     mb: "2rem",
                     mx: 'auto',
                 }}>
-                  <BackButton/>
+                    <BackButton />
                     <Typography
                         variant="h1"
                         color={theme.palette.content.main}
@@ -108,13 +108,7 @@ const ListMyIdeas = () => {
                     >
                         {name}
                     </Typography>
-                    <Box
-                        m="0.5rem 0rem"
-                        display="flex"
-                        alignItems="center"
-                        flexDirection={{ xs: "column", sm: "row" }}
-                        textAlign={{ xs: "center", sm: "left" }}
-                    >
+                    <Box m="0.5rem 0rem" display="flex" alignItems="center">
                         <Box
                             component="img"
                             alt="profile"
@@ -122,26 +116,20 @@ const ListMyIdeas = () => {
                             height="2.5rem"
                             width="2.5rem"
                             borderRadius="50%"
-                            sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
+                            sx={{ objectFit: "cover", mr: "1rem" }}
                         />
                         <Box>
                             <Box component="h4" mb=".5rem">
                                 Creator: {ideas_user[0]?.topic.username}
                             </Box>
-                            <List>
+                        </Box>
+                        <Box sx={{ ml: "auto" }}>
+                            <List sx={{ display: "flex", flexDirection: { xs: "row", sm: "column" } }}>
                                 <ListItemText
                                     primary={`Closure Date: ${new Date(`${ideas_user[0]?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
-                                    primaryTypographyProps={{
-                                        variant: "body1",
-                                        mb: { xs: "0.5rem", sm: 0 },
-                                    }}
-                                />
-                                <ListItemText
                                     secondary={`Final Closure Date: ${new Date(`${ideas_user[0]?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                                    primaryTypographyProps={{
-                                        variant: "body1",
-                                        mb: { xs: "0.5rem", sm: 0 },
-                                    }}
+                                    primaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" }, mb: { xs: 0, sm: 1 }, mr: { xs: 1, sm: 0 } }}
+                                    secondaryTypographyProps={{ variant: "body1", textAlign: { xs: "right", sm: "right" } }}
                                 />
                             </List>
                         </Box>
