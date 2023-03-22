@@ -26,7 +26,7 @@ jobs:
         run: dotnet build COMP1640-BE/COMP1640-BE.sln --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish COMP1640-BE/COMP1640-BE.sln - Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish COMP1640-BE/COMP1640-BE.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
