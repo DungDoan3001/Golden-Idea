@@ -27,7 +27,7 @@ const CategoryButton = ({ category, search }: CategoryButtonProps) => {
           }
         }}
       >
-        {category}
+        {category.name}
       </Button >
     </Box>
   )
