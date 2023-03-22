@@ -59,7 +59,7 @@ namespace Web.Api.Data.Queries
             return await dbSet
                 .Include(x => x.User)
                 .Include(x => x.Topic).ThenInclude(x => x.User)
-                .Where(x => x.User.UserName.Trim().ToLower() == userName.Trim().ToLower())
+                .Where(x => x.Topic.User.UserName.Trim().ToLower() == userName.Trim().ToLower())
                 .AsSplitQuery()
                 .ToListAsync();
         }
