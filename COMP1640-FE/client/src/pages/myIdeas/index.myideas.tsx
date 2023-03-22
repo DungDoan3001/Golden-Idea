@@ -32,6 +32,8 @@ const ListMyIdeas = () => {
   const { user } = useAppSelector(state => state.account);
   const { ideas_user, loading } = useSelector((state: RootState) => state.idea);
   const [idea, setIdea] = useState(ideas_user); // filter the ideas based on user's username
+  const [creatatble, setIsCreatable] = useState(true);
+
   const dispatch = useAppDispatch();
   let fetchMount = true;
   useEffect(() => {
@@ -42,6 +44,13 @@ const ListMyIdeas = () => {
       fetchMount = false;
     };
   }, []);
+
+  useEffect(() => {
+    const today = new Date().getTime();
+    const closureDate = new Date(ideas_user[0]?.topic.closureDate).getTime();
+    setIsCreatable(today < closureDate)
+  }, [ideas_user])
+
   useEffect(() => {
     switch (selectedViewOption) {
       case 'most_viewed':
@@ -158,15 +167,16 @@ const ListMyIdeas = () => {
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ mr: 2 }}>
-            <Button
-              variant="contained"
-              size="medium"
-              color="success"
-              onClick={() => setEditMode(true)}
-              startIcon={<AddCircleOutline />}
-            >
-              Create a new Idea
-            </Button>
+            {(creatatble) ?
+              <Button
+                variant="contained"
+                size="medium"
+                color="success"
+                onClick={() => setEditMode(true)}
+                startIcon={<AddCircleOutline />}
+              >
+                Create a new Idea
+              </Button> : (null)}
           </Box>
           <Box sx={{ ml: 2 }}>
             <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
@@ -204,7 +214,7 @@ const ListMyIdeas = () => {
             {
               categoryData.map((item: any) => (
                 <Grid item xs={6} sm={4} md={2.4}>
-                  <CategoryButton search={true} category={item.name} />
+                  <CategoryButton search={true} category={item} />
                 </Grid>
               ))
             }

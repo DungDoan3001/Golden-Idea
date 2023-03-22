@@ -174,9 +174,10 @@ const ListIdeas = () => {
             </Box> : (null)}
             <Divider variant="fullWidth" />
           </Box>
-          {(creatatble) ?
-            (<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Box sx={{ mr: 2 }}>
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ mr: 2 }}>
+              {(creatatble) ?
                 <Button
                   variant="contained"
                   size="medium"
@@ -185,12 +186,12 @@ const ListIdeas = () => {
                   startIcon={<AddCircleOutline />}
                 >
                   Create a new Idea
-                </Button>
-              </Box>
-              <Box sx={{ ml: 2 }}>
-                <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
-              </Box>
-            </Box>) : (null)}
+                </Button> : (null)}
+            </Box>
+            <Box sx={{ ml: 2 }}>
+              <Filter options={viewOptions} selectedValue={selectedViewOption} onChange={handleViewOptionChange} />
+            </Box>
+          </Box>
 
           < Box mt="5%" display="flex" alignContent="center" alignItems="center">
             {(ideas[0]) ?
@@ -229,7 +230,7 @@ const ListIdeas = () => {
               {
                 categories.map((item: any) => (
                   <Grid item xs={6} sm={4} md={2.4}>
-                    <CategoryButton search={true} category={item.name} />
+                    <CategoryButton search={true} category={item} />
                   </Grid>
                 ))
               }
