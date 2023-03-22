@@ -235,7 +235,7 @@ namespace Web.Api.Controllers
                     await UploadImage(requestModel.File, idea);
                 }
                 // Upload Files
-                List<File> files = await UploadFileAsync(requestModel.UploadFiles, idea);
+                List<File> files = await UploadFileAsync(requestModel.ListFile, idea);
                 // Auto update slug and LastUpdate time field.
                 await UpdateSlugAndLastUpdateTime(idea);
                 idea.CreatedAt = DateTime.UtcNow;
@@ -355,7 +355,7 @@ namespace Web.Api.Controllers
                     await UploadImage(requestModel.File, idea);
                 }
                 // Upload Files
-                List<File> files = await UploadFileAsync(requestModel.UploadFiles, idea);
+                List<File> files = await UploadFileAsync(requestModel.ListFile, idea);
                 // Auto update slug and LastUpdate time field.
                 await UpdateSlugAndLastUpdateTime(idea);
                 // Create Idea.
@@ -537,7 +537,7 @@ namespace Web.Api.Controllers
             idea.LastUpdate = DateTime.UtcNow;
         }
 
-        private async Task<List<File>> UploadFileAsync(List<IFormFile> uploadFile, Idea idea)
+        private async Task<List<File>> UploadFileAsync(List<IdeaRequestModel_File> uploadFile, Idea idea)
         {
             List<File> files = new List<File>();
             // Adding linked File.
@@ -545,7 +545,7 @@ namespace Web.Api.Controllers
             {
                 foreach (var file in uploadFile)
                 {
-                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file);
+                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file.File);
                     File fileEntity = new File
                     {
                         FilePath = uploadFileResult.SecureUrl.ToString(),
