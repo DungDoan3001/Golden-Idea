@@ -25,6 +25,7 @@ import ListIdeas from "../../pages/myIdeas/index.ideas";
 import ListMyIdeas from "../../pages/myIdeas/index.myideas";
 import IdeaForm from "../../pages/ideaDetail/ideaForm";
 import SearchPage from "../../pages/home/index.search";
+import ListCatagoryIdeas from "../../pages/myIdeas/index.categoryideas";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
               { path: 'myTopic/:id/:name', element: <ListMyIdeas /> },
               { path: 'myIdeas', element: <MyIdeas /> },
               { path: 'ideaDetail/:slug', element: <IdeaDetail /> },
+              { path: 'catagoryTopic/:name', element: <ListCatagoryIdeas /> },
               { path: 'search/:filter', element: <SearchPage /> },
               { path: 'ideaform/:topicId/:slug', element: <IdeaForm /> },
             ]

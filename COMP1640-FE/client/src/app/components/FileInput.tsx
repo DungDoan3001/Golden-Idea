@@ -3,14 +3,14 @@ import { IconButton } from '@mui/material';
 import React, { useState } from 'react';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
-const MAX_FILES = 1;
+const MAX_FILES = 5;
 
 interface FileInputProps {
-    onFileSelect: (files: FileList) => void;
+  onChange: (files: FileList) => void;
     name: string;
 }
 
-const FileInput: React.FC<FileInputProps> = ({ onFileSelect }) => {
+const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +42,7 @@ const FileInput: React.FC<FileInputProps> = ({ onFileSelect }) => {
         }
         setErrorMessage('');
         setSelectedFiles([...selectedFiles, ...validFiles]);
-        onFileSelect(newFiles);
+        onChange(newFiles);
     };
     const handleRemoveFile = (index: number) => {
         const newSelectedFiles = [...selectedFiles];
