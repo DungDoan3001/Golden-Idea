@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import { Box, Typography, useTheme } from '@mui/material';
 import CategoryButton from '../../app/components/CategoryButton';
 import PostAuthorInfo from './PostAuthorInfo';
-
+import NoImage from '../assets/null_img.jpg';
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import ThumbsUpDownTwoToneIcon from '@mui/icons-material/ThumbsUpDownTwoTone';
 import { Link } from 'react-router-dom';
@@ -16,13 +16,13 @@ interface HomePageItemProps {
 
 const HomePageItem = ({ data }: HomePageItemProps) => {
   const theme: any = useTheme();
-  const [content,setContent] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     const regex = /(<([^>]+)>)/ig;
     const newString = data.content.replace(regex, '');
     setContent(newString);
-  },[data])
+  }, [data])
 
   return (
     <Grid item xs={4} >
@@ -50,7 +50,7 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                   <Box
                     component="img"
                     alt="thumbnail"
-                    src={data.image}
+                    src={data.image ? data.image : NoImage}
                     sx={{
                       [theme.breakpoints.up('sm')]: {
                         height: "14.5vw",

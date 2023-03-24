@@ -10,7 +10,7 @@ import { QuestionAnswer } from '@mui/icons-material';
 import Filter from '../../app/components/filter/Filter';
 const viewOptions = [
   { label: "Open", value: "open" },
-  { label: "Close", value: "close" },
+  { label: "Closed", value: "close" },
 ];
 
 const Home = () => {
