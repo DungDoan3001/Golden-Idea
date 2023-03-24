@@ -244,7 +244,7 @@ const IdeaDetail = () => {
             <Box sx={{ backgroundColor: theme.palette.comment.main, borderRadius: "0.5rem" }}>
               <Box p="1rem 5%">
                 <Typography
-                  textAlign="justify"
+                  textAlign="left"
                   mb="1rem"
                   variant="h2"
                   color={theme.palette.content.main}

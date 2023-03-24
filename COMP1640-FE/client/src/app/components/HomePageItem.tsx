@@ -35,13 +35,14 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
               }}>
               <Box
                 sx={{
+                  display: "flex", alignContent: "center", alignItems: "center",
                   [theme.breakpoints.up('sm')]: {
                     height: "16vw",
-                    width: "100%",
+                    width: "22vw",
                   },
                   [theme.breakpoints.down('sm')]: {
                     height: "68vw",
-                    width: "100%",
+                    width: "90vw",
                   },
                   backgroundColor: theme.palette.thumbnail.main, p: { xs: "3vw", sm: "0.75vw" }, borderRadius: "4rem 0rem"
                 }}
@@ -54,11 +55,11 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                     sx={{
                       [theme.breakpoints.up('sm')]: {
                         height: "14.5vw",
-                        width: "100%",
+                        width: "20.5vw",
                       },
                       [theme.breakpoints.down('sm')]: {
                         height: "62vw",
-                        width: "18rem",
+                        width: "84vw",
                       },
                       objectFit: "cover",
                       borderRadius: "4rem 0rem",
@@ -75,14 +76,15 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
           </Box>
           <ListItem>
             <Box>
-              <CategoryButton search={false} category={data.category?.name} />
+              <CategoryButton search={false} category={data.category} />
               <Link to={`/ideaDetail/${data.slug}`} style={{ textDecoration: 'none' }}>
                 <Typography
                   mt="0.5rem"
                   variant="h3"
                   color={theme.palette.content.main}
                   fontWeight="bold"
-                  textAlign="justify"
+                  textAlign="left"
+                  height="3.75rem"
                   sx={{
                     '&:hover': { color: theme.palette.secondary.main },
                     overflow: "hidden",
@@ -114,7 +116,8 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                 variant="h5"
                 color={theme.palette.content.main}
                 fontSize="1rem"
-                textAlign="justify"
+                textAlign="left"
+                height="5.55rem"
                 sx={{
                   overflow: "hidden",
                   textOverflow: "ellipsis",

@@ -246,7 +246,7 @@ const IdeaForm = () => {
           )}
           <Grid item xs={12} md={12} px={2} pb={4}>
             <h3>Upload Files</h3>
-            <FileInput onFileSelect={handleFileSelect} name='FileList' />
+            <FileInput onChange={handleFileSelect} name='FileList' />
           </Grid>
           <Grid item xs={12} md={12} px={2}>
             <FormControlLabel
