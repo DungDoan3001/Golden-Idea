@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Box, Button, Typography, List, ListItemText, Divider, IconButton } from '@mui/material';
+import { Box, Button, Typography, List, ListItemText, Divider, IconButton, Pagination } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
-import AppPagination from '../../app/components/AppPagination';
 import CategoryButton from '../../app/components/CategoryButton';
 import { useParams } from "react-router-dom";
 import { useTheme } from '@emotion/react';
@@ -31,13 +30,13 @@ const ListIdeas = () => {
   const { name, id } = useParams();
   const [editMode, setEditMode] = useState(false);
   const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
-  const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
+  const [selectedViewOption, setSelectedViewOption] = useState('latest');
   const { ideas, loading } = useSelector((state: RootState) => state.idea);
   const { categories } = useSelector((state: RootState) => state.category);
-  const [ideaData, setIdeaData] = useState(ideas)
-  const [idea, setIdea] = useState([]);
+  const [ideaData, setIdeaData] = useState(ideas);
   const [creatatble, setIsCreatable] = useState(true);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
   const dispatch = useAppDispatch();
   let fetchMount = true;
   useEffect(() => {
@@ -57,35 +56,31 @@ const ListIdeas = () => {
   }, [ideas])
 
   useEffect(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    let sortedIdeas = [...ideas];
     switch (selectedViewOption) {
       case 'most_viewed':
-        setIdeaData([...ideas].sort((a, b) => b.view - a.view));
+        sortedIdeas.sort((a, b) => b.view - a.view);
         break;
       case 'latest':
-        setIdeaData([...ideas].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+        sortedIdeas.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
       case 'oldest':
-        setIdeaData([...ideas].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
+        sortedIdeas.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         break;
       case 'most_liked':
-        setIdeaData([...ideas].sort((a, b) => b.upVote - a.upVote));
+        sortedIdeas.sort((a, b) => b.upVote - a.upVote);
         break;
       case 'most_disliked':
-        setIdeaData([...ideas].sort((a, b) => b.downVote - a.downVote));
+        sortedIdeas.sort((a, b) => b.downVote - a.downVote);
         break;
       default:
-        setIdeaData(ideas);
         break;
     }
-  }, [selectedViewOption, ideas]);
+    setIdeaData(sortedIdeas.slice(startIndex, endIndex));
+  }, [selectedViewOption, ideas, currentPage]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [idea, ideas, ideaData])
-  function cancelEdit() {
-    if (recordForEdit) setRecordForEdit(undefined);
-    setEditMode(false);
-  }
   const handleViewOptionChange = (value: string) => {
     setSelectedViewOption(value);
   };
@@ -196,7 +191,7 @@ const ListIdeas = () => {
           < Box mt="5%" display="flex" alignContent="center" alignItems="center">
             {(ideas[0]) ?
               <Grid container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}>
-                {idea.map((item: any) => (
+                {ideaData.map((item: any) => (
                   <HomePageItem data={item} />
                 )
                 )}
@@ -211,11 +206,16 @@ const ListIdeas = () => {
                 This Topic hasn't have any idea yet, be the first one to post an idea!
               </Typography>}
           </Box>
-          <AppPagination
-            setItem={setIdea} // Update this line
-            data={ideaData} // Update this line
-            size={6}
-          />
+          <Box mt="3rem" display='flex' justifyContent='center' alignItems='center' sx={{ marginBottom: 3 }}>
+            <Pagination
+              count={Math.ceil(ideas.length / itemsPerPage)}
+              page={currentPage}
+              size="large"
+              color='secondary'
+              onChange={(event, value) => setCurrentPage(value)}
+              sx={{ mt: 2 }}
+            />
+          </Box>
           <Box sx={{
             [theme.breakpoints.up('sm')]: {
               p: '4rem',
