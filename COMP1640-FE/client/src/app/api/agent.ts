@@ -11,9 +11,9 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 //Login here (Bearer token)
 axios.interceptors.request.use(config => {
-    var token: any = sessionStorage.getItem('user');
-    var tokenValue = JSON.parse(token).token;
-    if (token) config.headers.Authorization = `Bearer ${tokenValue}`;
+    const user = store.getState().account.user;
+    const tokenValue = user ? user.token : null;
+    if (tokenValue) config.headers.Authorization = `Bearer ${tokenValue}`;
     return config;
 })
 
