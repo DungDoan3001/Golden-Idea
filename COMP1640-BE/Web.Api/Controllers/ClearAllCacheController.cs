@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 using System;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Extensions;
+using Web.Api.Entities.Configuration;
 
 namespace Web.Api.Controllers
 {
     [Route("api/clear-all-cache")]
+    [Authorize]
     [ApiController]
     public class ClearAllCacheController : ControllerBase
     {
@@ -21,7 +25,8 @@ namespace Web.Api.Controllers
             _cache = cache;
         }
 
-        [HttpGet("")]
+        [HttpPost("")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<OkResult> ClearAllCache()
         {
             try

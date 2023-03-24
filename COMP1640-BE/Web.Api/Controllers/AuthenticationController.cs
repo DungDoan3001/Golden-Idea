@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
+using Web.Api.Entities.Configuration;
 using Web.Api.Extensions;
 using Web.Api.Services.Authentication;
 using Web.Api.Services.FileUploadService;
@@ -19,6 +21,7 @@ using static Web.Api.Configuration.CacheKey;
 namespace Web.Api.Controllers
 {
     [Route("api/authentication")]
+    [Authorize]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -49,6 +52,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while creating</response>
         [HttpPost("register")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromForm] UserRequestModel userForRegistration)
         {
@@ -121,6 +125,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while authenticating</response>
         [HttpPost("login")]
+        [AllowAnonymous]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenRequestModel user)
         {
@@ -146,6 +151,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while sending email</response>
         [HttpPost("change-password")]
+        [AllowAnonymous]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> SendEmailChangePassword([FromBody] SendEmailChangePassword user)
         {
@@ -176,6 +182,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while changing password</response>
         [HttpPut("change-password/{resetPasswordIdEncoded}")]
+        [AllowAnonymous]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> ChangePassword([FromRoute] string resetPasswordIdEncoded, [FromBody] ChangePasswordRequestModel password)
         {

@@ -1,43 +1,44 @@
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Web.Api.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Web.Api.Data.Context;
-using Web.Api.Data.UnitOfWork;
-using Web.Api.Services.DepartmentService;
-using System.IO;
-using System.Reflection;
-using System;
-using Web.Api.Entities;
-using Microsoft.AspNetCore.Identity;
-using Web.Api.Services.Topic;
-using Microsoft.AspNetCore.Mvc;
-using Web.Api.Services.Category;
-using Web.Api.Services.Role;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.OpenApi.Models;
 using Web.Api.Configuration;
-using Web.Api.Services.Authentication;
-using Web.Api.Services.User;
-using Web.Api.Services.EmailService;
-using Web.Api.Services.ResetPassword;
+using Web.Api.Data.Context;
 using Web.Api.Data.Queries;
+using Web.Api.Data.UnitOfWork;
+using Web.Api.Entities;
+using Web.Api.Extensions;
+using Web.Api.Services.Authentication;
+using Web.Api.Services.Category;
+using Web.Api.Services.Chart;
+using Web.Api.Services.Comment;
+using Web.Api.Services.DepartmentService;
+using Web.Api.Services.EmailService;
+using Web.Api.Services.FakeData;
+using Web.Api.Services.FileService;
 using Web.Api.Services.FileUploadService;
 using Web.Api.Services.IdeaService;
 using Web.Api.Services.ReactionService;
-using Web.Api.Services.Comment;
-using Web.Api.SignalR;
-using System.Threading.Tasks;
-using Web.Api.Services.FileService;
+using Web.Api.Services.ResetPassword;
+using Web.Api.Services.Role;
+using Web.Api.Services.Topic;
+using Web.Api.Services.User;
 using Web.Api.Services.View;
-using Web.Api.Services.Chart;
-using Web.Api.Services.FakeData;
 using Web.Api.Services.ZipFile;
+using Web.Api.SignalR;
 
 namespace Web.Api
 {
@@ -71,11 +72,34 @@ namespace Web.Api
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "COMP1640 - GoldenIdea", Description = "This is a list of APIs we use to manage the GoldenIdea Application" });
-                // using System.Reflection;
+                // Generating api description via xml;
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                // Add authentication button
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Enter your token here.<br><br>",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
-
 
             // Connect Database
             services.AddDbContext<AppDbContext>(options =>
@@ -84,9 +108,11 @@ namespace Web.Api
                     b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
             });
 
+            // Add Identity
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+
             // CORS
             services.AddCors(opt =>
             {
@@ -155,7 +181,6 @@ namespace Web.Api
 
             // Dependency Injections
             services.AddScoped<ValidationFilterAttribute>();
-
             services.AddScoped<IAppDbContext, AppDbContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -177,9 +202,7 @@ namespace Web.Api
             services.AddScoped<IChartService, ChartService>();
             services.AddScoped<IFakeDataService, FakeDataService>();
             services.AddScoped<IZipFileService, ZipFileService>();
-            //SignalR
-            services.AddSignalR();
-
+            
             // Queries
             services.AddScoped<ITopicQuery, TopicQuery>();
             services.AddScoped<IIdeaQuery, IdeaQuery>();
@@ -188,6 +211,9 @@ namespace Web.Api
             services.AddScoped<IViewQuery, ViewQuery>();
             services.AddScoped<IReactionQuery, ReactionQuery>();
             services.AddScoped<ICommentQuery, CommentQuery>();
+
+            //SignalR
+            services.AddSignalR();
 
             //Caching
             services.AddMemoryCache();

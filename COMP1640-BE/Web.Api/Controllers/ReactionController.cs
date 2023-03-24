@@ -10,10 +10,13 @@ using Web.Api.Extensions;
 using Web.Api.Services.Category;
 using Web.Api.Services.ReactionService;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Entities.Configuration;
 
 namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ReactionController : ControllerBase
     {
@@ -31,6 +34,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<GetUserReactionResponseModel>> GetUserReactionInIdea([FromQuery] GetUserReactionRequestModel userReaction)
         {
             try
@@ -67,6 +71,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is no reaction type provided.</response>
         [HttpPost("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<ReactionResponseModel>> Create([FromQuery] string reactionType, [FromBody] ReactionRequestModel userReact)
         {

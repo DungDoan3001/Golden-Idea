@@ -11,14 +11,16 @@ using Web.Api.Services.Category;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Web.Api.Services.EmailService;
-using Web.Api.Configuration;
 using Microsoft.Extensions.Caching.Memory;
 using Web.Api.Entities;
 using static Web.Api.Configuration.CacheKey;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Entities.Configuration;
 
 namespace Web.Api.Controllers
 {
     [Route("api/categories")]
+    [Authorize]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -44,6 +46,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all categoriess</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IEnumerable<CategoryResponseModel>>> GetAll()
         {
             try
@@ -82,6 +85,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no category with the given Id</response>
         [HttpGet("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<CategoryResponseModel>> GetById([FromRoute] Guid id)
         {
             try
@@ -121,6 +125,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while create a category</response>
         [HttpPost("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<CategoryResponseModel>> Create([FromBody] CategoryRequestModel requestModel)
         {
@@ -172,6 +177,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while update a category</response>
         [HttpPut("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<CategoryResponseModel>> Update([FromRoute] Guid id, [FromBody] CategoryRequestModel requestModel)
         {
@@ -227,6 +233,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no category with the given Id</response>
         [HttpDelete("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try

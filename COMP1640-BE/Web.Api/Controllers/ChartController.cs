@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Web.Api.DTOs.ResponseModels;
+using Web.Api.Entities.Configuration;
+using Web.Api.Extensions;
 using Web.Api.Services.Chart;
 
 namespace Web.Api.Controllers
 {
     [Route("api/charts")]
+    [Authorize]
     [ApiController]
     public class ChartController : ControllerBase
     {
@@ -24,6 +28,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("contributors-by-department")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<List<ContributorResponseModel>>> GetContributorsByDepartment() 
         {
             try
@@ -47,6 +52,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("ideas-by-department")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<List<TotalIdeaOfDepartmentsResponseModel>>> GetTotalIdeaByDepartment()
         {
             try
@@ -71,6 +77,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("list-of-ideas")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<List<IdeaForChartResponseModel>>> GetIdeasForChart()
         {
             try
@@ -95,6 +102,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("percentage-of-ideas-by-department")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<List<PercentageOfIdeaForEachDepartment>>> GetPercentageOfIdeasByDepartment()
         {
             try
@@ -119,6 +127,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("get-staff-idea-comment-topic")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<TotalStaffAndIdeaAndTopicAndCommentResponseModel>> GetTotalStaffAndIdeaAndCommentAndTopic()
         {
             try
@@ -143,6 +152,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("num-of-ideas-anonymous-by-department")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<List<NumOfIdeaAnonyByDepartment>>> GetNumOfIdeaAnonyAndNoCommentByDepart()
         {
             try
@@ -166,6 +176,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("num-of-comment-by-department")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<List<NumOfCommentResponseModel>>> GetNumOfCommentByDepart()
         {
             try
@@ -189,6 +200,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all information</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("daily-report-in-three-months")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager)] // Roles Here
         public async Task<ActionResult<List<DailyReportResponseModel>>> GetDailyReportInThreeMonths()
         {
             try

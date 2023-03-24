@@ -5,10 +5,14 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Services.FakeData;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Entities.Configuration;
+using Web.Api.Extensions;
 
 namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class FakeDataGenController : ControllerBase
     {
@@ -23,6 +27,7 @@ namespace Web.Api.Controllers
         /// Create fake data base on the number of data want to fake (number from 1 to 200)
         /// </summary>
         [HttpPost("{numberToGenerate}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<ActionResult<IEnumerable<CategoryResponseModel>>> GetAll([FromRoute] int numberToGenerate)
         {
             try
