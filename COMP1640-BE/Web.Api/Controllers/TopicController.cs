@@ -56,9 +56,9 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(topicCachekey.GetAllCacheKey, TopicResponses.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cache.Set(topicCachekey.GetAllCacheKey, TopicResponses.OrderByDescending(x => x.ClosureDate), cacheEntryOptions);
                 }
-                return Ok(TopicResponses.OrderBy(x => x.Name));
+                return Ok(TopicResponses.OrderByDescending(x => x.ClosureDate));
 
             }
             catch (Exception ex)
@@ -85,7 +85,7 @@ namespace Web.Api.Controllers
             {
                 IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserName(userName);
                 IEnumerable<TopicResponseModel>  TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
-                return Ok(TopicResponses.OrderBy(x => x.Name));
+                return Ok(TopicResponses.OrderByDescending(x => x.ClosureDate));
             }
             catch (Exception ex)
             {
