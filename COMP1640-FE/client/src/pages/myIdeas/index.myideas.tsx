@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Box, Button, Divider, List, ListItemText, Typography } from '@mui/material';
+import { Box, Button, Divider, List, ListItemText, Pagination, Typography } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
-import AppPagination from '../../app/components/AppPagination';
 import CategoryButton from '../../app/components/CategoryButton';
 import { useParams } from "react-router-dom";
 import { categoryData } from '../../dataTest.js';
@@ -28,11 +27,13 @@ const ListMyIdeas = () => {
   const { name, id } = useParams();
   const [editMode, setEditMode] = useState(false);
   const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
-  const [selectedViewOption, setSelectedViewOption] = useState('most_viewed');
+  const [selectedViewOption, setSelectedViewOption] = useState('latest');
   const { user } = useAppSelector(state => state.account);
   const { ideas_user, loading } = useSelector((state: RootState) => state.idea);
   const [idea, setIdea] = useState(ideas_user); // filter the ideas based on user's username
   const [creatatble, setIsCreatable] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const dispatch = useAppDispatch();
   let fetchMount = true;
@@ -52,27 +53,30 @@ const ListMyIdeas = () => {
   }, [ideas_user])
 
   useEffect(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    let sortedIdeas = [...ideas_user];
     switch (selectedViewOption) {
       case 'most_viewed':
-        setIdea([...idea].sort((a, b) => b.view - a.view));
+        sortedIdeas.sort((a, b) => b.view - a.view);
         break;
       case 'latest':
-        setIdea([...idea].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+        sortedIdeas.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
       case 'oldest':
-        setIdea([...idea].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
+        sortedIdeas.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         break;
       case 'most_liked':
-        setIdea([...idea].sort((a, b) => b.upVote - a.upVote));
+        sortedIdeas.sort((a, b) => b.upVote - a.upVote);
         break;
       case 'most_disliked':
-        setIdea([...idea].sort((a, b) => b.downVote - a.downVote));
+        sortedIdeas.sort((a, b) => b.downVote - a.downVote);
         break;
       default:
-        setIdea(ideas_user);
         break;
     }
-  }, [selectedViewOption, ideas_user]);
+    setIdea(sortedIdeas.slice(startIndex, endIndex));
+  }, [selectedViewOption, ideas_user, currentPage]);
 
   function cancelEdit() {
     if (recordForEdit) setRecordForEdit(undefined);
@@ -194,11 +198,16 @@ const ListMyIdeas = () => {
             )
             )}
           </Grid>
-          <AppPagination
-            setItem={(p: any) => setIdea(p)}
-            data={ideas_user}
-            size={6}
-          />
+          <Box mt="3rem" display='flex' justifyContent='center' alignItems='center' sx={{ marginBottom: 3 }}>
+            <Pagination
+              count={Math.ceil(ideas_user.length / itemsPerPage)}
+              page={currentPage}
+              size="large"
+              color='secondary'
+              onChange={(event, value) => setCurrentPage(value)}
+              sx={{ mt: 2 }}
+            />
+          </Box>
         </Box>
         <Box sx={{
           [theme.breakpoints.up('sm')]: {
