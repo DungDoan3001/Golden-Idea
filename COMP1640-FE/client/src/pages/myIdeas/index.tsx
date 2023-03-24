@@ -11,7 +11,7 @@ import Filter from '../../app/components/filter/Filter';
 import { Pagination } from '@mui/material';
 const viewOptions = [
   { label: "Open", value: "open" },
-  { label: "Close", value: "close" },
+  { label: "Closed", value: "close" },
 ];
 const MyIdeas = () => {
   const theme: any = useTheme();

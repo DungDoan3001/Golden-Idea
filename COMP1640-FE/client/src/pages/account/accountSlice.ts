@@ -35,7 +35,7 @@ export const fetchCurrentUser = createAsyncThunk<UserLogin>(
       const userDto = sessionStorage.getItem('user');
       const user = JSON.parse(userDto!);
       sessionStorage.setItem('user', JSON.stringify(user));
-      return user;
+      return user.token;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
