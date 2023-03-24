@@ -9,21 +9,19 @@ using Web.Api.Services.User;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.Extensions;
 using System.Data;
-using System.Web.Http.Results;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Web.Api.Services.FileUploadService;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
-using Web.Api.Configuration;
 using static Web.Api.Configuration.CacheKey;
+using Web.Api.Entities.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Web.Api.Controllers
 {
-    //[Authorize(Roles ="Administrator")]
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -45,6 +43,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all the users</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<ActionResult<List<UserResponseModel>>> GetAll()
         {
             try
@@ -89,6 +88,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all the users with Staff role</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("getallstaff")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<ActionResult<List<UserResponseModel>>> GetAllStaff()
         {
             try
@@ -132,6 +132,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all the users with Admin and QA role</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("getalladminQA")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<ActionResult<List<UserResponseModel>>> GetAllAdminQA()
         {
             try
@@ -177,6 +178,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no user with the given Id</response>
         [HttpGet("{id}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<ActionResult<UserResponseModel>> GetById([FromRoute] Guid id)
         {
             try
@@ -221,6 +223,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while update a user</response>
         [HttpPut("{id}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Update([FromRoute] Guid id, [FromForm] UserForUpdateRequestModel user)
         {
@@ -266,6 +269,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no user with the given Id</response>
         [HttpDelete("{id}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Delete([FromRoute] Guid id)
         {

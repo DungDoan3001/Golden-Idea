@@ -9,27 +9,11 @@ namespace Web.Api.Entities.Configuration
         public void Configure(EntityTypeBuilder<IdentityRole> builder)
         {
             builder.HasData(
-            new IdentityRole
-            {
-                Name = "Administrator",
-                NormalizedName = "ADMINISTRATOR"
-            },
-            new IdentityRole
-            {
-                Name = "QA Manager",
-                NormalizedName = "QA MANAGER"
-            },
-            new IdentityRole
-            {
-                Name = "QA Coordinator",
-                NormalizedName = "QA COORDINATOR"
-            },
-            new IdentityRole
-            {
-                Name = "Staff",
-                NormalizedName = "STAFF"
-            }
-            );
+                IdentityRoles.Administrator_Identity,
+                IdentityRoles.QAManager_Identity,
+                IdentityRoles.QACoordinator_Identity,
+                IdentityRoles.Staff_Identity
+                );
         }
     }
 }

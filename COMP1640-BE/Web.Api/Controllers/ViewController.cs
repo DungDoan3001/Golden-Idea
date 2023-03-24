@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,12 +8,14 @@ using System.Net;
 using System.Threading.Tasks;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
+using Web.Api.Entities.Configuration;
 using Web.Api.Extensions;
 using Web.Api.Services.View;
 
 namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ViewController : ControllerBase
     {
@@ -33,6 +36,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while create a view</response>
         [HttpPost("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<ViewResponseModel>> Create([FromQuery] Guid ideaId, [FromBody] ViewRequestModel userView)
         {

@@ -1,22 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Formats.Asn1;
-using System.Globalization;
-using System.IO.Compression;
-using System.IO;
 using System;
-using System.Collections;
-using System.Linq;
-using CsvHelper;
 using Web.Api.Services.ZipFile;
 using System.Threading.Tasks;
 using System.Net;
 using Web.Api.DTOs.ResponseModels;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Extensions;
+using Web.Api.Entities.Configuration;
 
 namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ZipFilesController : ControllerBase
     {
@@ -33,6 +29,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("download-all-ideas-of-topic/{topicId}")]
+        [Roles(IdentityRoles.QAManager)] // Roles Here
         public async Task<IActionResult> DownloadAllIdeasOfTopic([FromRoute] Guid topicId)
         {
             try
@@ -58,6 +55,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("download-data-dashboard")]
+        [Roles(IdentityRoles.QAManager)] // Roles Here
         public async Task<IActionResult> DownloadDataDashboard()
         {
             try

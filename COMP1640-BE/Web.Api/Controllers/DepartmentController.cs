@@ -4,12 +4,14 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Web.Api.Configuration;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
+using Web.Api.Entities.Configuration;
 using Web.Api.Extensions;
 using Web.Api.Services.DepartmentService;
 using static Web.Api.Configuration.CacheKey;
@@ -17,6 +19,7 @@ using static Web.Api.Configuration.CacheKey;
 namespace Web.Api.Controllers
 {
     [Route("api/departments")]
+    [Authorize]
     [ApiController]
     public class DepartmentController : ControllerBase
     {
@@ -38,6 +41,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all departments</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IEnumerable<DepartmentResponseModel>>> GetAll()
         {
             try
@@ -75,6 +79,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no department with the given Id</response>
         [HttpGet("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<DepartmentResponseModel>> GetById([FromRoute] Guid id)
         {
             try
@@ -113,6 +118,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while create a department</response>
         [HttpPost("")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<DepartmentResponseModel>> Create([FromBody] DepartmentRequestModel requestModel)
         {
@@ -164,6 +170,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while update a department</response>
         [HttpPut("{id}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<DepartmentResponseModel>> Update([FromRoute] Guid id, [FromBody] DepartmentRequestModel requestModel)
         {
@@ -219,6 +226,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no department with the given Id</response>
         [HttpDelete("{id}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try

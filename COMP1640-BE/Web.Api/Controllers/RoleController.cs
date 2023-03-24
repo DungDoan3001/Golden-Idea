@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,15 +6,17 @@ using System;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Services.Role;
 using Microsoft.AspNetCore.Identity;
-using System.Runtime.InteropServices;
 using Web.Api.Extensions;
 using Web.Api.DTOs.RequestModels;
 using AutoMapper;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Entities.Configuration;
 
 namespace Web.Api.Controllers
 {
     [Route("api/roles")]
+    [Authorize]
     [ApiController]
     public class RoleController : ControllerBase
     {
@@ -33,6 +34,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no roles</response>
         [HttpGet]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         public async Task<ActionResult<List<IdentityRole<Guid>>>> GetAll()
         {
             try
@@ -59,6 +61,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while creating</response>
         [HttpPost("")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Create([FromBody] RoleRequestModel requestModel)
         {
@@ -87,6 +90,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is a conflict while update a role</response>
         [HttpPut("{id}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Update([FromRoute] Guid id, [FromBody] RoleRequestModel requestModel)
         {
@@ -115,6 +119,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no role with the given roleName</response>
         [HttpDelete("{roleName}")]
+        [Roles(IdentityRoles.Administrator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult> Delete([FromBody] RoleRequestModel requestModel)
         {

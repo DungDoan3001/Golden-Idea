@@ -23,10 +23,14 @@ using Web.Api.Services.ReactionService;
 using Microsoft.Extensions.Caching.Memory;
 using Web.Api.Configuration;
 using static Web.Api.Configuration.CacheKey;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Entities.Configuration;
+using System.Security.Claims;
 
 namespace Web.Api.Controllers
 {
     [Route("api/ideas")]
+    [Authorize]
     [ApiController]
     public class IdeaController : ControllerBase
     {
@@ -68,6 +72,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all ideas</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAll()
         {
             try
@@ -107,6 +112,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all ideas</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("user/{userName}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IEnumerable<IdeaResponseModel>>> GetAllByAuthor([FromQuery] Guid topicId,[FromRoute] string userName)
         {
             try
@@ -133,6 +139,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("id/{ideaId}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IdeaResponseModel>> GetById([FromRoute] Guid ideaId)
         {
             try
@@ -159,6 +166,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("slug/{slug}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IdeaResponseModel>> GetBySlug([FromRoute] string slug)
         {
             try
@@ -185,6 +193,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get idea</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("topic/{topicId}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IdeaResponseModel>> GetByTopic([FromRoute] Guid topicId)
         {
             try
@@ -213,6 +222,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while create a idea</response>
         [HttpPost("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Create([FromForm] IdeaRequestModel requestModel)
         {
@@ -280,6 +290,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while searched</response>
         [HttpGet("search")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<IdeaResponseModel>> SearchByTitle([FromQuery] string searchTerm)
         {
@@ -310,11 +321,13 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while update a idea</response>
         [HttpPut("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] IdeaRequestModel requestModel)
         {
             try
             {
+                string userName = User.Claims.SingleOrDefault(x => x.Type.Equals(ClaimTypes.Name)).Value;
                 // Check valid request model
                 var message = await CheckValidRequest(requestModel, true);
                 if (message != null)
@@ -330,6 +343,15 @@ namespace Web.Api.Controllers
                         Message = "Not Found",
                         StatusCode = (int)HttpStatusCode.NotFound,
                         Errors = new List<string> { "Can not find idea with the given id." }
+                    });
+                }
+                if (idea.User.UserName != userName)
+                {
+                    return Conflict(new MessageResponseModel
+                    {
+                        Message = "Forbiden",
+                        StatusCode = (int)HttpStatusCode.Conflict,
+                        Errors = new List<string> { "Only user that create the idea or admin can edit this idea." }
                     });
                 }
 
@@ -394,6 +416,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no idea with the given Id</response>
         [HttpDelete("{id}")]
+        [Roles(IdentityRoles.Administrator)] // Role Here
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try

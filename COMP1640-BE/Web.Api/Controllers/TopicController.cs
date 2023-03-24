@@ -13,13 +13,14 @@ using Web.Api.Services.User;
 using Web.Api.Entities;
 using Microsoft.Extensions.Caching.Memory;
 using Web.Api.Configuration;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Web.Api.Configuration.CacheKey;
+using Microsoft.AspNetCore.Authorization;
+using Web.Api.Entities.Configuration;
 
 namespace Web.Api.Controllers
 {
     [Route("api/topics")]
+    [Authorize]
     [ApiController]
     public class TopicController : ControllerBase
     {
@@ -43,6 +44,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all topics</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IEnumerable<TopicResponseModel>>> GetAll()
         {
             try
@@ -79,6 +81,7 @@ namespace Web.Api.Controllers
         /// <response code="200">Successfully get all topics</response>
         /// <response code="400">There is something wrong while execute.</response>
         [HttpGet("user/{userName}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<IEnumerable<TopicResponseModel>>> GetAllByUserId([FromRoute] string userName)
         {
             try
@@ -107,6 +110,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no topic with the given Id</response>
         [HttpGet("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         public async Task<ActionResult<TopicResponseModel>> GetById([FromRoute] Guid id)
         {
             try
@@ -145,6 +149,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while create a topic</response>
         [HttpPost("")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QACoordinator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<TopicRequestModel>> Create([FromBody] TopicRequestModel requestModel)
         {
@@ -212,6 +217,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="409">There is a conflict while update a topic</response>
         [HttpPut("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QACoordinator)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<ActionResult<TopicResponseModel>> Update([FromRoute] Guid id, [FromBody] TopicRequestModel requestModel)
         {
@@ -281,6 +287,7 @@ namespace Web.Api.Controllers
         /// <response code="400">There is something wrong while execute.</response>
         /// <response code="404">There is no topic with the given Id</response>
         [HttpDelete("{id}")]
+        [Roles(IdentityRoles.Administrator, IdentityRoles.QACoordinator)] // Roles Here
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try

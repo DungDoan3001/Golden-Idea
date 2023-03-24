@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Web.Api.DTOs.ResponseModels;
 using System.Net;
-using CloudinaryDotNet.Actions;
 
 namespace Web.Api.Extensions
 {
