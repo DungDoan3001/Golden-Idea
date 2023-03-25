@@ -34,12 +34,12 @@ namespace Web.Api.DTOs.RequestModels
         [AllowedNumberOfFile(5)]
         [MaxFileSize(2 * 1024 * 1024)]
         [AllowedExtensions(new string[] { ".txt", ".png", ".jpg", ".doc", ".pdf" })]
-        public List<IdeaRequestModel_File> ListFile { get; set; }
+        public List<IFormFile> ListFile { get; set; }
     }
 
-    public class IdeaRequestModel_File
-    {
-        public IFormFile File { get; set; }
-    }
+    //public class IdeaRequestModel_File
+    //{
+    //    public IFormFile File { get; set; }
+    //}
 
 }

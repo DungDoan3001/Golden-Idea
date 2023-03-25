@@ -45,7 +45,7 @@ namespace Web.Api.Controllers
         private readonly ICommentService _commentService;
         private readonly IReactionService _reactionService;
         private readonly IMemoryCache _cache;
-        private IdeaCacheKey IdeaCacheKey = new IdeaCacheKey();
+        private readonly IdeaCacheKey IdeaCacheKey = new IdeaCacheKey();
 
         public IdeaController(IMapper mapper, IIdeaService ideaService, IFileUploadService fileUploadService,
                             IFileService fileService, ITopicService topicService,
@@ -560,7 +560,7 @@ namespace Web.Api.Controllers
             idea.LastUpdate = DateTime.UtcNow;
         }
 
-        private async Task<List<File>> UploadFileAsync(List<IdeaRequestModel_File> uploadFile, Idea idea)
+        private async Task<List<File>> UploadFileAsync(List<IFormFile> uploadFile, Idea idea)
         {
             List<File> files = new List<File>();
             // Adding linked File.
@@ -568,7 +568,7 @@ namespace Web.Api.Controllers
             {
                 foreach (var file in uploadFile)
                 {
-                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file.File);
+                    var uploadFileResult = await _fileUploadService.UploadFileAsync(file);
                     File fileEntity = new File
                     {
                         FilePath = uploadFileResult.SecureUrl.ToString(),
