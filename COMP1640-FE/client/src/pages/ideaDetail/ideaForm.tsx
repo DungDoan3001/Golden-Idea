@@ -87,8 +87,8 @@ const IdeaForm = () => {
     setTermsAgreed(true);
   }
   const handleFileSelect = (files: FileList) => {
-    // Handle the selected files here
-    setValue('UploadFiles', files[0]);
+    const fileList = files ? [...files] : [];
+    setValue('ListFile', fileList);
   };
   const modules = {
     toolbar: [
@@ -128,22 +128,34 @@ const IdeaForm = () => {
     try {
       setValue('Username', user?.name);
       setValue('TopicId', topicId);
-      let response: Idea;
-      if (slug === "slug") {
-        response = await dispatch(updateIdea(data)).unwrap();
-      } else {
-        response = await dispatch(addIdea(data)).unwrap();
-      }
+      console.log(slug);
+      console.log(data);
+      // if (slug === "slug") {
+      //   await axios({
+      //     method: "put",
+      //     url: `https://goldenidea.azurewebsites.net/api/ideas/${ideaId}`,
+      //     data: data,
+      //     headers: { "Content-Type": "multipart/form-data" },
+      //   });
+      // } else {
+      await axios({
+        method: "post",
+        url: `https://goldenidea.azurewebsites.net/api/ideas`,
+        data: data,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      // }
       toast.success('Successfully', {
         position: toast.POSITION.TOP_RIGHT,
       });
     } catch (error: any) {
+      console.log(error);
       toast.error('Failed to load resource: the server responded with a status of 409 (Conflict)', {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
     delay(1000);
-    navigate(-1)
+    // navigate(-1)
   }
 
   const handleGenerateImage = async () => {
@@ -182,7 +194,7 @@ const IdeaForm = () => {
         width: '100%',
       },
       [theme.breakpoints.down('sm')]: {
-        width: '115%',
+        width: '20rem',
         m: "1rem 2rem",
       },
     }}>

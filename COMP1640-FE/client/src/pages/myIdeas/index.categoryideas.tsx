@@ -109,7 +109,7 @@ const ListCatagoryIdeas = () => {
               m: '3rem',
             },
             [theme.breakpoints.down('sm')]: {
-              width: '21rem',
+              width: '19rem',
               m: '2rem',
             },
           }}

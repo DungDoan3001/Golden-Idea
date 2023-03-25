@@ -23,6 +23,7 @@ import BackButton from '../../app/components/BackButton';
 import { toast } from 'react-toastify';
 import ConfirmDialog from '../../app/components/ConfirmDialog';
 import agent from '../../app/api/agent';
+import NoImage from '../../app/assets/null_img.jpg';
 
 const IdeaDetail = () => {
   const theme: any = useTheme();
@@ -38,6 +39,8 @@ const IdeaDetail = () => {
   const [isEditable, setIsEditable] = useState(true);
   const [fileIcon, setFileIcon] = useState<any>();
   const [content, setContent] = useState("");
+
+  console.log(idea);
 
   const dispatch = useAppDispatch();
   let fetchMount = true;
@@ -291,11 +294,11 @@ const IdeaDetail = () => {
                   <Box
                     component="img"
                     alt="thumbnail"
-                    src={idea?.image}
+                    src={(idea?.image) ? idea?.image : NoImage}
                     sx={{
                       width: { xs: "85vw", sm: "50vw" },
                       height: { xs: "65vw", sm: "35vw" },
-                      objectFit: "cover",
+                      objectFit: "contain",
                     }}
                   >
                   </Box>
@@ -311,6 +314,7 @@ const IdeaDetail = () => {
                   </Typography>
                 </Box>
                 {(idea?.files[0] != null) ?
+                idea.files.map((item:any) =>(
                   <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
                     <Box
                       component="img"
@@ -322,12 +326,12 @@ const IdeaDetail = () => {
                         objectFit: "cover", mr: "1rem"
                       }} />
                     <Typography width="15rem" noWrap>
-                      {`${idea.files[0].fileName}.${idea.files[0].fileExtention}`}
+                      {`${item.fileName}.${item.fileExtention}`}
                     </Typography>
                     <IconButton onClick={handleDownload} sx={{ ml: "1rem" }}>
                       <DownloadIcon />
                     </IconButton>
-                  </Box> : (null)}
+                  </Box>)) : (null)}
                 <Box m="1rem 0rem">
                   <IconButton onClick={ClickLike}>
                     {(isLike) ?

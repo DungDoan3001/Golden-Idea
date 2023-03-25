@@ -41,8 +41,8 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                     width: "22vw",
                   },
                   [theme.breakpoints.down('sm')]: {
-                    height: "68vw",
-                    width: "90vw",
+                    height: "60vw",
+                    width: "78vw",
                   },
                   backgroundColor: theme.palette.thumbnail.main, p: { xs: "3vw", sm: "0.75vw" }, borderRadius: "4rem 0rem"
                 }}
@@ -58,8 +58,8 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                         width: "20.5vw",
                       },
                       [theme.breakpoints.down('sm')]: {
-                        height: "62vw",
-                        width: "84vw",
+                        height: "54vw",
+                        width: "72vw",
                       },
                       objectFit: "cover",
                       borderRadius: "4rem 0rem",
