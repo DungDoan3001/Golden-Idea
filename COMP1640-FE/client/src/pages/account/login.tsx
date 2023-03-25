@@ -3,7 +3,7 @@ import { LoadingButton } from '@mui/lab';
 import { Grid, InputAdornment, Paper, TextField, Typography } from '@mui/material';
 import { FieldValues, useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../app/store/configureStore';
+import { useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 import { signInUser } from './accountSlice';
 import Image from '../../app/assets/test.svg'
 
@@ -11,6 +11,7 @@ export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useAppDispatch();
+    const { user } = useAppSelector(state => state.account);
     const { register, handleSubmit, formState: { isSubmitting, errors, isValid } } = useForm({
         mode: 'onTouched'
     });
@@ -23,7 +24,10 @@ export default function Login() {
             console.log(error);
         }
     }
-
+    if (user) {
+        navigate(location.state?.from || '/home');
+        return null; // Return null to prevent rendering the rest of the component
+    }
     return (
         <div className="container sign-up-mode">
             <div className="forms-container">
