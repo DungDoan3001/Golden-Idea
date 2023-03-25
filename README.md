@@ -41,7 +41,8 @@ This system is a secure web-enabled role-based platform for collecting ideas for
 | Idea Lists            | Lists of Most Popular, Most Viewed, Latest Ideas, and Latest Comments are available to all users (paginated with 5 per page).                                       |
 | Data Downloading      | The University QA Manager can download all data after final closure date in CSV format (uploaded documents in ZIP file).                                            |
 | System Administration | An administrator maintains system data such as closure dates and staff details.                                                                                     |
-
+| AI voice Chatbot | User can ask some FAQ or change color mode or search ideas by title or navigate to any page in this app via AI voice chatbot.                                                                                     |
+| AI image generating | When user submit their ideas they can generate image with the title by using Generate image with Open AI Dall-E2.                                                                                     |
 ## Reports
 
 ### Statistics
