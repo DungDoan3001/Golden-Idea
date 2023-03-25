@@ -95,7 +95,7 @@ const ListIdeas = () => {
               m: '3rem',
             },
             [theme.breakpoints.down('sm')]: {
-              width: '21rem',
+              width: '19rem',
               m: '2rem',
             },
           }}
@@ -172,7 +172,7 @@ const ListIdeas = () => {
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ mr: 2 }}>
-              {(creatatble) ?
+              {(creatatble || !ideas[0]) ?
                 <Button
                   variant="contained"
                   size="medium"
