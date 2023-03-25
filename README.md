@@ -38,6 +38,9 @@ This system is a secure web-enabled role-based platform for collecting ideas for
 | Anonymous Posting     | Ideas and comments can be posted anonymously (author details stored in database).                                                                                   |
 | Closure Dates         | New ideas are disabled after a closure date but comments can continue until final closure date.                                                                     |
 | Email Notifications   | Department QA Coordinators receive email notifications for new ideas in their department. Idea authors receive email notifications for new comments on their ideas. |
+| AI image generating   | When user submit their ideas they can generate image by using Open AI Dall-E2 with the title of the idea post. 
+                         |
+| AI voice Chatbot       | User can ask some FAQ or search the idea by title or navigate to any page or change color mode via AI voice Chatbot .                                       |
 | Idea Lists            | Lists of Most Popular, Most Viewed, Latest Ideas, and Latest Comments are available to all users (paginated with 5 per page).                                       |
 | Data Downloading      | The University QA Manager can download all data after final closure date in CSV format (uploaded documents in ZIP file).                                            |
 | System Administration | An administrator maintains system data such as closure dates and staff details.                                                                                     |
