@@ -23,7 +23,11 @@ import BackButton from '../../app/components/BackButton';
 import { toast } from 'react-toastify';
 import ConfirmDialog from '../../app/components/ConfirmDialog';
 import agent from '../../app/api/agent';
+import IdeaFormEdit from './ideaFormEdit';
 import NoImage from '../../app/assets/null_img.jpg';
+import pdf from '../../app/assets/pdf.png';
+import word from '../../app/assets/word.png';
+import zip from '../../app/assets/zip.png';
 
 const IdeaDetail = () => {
   const theme: any = useTheme();
@@ -37,10 +41,8 @@ const IdeaDetail = () => {
   const { user } = useAppSelector(state => state.account);
   const [isCommentAvailable, setIsCommentAvailable] = useState(true);
   const [isEditable, setIsEditable] = useState(true);
-  const [fileIcon, setFileIcon] = useState<any>();
   const [content, setContent] = useState("");
-
-  console.log(idea);
+  const [editMode, setEditMode] = useState(false);
 
   const dispatch = useAppDispatch();
   let fetchMount = true;
@@ -55,13 +57,13 @@ const IdeaDetail = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (idea != null && user && user.name) {
+      if (idea && user && user.name) {
         setLoadReaction(true);
         const data = {
-          username: user?.name
+          username: user.name
         }
-        const response = await agent.Idea.postView(idea?.id, data)
-        const res = await agent.Idea.getReaction(idea?.id, user?.name);
+        const response = await agent.Idea.postView(idea.id, data)
+        const res = await agent.Idea.getReaction(idea.id, user.name);
         if (res.react === 1) setIslike(true)
         else if (res.react === -1) setIsDislike(true)
         setLoadReaction(false);
@@ -71,8 +73,8 @@ const IdeaDetail = () => {
   }, [idea, user]);
 
   useEffect(() => {
-    if (idea != null && user && user.name) {
-      const finalClosureDate = idea?.topic.finalClosureDate;
+    if (idea && user && user.name) {
+      const finalClosureDate = idea.topic.finalClosureDate;
       if (finalClosureDate) {
         const today = new Date().getTime();
         const CommentDate = new Date(finalClosureDate).getTime();
@@ -81,34 +83,23 @@ const IdeaDetail = () => {
 
       const today = new Date().getTime();
       const closureDate = new Date(idea?.topic.closureDate).getTime();
-      setIsEditable(today < closureDate && user?.name === idea?.user.userName);
-      if (idea?.files[0] != null) {
-        switch (idea?.files[0].fileExtention) {
-          case "pdf":
-            setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750328423829575/pdf.png");
-            break;
-          case "doc":
-            setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
-            break;
-          case "docx":
-            setFileIcon("https://media.discordapp.net/attachments/1074670576809033798/1087750328709038080/word.png");
-            break;
-          case "zip":
-            setFileIcon("https://cdn.discordapp.com/attachments/1074670576809033798/1087750329292050462/zip.png");
-            break;
-        }
-      }
+      setIsEditable(today < closureDate && user.name === idea.user.userName);
       const regex = /(<([^>]+)>)/ig;
       const newString = idea.content.replace(regex, '');
       setContent(newString);
     }
   }, [idea, user]);
+
+  function cancelEdit() {
+    setEditMode(false);
+  }
+
   const ClickLike = async () => {
-    if (idea != null && user && user.name) {
+    if (idea && user && user.name) {
       try {
         (isLike ? setIslike(false) : setIslike(true));
         setIsDislike(false);
-        const data = { ideaId: idea?.id, username: user?.name };
+        const data = { ideaId: idea.id, username: user.name };
         const response = await agent.Idea.postReaction("upvote", data);
       } catch (error) {
         console.log(error);
@@ -116,11 +107,11 @@ const IdeaDetail = () => {
     }
   }
   const ClickDislike = async () => {
-    if (idea != null && user && user.name) {
+    if (idea && user && user.name) {
       try {
         (isDislike ? setIsDislike(false) : setIsDislike(true));
         setIslike(false);
-        const data = { ideaId: idea?.id, username: user?.name };
+        const data = { ideaId: idea.id, username: user.name };
         const response = await agent.Idea.postReaction("downvote", data);
       } catch (error) {
         console.log(error);
@@ -131,6 +122,12 @@ const IdeaDetail = () => {
   function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+  const handleEdit = (idea: any) => {
+
+    setEditMode(true);
+  }
+
   const handleDelete = (id: any) => {
     dispatch(deleteIdea(id))
       .catch((error: any) => {
@@ -148,17 +145,18 @@ const IdeaDetail = () => {
     navigate(-1);
   }
 
-  const handleDownload = () => {
-    if (idea && idea.files[0] && idea.files[0].filePath) {
+  const handleDownload = (i: any) => {
+    if (idea && idea.files) {
       // using Java Script method to get PDF file
-      fetch(idea?.files[0].filePath).then(response => {
+      fetch(idea.files[i].filePath).then(response => {
         response.blob().then(blob => {
           // Creating new object of PDF file
           const fileURL = window.URL.createObjectURL(blob);
           // Setting various property values
           let alink = document.createElement('a');
           alink.href = fileURL;
-          alink.download = idea?.files[0].filePath;
+          // alink.download = idea.files[i].path;
+          alink.download = idea.files[i].fileName;
           alink.click();
         })
       })
@@ -167,222 +165,227 @@ const IdeaDetail = () => {
 
   return (
     <>
-      {(loading || loadReaction) && user && user.name ? <Loading /> :
-        <>
-          <Box alignItems="center" justifyContent="center"
-            width="100%"
-            sx={{
-              [theme.breakpoints.up('sm')]: {
-                width: '80%',
-                m: "1rem 6rem",
-              },
-              [theme.breakpoints.down('sm')]: {
-                width: '21rem',
-                m: "1rem 2rem",
-              },
-            }}
-          >
-            <BackButton />
-            <Typography
-              variant="h1"
-              color={theme.palette.content.main}
-              fontWeight="bold"
+      {(loading || loadReaction) || !user || !user.name ? <Loading /> :
+        (editMode) ? <IdeaFormEdit cancelEdit={cancelEdit} id={idea?.topic.id} idea={idea} /> :
+          <>
+            <Box alignItems="center" justifyContent="center"
+              width="100%"
               sx={{
-                textAlign: 'center',
-                textTransform: 'uppercase',
-                position: 'relative',
-                display: 'inline-block',
-                color: theme.palette.secondary.main,
-                width: "100%",
+                [theme.breakpoints.up('sm')]: {
+                  width: '80%',
+                  m: "1rem 6rem",
+                },
+                [theme.breakpoints.down('sm')]: {
+                  width: '21rem',
+                  m: "1rem 2rem",
+                },
               }}
             >
-              {idea?.topic.name}
-            </Typography>
-            <Box
-              m="0.5rem 0rem"
-              display="flex"
-              alignItems="center"
-              flexDirection={{ xs: "column", sm: "row" }}
-              textAlign={{ xs: "center", sm: "left" }}
-            >
-              <Grid container>
-                <Grid item xs={12} sm={6}>
-                  <Box pt="5%" display={{ xs: "block", sm: "flex" }} justifyContent={{ xs: "center", sm: "left" }} textAlign={{ xs: "center", sm: "left" }} alignItems="center">
-                    <Box
-                      component="img"
-                      alt="profile"
-                      src={idea?.topic.avatar}
-                      height="2.5rem"
-                      width="2.5rem"
-                      borderRadius="50%"
-                      sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
-                    />
-                    <Box component="h4" mb=".5rem">
-                      Creator: {idea?.topic.username}
+              <BackButton />
+              <Typography
+                variant="h1"
+                color={theme.palette.content.main}
+                fontWeight="bold"
+                sx={{
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  position: 'relative',
+                  display: 'inline-block',
+                  color: theme.palette.secondary.main,
+                  width: "100%",
+                }}
+              >
+                {idea?.topic.name}
+              </Typography>
+              <Box
+                m="0.5rem 0rem"
+                display="flex"
+                alignItems="center"
+                flexDirection={{ xs: "column", sm: "row" }}
+                textAlign={{ xs: "center", sm: "left" }}
+              >
+                <Grid container>
+                  <Grid item xs={12} sm={6}>
+                    <Box pt="5%" display={{ xs: "block", sm: "flex" }} justifyContent={{ xs: "center", sm: "left" }} textAlign={{ xs: "center", sm: "left" }} alignItems="center">
+                      <Box
+                        component="img"
+                        alt="profile"
+                        src={idea?.topic.avatar}
+                        height="2.5rem"
+                        width="2.5rem"
+                        borderRadius="50%"
+                        sx={{ objectFit: "cover", mr: { xs: 0, sm: "1rem" }, mb: { xs: "1rem", sm: 0 } }}
+                      />
+                      <Box component="h4" mb=".5rem">
+                        Creator: {idea?.topic.username}
+                      </Box>
                     </Box>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Box display="flex" justifyContent={{ xs: "center", sm: "right" }} textAlign={{ xs: "center", sm: "right" }} alignItems="center">
-                    <List>
-                      <ListItemText
-                        primary={`Closure Date: ${new Date(`${idea?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
-                        primaryTypographyProps={{
-                          variant: "body1",
-                          mb: { xs: "0.5rem", sm: 0 },
-                        }}
-                      />
-                      <ListItemText
-                        secondary={`Final Closure Date: ${new Date(`${idea?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
-                        primaryTypographyProps={{
-                          variant: "body1",
-                          mb: { xs: "0.5rem", sm: 0 },
-                        }}
-                      />
-                    </List>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-            <Box sx={{ backgroundColor: theme.palette.comment.main, borderRadius: "0.5rem" }}>
-              <Box p="1rem 5%">
-                <Typography
-                  textAlign="left"
-                  mb="1rem"
-                  variant="h2"
-                  color={theme.palette.content.main}
-                  fontWeight="bold"
-                >
-                  {idea?.title}
-                </Typography>
-                <Grid
-                  display="bottom" alignItems="center" justifyContent="bottom"
-                  container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}
-                >
-                  <Grid item xs={3} sm={4} md={6}>
-                    <PostAuthorInfo
-                      avatar={idea?.user.avatar}
-                      userName={idea?.user.userName}
-                      lastUpdate={idea?.lastUpdate}
-                    />
                   </Grid>
-                  <Grid item xs={9} sm={8} md={6}>
-                    {(isEditable) ? (<Box display="flex" justifyContent="right" alignItems="right">
-                      <IconButton
-                        color="info"
-                        style={{ marginRight: "1rem" }}
-                        onClick={() => navigate(`/ideaform/${idea?.topic.id}/${slug}`)}
-                      >
-                        <EditIcon style={{ fontSize: "1.25rem" }} />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        style={{ marginRight: "1rem" }}
-                        onClick={() => setConfirmDialog({
-                          isOpen: true,
-                          title: 'Are you sure to delete this record?',
-                          subTitle: "You can't undo this operation",
-                          onConfirm: () => { handleDelete(idea?.id) }
-                        })}
-                      >
-                        <DeleteIcon style={{ fontSize: "1.25rem" }} />
-                      </IconButton>
-                    </Box>) : (null)}
+                  <Grid item xs={12} sm={6}>
+                    <Box display="flex" justifyContent={{ xs: "center", sm: "right" }} textAlign={{ xs: "center", sm: "right" }} alignItems="center">
+                      <List>
+                        <ListItemText
+                          primary={`Closure Date: ${new Date(`${idea?.topic.closureDate}`).toLocaleDateString('en-GB')}`}
+                          primaryTypographyProps={{
+                            variant: "body1",
+                            mb: { xs: "0.5rem", sm: 0 },
+                          }}
+                        />
+                        <ListItemText
+                          secondary={`Final Closure Date: ${new Date(`${idea?.topic.finalClosureDate}`).toLocaleDateString('en-GB')}`}
+                          primaryTypographyProps={{
+                            variant: "body1",
+                            mb: { xs: "0.5rem", sm: 0 },
+                          }}
+                        />
+                      </List>
+                    </Box>
                   </Grid>
                 </Grid>
-                <Box m="2rem" display="flex" alignItems="center" justifyContent="center">
-                  <Box
-                    component="img"
-                    alt="thumbnail"
-                    src={(idea?.image) ? idea?.image : NoImage}
-                    sx={{
-                      width: { xs: "85vw", sm: "50vw" },
-                      height: { xs: "65vw", sm: "35vw" },
-                      objectFit: "contain",
-                    }}
-                  >
-                  </Box>
-                </Box>
-                <Box>
+              </Box>
+              <Box sx={{ backgroundColor: theme.palette.comment.main, borderRadius: "0.5rem" }}>
+                <Box p="1rem 5%">
                   <Typography
-                    textAlign="justify"
-                    variant="h5"
+                    textAlign="left"
+                    mb="1rem"
+                    variant="h2"
                     color={theme.palette.content.main}
-                    fontSize="1rem"
+                    fontWeight="bold"
                   >
-                    {content}
+                    {idea?.title}
                   </Typography>
-                </Box>
-                {(idea?.files[0] != null) ?
-                idea.files.map((item:any) =>(
-                  <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
+                  <Grid
+                    display="bottom" alignItems="center" justifyContent="bottom"
+                    container spacing={0.5} columns={{ xs: 4, sm: 8, md: 12 }}
+                  >
+                    <Grid item xs={3} sm={4} md={6}>
+                      <PostAuthorInfo
+                        avatar={idea?.user.avatar}
+                        userName={idea?.user.userName}
+                        lastUpdate={idea?.lastUpdate}
+                      />
+                    </Grid>
+                    <Grid item xs={9} sm={8} md={6}>
+                      {(isEditable) ? (<Box display="flex" justifyContent="right" alignItems="right">
+                        <IconButton
+                          color="info"
+                          style={{ marginRight: "1rem" }}
+                          onClick={() => handleEdit(idea)}
+                        >
+                          <EditIcon style={{ fontSize: "1.25rem" }} />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          style={{ marginRight: "1rem" }}
+                          onClick={() => setConfirmDialog({
+                            isOpen: true,
+                            title: 'Are you sure to delete this record?',
+                            subTitle: "You can't undo this operation",
+                            onConfirm: () => { handleDelete(idea?.id) }
+                          })}
+                        >
+                          <DeleteIcon style={{ fontSize: "1.25rem" }} />
+                        </IconButton>
+                      </Box>) : (null)}
+                    </Grid>
+                  </Grid>
+                  <Box m="2rem" display="flex" alignItems="center" justifyContent="center">
                     <Box
                       component="img"
-                      alt="fileIcon"
-                      src={fileIcon}
-                      height="2.5rem"
-                      width="2.5rem"
+                      alt="thumbnail"
+                      src={(idea?.image) ? idea?.image : NoImage}
                       sx={{
-                        objectFit: "cover", mr: "1rem"
-                      }} />
-                    <Typography width="15rem" noWrap>
-                      {`${item.fileName}.${item.fileExtention}`}
+                        width: { xs: "85vw", sm: "50vw" },
+                        height: { xs: "65vw", sm: "35vw" },
+                        objectFit: "contain",
+                      }}
+                    >
+                    </Box>
+                  </Box>
+                  <Box>
+                    <Typography
+                      textAlign="justify"
+                      variant="h5"
+                      color={theme.palette.content.main}
+                      fontSize="1rem"
+                    >
+                      {content}
                     </Typography>
-                    <IconButton onClick={handleDownload} sx={{ ml: "1rem" }}>
-                      <DownloadIcon />
+                  </Box>
+                  {(idea && idea.files) ?
+                    idea.files.map((item: any, index: any) => (
+                      <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
+                        <Box
+                          component="img"
+                          alt="fileIcon"
+                          src={
+                            (item.fileExtention === "pdf") ? pdf :
+                              (item.fileExtention === "doc" || (item.fileExtention === "docx")) ? word :
+                                (item.fileExtention = "zip") ? zip : NoImage
+                          }
+                          height="2.5rem"
+                          width="2.5rem"
+                          sx={{
+                            objectFit: "cover", mr: "1rem"
+                          }} />
+                        <Typography width="15rem" noWrap>
+                          {`${item.fileName}.${item.fileExtention}`}
+                        </Typography>
+                        <IconButton onClick={() => handleDownload((index))} sx={{ ml: "1rem" }}>
+                          <DownloadIcon />
+                        </IconButton>
+                      </Box>)) : (null)}
+                  <Box m="1rem 0rem">
+                    <IconButton onClick={ClickLike}>
+                      {(isLike) ?
+                        <ThumbUpIcon
+                          style={{
+                            fontSize: "1.5rem",
+                            color: theme.palette.content.main,
+                            paddingRight: "0.5rem"
+                          }}
+                        /> :
+                        <ThumbUpTwoToneIcon
+                          style={{
+                            fontSize: "1.5rem",
+                            color: theme.palette.content.icon,
+                            paddingRight: "0.5rem"
+                          }}
+                        />
+                      }
+                      <Box fontSize="1rem">
+                        Like
+                      </Box>
                     </IconButton>
-                  </Box>)) : (null)}
-                <Box m="1rem 0rem">
-                  <IconButton onClick={ClickLike}>
-                    {(isLike) ?
-                      <ThumbUpIcon
-                        style={{
-                          fontSize: "1.5rem",
-                          color: theme.palette.content.main,
-                          paddingRight: "0.5rem"
-                        }}
-                      /> :
-                      <ThumbUpTwoToneIcon
-                        style={{
-                          fontSize: "1.5rem",
-                          color: theme.palette.content.icon,
-                          paddingRight: "0.5rem"
-                        }}
-                      />
-                    }
-                    <Box fontSize="1rem">
-                      Like
-                    </Box>
-                  </IconButton>
-                  <IconButton onClick={ClickDislike}>
-                    {(isDislike) ?
-                      <ThumbDownIcon
-                        style={{
-                          fontSize: "1.5rem",
-                          color: theme.palette.content.main,
-                          paddingRight: "0.5rem"
-                        }}
-                      /> :
-                      <ThumbDownTwoToneIcon
-                        style={{
-                          fontSize: "1.5rem",
-                          color: theme.palette.content.icon,
-                          paddingRight: "0.5rem"
-                        }}
-                      />
-                    }
+                    <IconButton onClick={ClickDislike}>
+                      {(isDislike) ?
+                        <ThumbDownIcon
+                          style={{
+                            fontSize: "1.5rem",
+                            color: theme.palette.content.main,
+                            paddingRight: "0.5rem"
+                          }}
+                        /> :
+                        <ThumbDownTwoToneIcon
+                          style={{
+                            fontSize: "1.5rem",
+                            color: theme.palette.content.icon,
+                            paddingRight: "0.5rem"
+                          }}
+                        />
+                      }
 
-                    <Box fontSize="1rem">
-                      Dislike
-                    </Box>
-                  </IconButton>
+                      <Box fontSize="1rem">
+                        Dislike
+                      </Box>
+                    </IconButton>
+                  </Box>
                 </Box>
               </Box>
             </Box>
-          </Box>
-          <Divider variant="fullWidth" />
-          <Comment ideaId={idea?.id} isComment={isCommentAvailable} />
-        </>
+            <Divider variant="fullWidth" />
+            <Comment ideaId={idea?.id} isComment={isCommentAvailable} />
+          </>
       }
       <ConfirmDialog
         confirmDialog={confirmDialog}

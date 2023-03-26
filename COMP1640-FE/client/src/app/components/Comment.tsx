@@ -85,15 +85,17 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
   };
   const handleSubmit = (event: React.FormEvent<GenericHTMLFormElement>) => {
     event.preventDefault();
-    const comment: ChatComment = {
-      ideaId: ideaId,
-      username: user?.name,
-      content: text,
-      isAnonymous: isAnonymous,
-    };
-    sendComment(comment);
-    setText('');
-    setIsAnonymous(false);
+    if (user && user.name) {
+      const comment: ChatComment = {
+        ideaId: ideaId,
+        username: user.name,
+        content: text,
+        isAnonymous: isAnonymous,
+      };
+      sendComment(comment);
+      setText('');
+      setIsAnonymous(false);
+    }
   };
   return (
     <Box

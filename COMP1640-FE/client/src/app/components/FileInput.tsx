@@ -55,7 +55,7 @@ const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
                 <input type="file" accept=".doc,.docx,.pdf,.zip" multiple onChange={handleFileSelect} />
                 {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
             </div>
-            {selectedFiles.length > 0 && (
+            {/* {selectedFiles.length > 0 && (
                 <div>
                     <h3>Selected Files:</h3>
                     <ul>
@@ -69,7 +69,7 @@ const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
                         ))}
                     </ul>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
