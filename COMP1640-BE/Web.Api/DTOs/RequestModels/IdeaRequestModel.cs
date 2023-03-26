@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Http.ModelBinding;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Web.Api.Extensions;
 
 namespace Web.Api.DTOs.RequestModels
@@ -30,6 +34,7 @@ namespace Web.Api.DTOs.RequestModels
         [Required(ErrorMessage = "Must provide a topic identity")]
         public Guid TopicId { get; set; }
 
+        [BindProperty(Name ="ListFile[]")]
         [DataType(DataType.Upload)]
         [AllowedNumberOfFile(5)]
         [MaxFileSize(2 * 1024 * 1024)]
