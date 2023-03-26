@@ -38,7 +38,7 @@ namespace Web.Api.DTOs.RequestModels
         [DataType(DataType.Upload)]
         [AllowedNumberOfFile(5)]
         [MaxFileSize(2 * 1024 * 1024)]
-        [AllowedExtensions(new string[] { ".txt", ".png", ".jpg", ".doc", ".pdf" })]
+        [AllowedExtensions(new string[] { ".txt", ".png", ".jpg", ".doc", ".pdf", ".docx", ".xlsx" })]
         public List<IFormFile> ListFile { get; set; }
     }
 
