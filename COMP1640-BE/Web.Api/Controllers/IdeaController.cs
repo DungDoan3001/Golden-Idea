@@ -323,7 +323,7 @@ namespace Web.Api.Controllers
         [HttpPut("{id}")]
         [Roles(IdentityRoles.Administrator, IdentityRoles.QAManager, IdentityRoles.QACoordinator, IdentityRoles.Staff)] // Roles Here
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] IdeaRequestModel requestModel)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] IdeaUpdateRequestModel requestModel)
         {
             try
             {
@@ -360,14 +360,21 @@ namespace Web.Api.Controllers
                 {
                     await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
                 }
+                // Begin delete file based on the path to delete
+                List<Entities.File> fileToDeleteLs = new List<File>();
                 foreach(var file in idea.Files)
-                {
-                    if(file.Format == null)
+                {   
+                    if(requestModel.OldListFile.Contains(file.FilePath))
                     {
-                        await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
-                    } else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                        if (file.Format == null)
+                        {
+                            await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
+                        }
+                        else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                        fileToDeleteLs.Add(file);
+                    }
                 }
-                await _fileService.DeleteRangeAsync(idea.Files);
+                await _fileService.DeleteRangeAsync(fileToDeleteLs);
                 
                 // Map Idea.
                 _mapper.Map<IdeaRequestModel, Idea>(requestModel, idea);
