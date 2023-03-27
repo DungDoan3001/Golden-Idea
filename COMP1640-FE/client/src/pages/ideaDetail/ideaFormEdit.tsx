@@ -33,11 +33,12 @@ const openAI = new OpenAIApi(configuration);
 interface FileObject extends File {
   size: number;
 }
-// interface Props {
-//   idea: any;
-//   cancelEdit: () => void;
-//   id: any;
-// }
+interface Props {
+  idea: any;
+  cancelEdit: () => void;
+  id: any;
+}
+
 export const validationSchema = yup.object({
   Title: yup.string().min(2),
   Content: yup.string().min(2),
@@ -50,10 +51,12 @@ export const validationSchema = yup.object({
     }).notRequired(),
   UploadFiles: yup.mixed()
 })
-const IdeaForm = () => {
+
+const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
+  const { control, reset, handleSubmit, formState: { isDirty, isSubmitting }, watch, setValue, register } = useForm({
+    resolver: yupResolver<any>(validationSchema),
+  });
   const theme: any = useTheme();
-  const navigate = useNavigate();
-  const { topicId } = useParams();
   const { user } = useAppSelector(state => state.account);
   const { categories } = useSelector((state: RootState) => state.category);
 
@@ -62,6 +65,7 @@ const IdeaForm = () => {
   const [image, setImage] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
+  const watchFile = watch('File', null);
 
   let fetchMount = true;
   useEffect(() => {
@@ -72,6 +76,13 @@ const IdeaForm = () => {
       fetchMount = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (idea && !watchFile && !isDirty) reset(idea);
+    return () => {
+      if (watchFile) URL.revokeObjectURL(watchFile.preview);
+    }
+  }, [idea, reset, watchFile, isDirty]);
 
   const handleCheckboxClick = () => {
     setDialogOpen(true);
@@ -85,10 +96,12 @@ const IdeaForm = () => {
     setDialogOpen(false);
     setTermsAgreed(true);
   }
+
   const handleFileSelect = (files: FileList) => {
     const data = Array.prototype.slice.call(files)
     setValue('ListFile', data);
   };
+
   const modules = {
     toolbar: [
       [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
@@ -103,15 +116,12 @@ const IdeaForm = () => {
       ['clean']
     ],
   }
+
   const styles = {
     height: '200px',
     marginTop: '-20px',
   }
 
-  const { control, reset, handleSubmit, formState: { isDirty, isSubmitting }, watch, setValue, register } = useForm({
-    resolver: yupResolver<any>(validationSchema),
-  });
-  const watchFile = watch('File', null);
   useEffect(() => {
     if (!watchFile && !isDirty)
       return () => {
@@ -126,10 +136,10 @@ const IdeaForm = () => {
   async function handleSubmitData(data: FieldValues) {
     try {
       setValue('Username', user?.name);
-      setValue('TopicId', topicId);
+      setValue('TopicId', id);
       await axios({
-        method: "post",
-        url: `https://goldenidea.azurewebsites.net/api/ideas`,
+        method: "put",
+        url: `https://goldenidea.azurewebsites.net/api/ideas/${idea.id}`,
         data: data,
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -143,7 +153,7 @@ const IdeaForm = () => {
       });
     }
     delay(1000);
-    navigate(-1)
+    cancelEdit();
   }
 
   const handleGenerateImage = async () => {
@@ -200,17 +210,18 @@ const IdeaForm = () => {
           [theme.breakpoints.down('sm')]: { mt: 3, width: '130%', ml: 5 }
         }}>
           <Grid item xs={11} sm={6} px={2}>
-            <AppTextInput control={control} name='Title' label='Title' multiline={true} />
+            <AppTextInput control={control} name='title' label='Title' multiline={true} />
           </Grid>
           <Grid item xs={11} md={6} px={2}>
             <FormControl>
-              <AppSelect control={control} name='CategoryId' label='Categories' items={categories} />
+              <AppSelect control={control} name='category.id' label='Categories' items={categories} />
             </FormControl>
           </Grid>
           <Grid item xs={11} md={12} px={2} pb={5}>
             <ReactQuill
-              value={watch('Content')}
+              value={watch('content')}
               onChange={data => setValue('Content', data)}
+              defaultValue={idea.content}
               theme='snow'
               modules={modules}
               placeholder='Enter content here'
@@ -234,7 +245,7 @@ const IdeaForm = () => {
                 {watchFile ? (
                   <img src={watchFile.preview} alt="preview" style={{ height: '100px', width: 150, marginTop: -15 }} />
                 ) : (
-                  <img src={''} alt={''} style={{ height: '100px', width: 150, marginTop: -15 }} />
+                  <img src={idea.image} alt={idea.image} style={{ height: '100px', width: 150, marginTop: -15 }} />
                 )}
               </Grid>
             </Grid>
@@ -247,7 +258,7 @@ const IdeaForm = () => {
                 {image ? (
                   <img src={image} alt="generated" style={{ height: '100px', width: 150, marginTop: -15 }} />
                 ) : (
-                  <img src={''} alt={''} style={{ height: '100px', width: 150, marginTop: -15 }} />
+                  <img src={idea.image} alt={idea.image} style={{ height: '100px', width: 150, marginTop: -15 }} />
                 )}
               </Grid>
             </Grid>
@@ -287,7 +298,7 @@ const IdeaForm = () => {
           </Grid>
         </Grid>
         <Box p="2rem 0rem" display='flex' justifyContent='space-between' sx={{ ml: 10, mt: 5, mb: 1, [theme.breakpoints.up('sm')]: { ml: 25 }, [theme.breakpoints.down('sm')]: { mt: 35 } }}>
-          <Button onClick={() => navigate(-1)} variant='contained' color='inherit' sx={{ marginRight: '0.5rem' }}>Cancel</Button>
+          <Button onClick={cancelEdit} variant='contained' color='inherit' sx={{ marginRight: '0.5rem' }}>Cancel</Button>
           <LoadingButton loading={isSubmitting} type='submit' variant='contained' color='success' disabled={!termsAgreed}
           >Submit</LoadingButton>
         </Box>
@@ -296,4 +307,4 @@ const IdeaForm = () => {
   )
 }
 
-export default IdeaForm
+export default IdeaFormEdit
