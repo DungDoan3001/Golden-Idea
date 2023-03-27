@@ -16,7 +16,7 @@ import 'react-quill/dist/quill.snow.css';
 import { Category } from '../../app/models/Category'
 import './style.scss'
 import axios from 'axios'
-import { Configuration, CreateImageRequestSizeEnum, OpenAIApi } from 'openai'
+import { Configuration, CreateImageRequestResponseFormatEnum, CreateImageRequestSizeEnum, OpenAIApi } from 'openai'
 import FileInput from '../../app/components/FileInput'
 import TermsAndConditionsDialog from '../../app/components/TermsAndConditionsDialog'
 import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore'
@@ -165,25 +165,35 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
       prompt: prompt,
       num_images: 1,
       size: '512x512' as CreateImageRequestSizeEnum,
-    }
-    const response = await openAI.createImage(imageParameters);
-    const imageUrl = response.data.data[0].url;
-    // create a new file object from the generated image URL
-    if (imageUrl) {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', imageUrl, true);
-      xhr.responseType = 'blob';
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          const generatedFile = new File([xhr.response], 'generated-image.jpg', { type: 'image/jpeg' });
-          // set the generated file in the form
-          setValue('File', generatedFile);
+      response_format: 'b64_json' as CreateImageRequestResponseFormatEnum,
+    };
+
+    try {
+      const response = await openAI.createImage(imageParameters);
+      console.log(response);
+      const imageBase64 = response.data.data[0].b64_json;
+      console.log(response.data);
+      let imageUrl;
+      if (imageBase64) {
+        const byteCharacters = atob(imageBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
-      };
-      xhr.send();
+        const byteArray = new Uint8Array(byteNumbers);
+        const timestamp = new Date().getTime();
+        const imageBlob = new Blob([byteArray], { type: 'image/png' });
+        const imageName = `${timestamp}-generated-image.png`;; // replace with desired file name
+        const imageFile = new File([imageBlob], imageName, { type: 'image/png' }); // replace with desired file type
+        setValue("File", imageFile);
+        imageUrl = URL.createObjectURL(imageBlob);
+      }
+      setImage(imageUrl);
+      console.log(imageUrl);
+    } catch (error) {
+      console.error(error);
     }
-    setImage(imageUrl);
-  }
+  };
   return (
     <Box sx={{
       [theme.breakpoints.up('sm')]: {
@@ -248,7 +258,7 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
                 {image ? (
                   <img src={image} alt="generated" style={{ height: '100px', width: 150, marginTop: -15 }} />
                 ) : (
-                  <img src={''} alt={''} style={{ height: '100px', width: 150, marginTop: -15 }} />
+                  <img src={idea.image} alt={idea.image} style={{ height: '100px', width: 150, marginTop: -15 }} />
                 )}
               </Grid>
             </Grid>
