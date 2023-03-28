@@ -52,6 +52,6 @@ namespace Web.Api.DTOs.ResponseModels
     {
         public string FilePath { get; set; }
         public string FileName { get; set; }
-        public string FileExtention { get; set; }
+        public string FileExtension { get; set; }
     }
 }

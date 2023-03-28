@@ -79,8 +79,8 @@ namespace Web.Api.Extensions
                 {
                     if(src.Format== null)
                     {
-                        dest.FileExtention = src.PublicId.Split(".").Last();
-                    } else { dest.FileExtention = src.Format; }
+                        dest.FileExtension = src.PublicId.Split(".").Last();
+                    } else { dest.FileExtension = src.Format; }
                 });
             CreateMap<IdeaRequestModel, Idea>();
             // Reaction
