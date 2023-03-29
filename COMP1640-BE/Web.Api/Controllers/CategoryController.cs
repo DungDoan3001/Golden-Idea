@@ -54,7 +54,6 @@ namespace Web.Api.Controllers
                 if (_cache.TryGetValue(CategoryCacheKey.GetAllCacheKey, out IEnumerable<CategoryResponseModel> categoryResponses)) { }
                 else
                 {
-                    _logger.LogInformation("Called");
                     IEnumerable<Entities.Category> categories = await _categoryService.GetAllAsync();
                     categoryResponses = _mapper.Map<IEnumerable<CategoryResponseModel>>(categories);
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -90,7 +89,6 @@ namespace Web.Api.Controllers
         {
             try
             {
-                _logger.LogInformation("Called");
                 Category category = await _categoryService.GetByIdAsync(id);
                 if (category == null)
                 {
