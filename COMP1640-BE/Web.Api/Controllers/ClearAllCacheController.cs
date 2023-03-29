@@ -11,6 +11,7 @@ using Web.Api.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Web.Api.Extensions;
 using Web.Api.Entities.Configuration;
+using Web.Api.Configuration;
 
 namespace Web.Api.Controllers
 {
@@ -20,9 +21,12 @@ namespace Web.Api.Controllers
     public class ClearAllCacheController : ControllerBase
     {
         private readonly IMemoryCache _cache;
-        public ClearAllCacheController(IMemoryCache cache)
+
+        private CacheKey _cacheKey;
+        public ClearAllCacheController(IMemoryCache cache, CacheKey cacheKey)
         {
             _cache = cache;
+            _cacheKey = cacheKey;
         }
 
         [HttpPost("")]
@@ -31,36 +35,21 @@ namespace Web.Api.Controllers
         {
             try
             {
-                //await Task.Run(() =>
-                //{
-                //    TopicCacheKey topicCacheKey = new TopicCacheKey();
-                //    UserCacheKey userCacheKey = new UserCacheKey();
-                //    CategoryCacheKey categoryCacheKey = new CategoryCacheKey();
-                //    DepartmentCacheKey departmentCacheKey = new DepartmentCacheKey();
-                //    IdeaCacheKey ideaCacheKey = new IdeaCacheKey();
-                //    // Delete all idea cache
-                //    foreach (var key in topicCacheKey.GetType().GetProperties())
-                //    {
-                //        _cache.Remove(key.GetValue(topicCacheKey));
-                //    }
-
-                //    foreach (var key in userCacheKey.GetType().GetProperties())
-                //    {
-                //        _cache.Remove(key.GetValue(userCacheKey));
-                //    }
-                //    foreach (var key in categoryCacheKey.GetType().GetProperties())
-                //    {
-                //        _cache.Remove(key.GetValue(categoryCacheKey));
-                //    }
-                //    foreach (var key in departmentCacheKey.GetType().GetProperties())
-                //    {
-                //        _cache.Remove(key.GetValue(departmentCacheKey));
-                //    }
-                //    foreach (var key in ideaCacheKey.GetType().GetProperties())
-                //    {
-                //        _cache.Remove(key.GetValue(ideaCacheKey));
-                //    }
-                //});
+                await Task.Run(() =>
+                {
+                    foreach (var key in _cacheKey.GetType().GetProperties())
+                    {
+                        var type = key.PropertyType;
+                        if (type == typeof(List<string>))
+                        {
+                            List<string> value = (List<string>)key.GetValue(_cacheKey);
+                            foreach (var item in value)
+                            {
+                                _cache.Remove(item);
+                            }
+                        }
+                    }
+                });
                 return Ok();
             }
             catch (Exception)
