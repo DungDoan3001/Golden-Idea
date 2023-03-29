@@ -364,14 +364,17 @@ namespace Web.Api.Controllers
                 List<Entities.File> fileToDeleteLs = new List<File>();
                 foreach(var file in idea.Files)
                 {   
-                    if(requestModel.OldListFile.Contains(file.FilePath))
+                    if(requestModel.OldListFile.Any())
                     {
-                        if (file.Format == null)
+                        if (requestModel.OldListFile.Contains(file.FilePath))
                         {
-                            await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
+                            if (file.Format == null)
+                            {
+                                await _fileUploadService.DeleteMediaAsync(file.PublicId, false);
+                            }
+                            else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
+                            fileToDeleteLs.Add(file);
                         }
-                        else await _fileUploadService.DeleteMediaAsync(file.PublicId, true);
-                        fileToDeleteLs.Add(file);
                     }
                 }
                 await _fileService.DeleteRangeAsync(fileToDeleteLs);
