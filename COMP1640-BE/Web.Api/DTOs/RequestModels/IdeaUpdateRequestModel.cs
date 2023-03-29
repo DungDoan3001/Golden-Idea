@@ -6,6 +6,6 @@ namespace Web.Api.DTOs.RequestModels
     public class IdeaUpdateRequestModel : IdeaRequestModel
     {
         [BindProperty(Name = "OldListFile[]")]
-        public List<string> OldListFile { get; set; }
+        public List<string> OldListFile { get; set; } = new List<string>();
     }
 }

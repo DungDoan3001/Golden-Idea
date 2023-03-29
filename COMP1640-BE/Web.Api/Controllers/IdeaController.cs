@@ -306,7 +306,7 @@ namespace Web.Api.Controllers
                 // Send email to owner of topic
                 if(createdIdea != null)
                 {
-                    var topic = await _ideaService.SendEmailNotifyUserCreateIdea(createdIdea);
+                    await _ideaService.SendEmailNotifyUserCreateIdea(createdIdea);
                 }
                 // Delete all idea cache
                 await Task.Run(() =>

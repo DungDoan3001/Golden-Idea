@@ -28,15 +28,12 @@ namespace Web.Api.Services.EmailService
         {
             try
             {
-                using (var smtpClient = new SmtpClient())
-                {
-                    await smtpClient.ConnectAsync(_smtpServer, _smtpPort, _useSsl);
-                    await smtpClient.AuthenticateAsync(_smtpUsername, _smtpPassword);
-                    await smtpClient.SendAsync(message);
-                    await smtpClient.DisconnectAsync(true);
-
-                    return true;
-                }
+                var smtpClient = new SmtpClient();
+                await smtpClient.ConnectAsync(_smtpServer, _smtpPort, _useSsl);
+                await smtpClient.AuthenticateAsync(_smtpUsername, _smtpPassword);
+                await smtpClient.SendAsync(message);
+                await smtpClient.DisconnectAsync(true);
+                return true;
             }
             catch (Exception)
             {
