@@ -15,6 +15,8 @@ using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using static Web.Api.Configuration.CacheKey;
 using Web.Api.Entities.Configuration;
+using Web.Api.Configuration;
+using Web.Api.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,13 +31,14 @@ namespace Web.Api.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<Entities.User> _userManager;
         private readonly IMemoryCache _cache;
-        private UserCacheKey UserCacheKey = new UserCacheKey();
-        public UserController(IUserService userService, IMapper mapper, UserManager<Entities.User> userManager, IMemoryCache cache)
+        private CacheKey _cacheKey;
+        public UserController(IUserService userService, IMapper mapper, UserManager<Entities.User> userManager, IMemoryCache cache, CacheKey cacheKey)
         {
             _userService = userService;
             _mapper = mapper;
             _userManager = userManager;
             _cache = cache;
+            _cacheKey = cacheKey;
         }
         /// <summary>
         /// Get all users.
@@ -48,7 +51,8 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(UserCacheKey.GetAllCacheKey, out List<UserResponseModel> result)) { }
+                var getAllCacheKey = "GetAllUsers";
+                if (_cache.TryGetValue(getAllCacheKey, out List<UserResponseModel> result)) { }
                 else
                 {
                     var users = await _userService.GetAll();
@@ -66,7 +70,8 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(UserCacheKey.GetAllCacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cacheKey.UserCacheKey.Add(getAllCacheKey);
                 }
                               
                 return Ok(result.OrderBy(x => x.Name));
@@ -93,7 +98,8 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(UserCacheKey.GetAllStaffCacheKey, out List<UserResponseModel> result)) { }
+                var getAllCacheKey = "GetAllStaff";
+                if (_cache.TryGetValue(getAllCacheKey, out List<UserResponseModel> result)) { }
                 else
                 {
                     var users = await _userService.GetAllStaff();
@@ -111,7 +117,8 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(UserCacheKey.GetAllStaffCacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cacheKey.UserCacheKey.Add(getAllCacheKey);
                 }
                
                 return Ok(result.OrderBy(x => x.Name));
@@ -137,7 +144,8 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(UserCacheKey.GetAllAdminQACacheKey, out List<UserResponseModel> result)) { }
+                var getAllCacheKey = "GetAllAdminQA";
+                if (_cache.TryGetValue(getAllCacheKey, out List<UserResponseModel> result)) { }
                 else
                 {
                     var users = await _userService.GetAllAdminQA();
@@ -155,7 +163,8 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(UserCacheKey.GetAllAdminQACacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, result.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cacheKey.UserCacheKey.Add(getAllCacheKey);
                 }
                 
                 return Ok(result.OrderBy(x => x.Name));
@@ -183,23 +192,34 @@ namespace Web.Api.Controllers
         {
             try
             {
-                var user = await _userService.GetById(id);
-                if (user == null)
+                var getByIdCacheKey = id.ToString() + "GetByIdCacheKey";
+                if (_cache.TryGetValue(getByIdCacheKey, out UserResponseModel result)) { }
+                else
                 {
-                    return NotFound(new MessageResponseModel
+                    var user = await _userService.GetById(id);
+                    if (user == null)
                     {
-                        Message = "Not Found",
-                        StatusCode = (int)HttpStatusCode.BadRequest,
-                        Errors = new List<string> { "Can not find the user" }
-                    });
-                }
-                UserResponseModel result = _mapper.Map<UserResponseModel>(user);
-                //Get role
-                var role = _userManager.GetRolesAsync(user);
-                foreach (var r in role.Result)
-                {
-                    result.Role = r;
-                }           
+                        return NotFound(new MessageResponseModel
+                        {
+                            Message = "Not Found",
+                            StatusCode = (int)HttpStatusCode.BadRequest,
+                            Errors = new List<string> { "Can not find the user" }
+                        });
+                    }
+                    result = _mapper.Map<UserResponseModel>(user);
+                    //Get role
+                    var role = await _userManager.GetRolesAsync(user);
+                    foreach (var r in role)
+                    {
+                        result.Role = r;
+                    }
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getByIdCacheKey, result, cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getByIdCacheKey);
+                }   
                 return Ok(result);
             }
             catch (Exception ex)
@@ -242,11 +262,13 @@ namespace Web.Api.Controllers
                 var result = _mapper.Map<UserResponseModel>(updateUser);
                 result.Role = user.Role;
                 // Delete all user cache
-                var keyCache = UserCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(UserCacheKey));
-                }
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Ok(result);
             }
             catch (Exception ex)
@@ -277,11 +299,13 @@ namespace Web.Api.Controllers
             {
                 var result = await _userService.Delete(id);
                 // Delete all user cache
-                var keyCache = UserCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(UserCacheKey));
-                }
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Ok(result);
             }
             catch (Exception ex)

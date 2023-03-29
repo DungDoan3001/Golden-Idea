@@ -26,12 +26,13 @@ namespace Web.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IDepartmentService _departmentService;
         private readonly IMemoryCache _cache;
-        private DepartmentCacheKey DepartmentCacheKey = new DepartmentCacheKey();
-        public DepartmentController(IMapper mapper, IDepartmentService departmentService, IMemoryCache cache)
+        private CacheKey _cacheKey;
+        public DepartmentController(IMapper mapper, IDepartmentService departmentService, IMemoryCache cache, CacheKey cacheKey)
         {
             _mapper = mapper;
             _departmentService = departmentService;
             _cache = cache;
+            _cacheKey = cacheKey;
         }
 
         /// <summary>
@@ -46,7 +47,8 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(DepartmentCacheKey.GetAllCacheKey, out IEnumerable<DepartmentResponseModel> departmentResponse)) { }
+                var getAllCacheKey = "GetAllDepartments";
+                if (_cache.TryGetValue(getAllCacheKey, out IEnumerable<DepartmentResponseModel> departmentResponse)) { }
                 else
                 {
                     IEnumerable<Department> departments = await _departmentService.GetAllAsync();
@@ -55,7 +57,8 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(DepartmentCacheKey.GetAllCacheKey, departmentResponse.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, departmentResponse.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cacheKey.DepartmentCacheKey.Add(getAllCacheKey);
                 }
                 return Ok(departmentResponse.OrderBy(x => x.Name));
             }
@@ -84,18 +87,28 @@ namespace Web.Api.Controllers
         {
             try
             {
-                Department department = await _departmentService.GetByIdAsync(id);
-                if (department == null)
+                var getByIdCacheKey = id.ToString() + "GetById";
+                if (_cache.TryGetValue(getByIdCacheKey, out DepartmentResponseModel departmentResponse)) { }
+                else
                 {
-                    return NotFound(new MessageResponseModel
+                    Department department = await _departmentService.GetByIdAsync(id);
+                    if (department == null)
                     {
-                        Message = "Not found.",
-                        StatusCode = (int)HttpStatusCode.NotFound,
-                        Errors = new List<string> { "Can not find department with the given id" }
-                    });
+                        return NotFound(new MessageResponseModel
+                        {
+                            Message = "Not found.",
+                            StatusCode = (int)HttpStatusCode.NotFound,
+                            Errors = new List<string> { "Can not find department with the given id" }
+                        });
+                    }
+                    departmentResponse = _mapper.Map<DepartmentResponseModel>(department);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getByIdCacheKey, departmentResponse, cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getByIdCacheKey);
                 }
-                DepartmentResponseModel departmentResponse = _mapper.Map<DepartmentResponseModel>(department);
-                
                 return Ok(departmentResponse);
             }
             catch (Exception ex)
@@ -142,11 +155,13 @@ namespace Web.Api.Controllers
                         Errors = new List<string> { "Error while create new." }
                     });
                 // Delete all department cache
-                var keyCache = DepartmentCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(DepartmentCacheKey));
-                }
+                    foreach (var key in _cacheKey.DepartmentCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Created(createdDepartment.Id.ToString(), _mapper.Map<DepartmentResponseModel>(createdDepartment));
             }
             catch (Exception ex)
@@ -196,11 +211,13 @@ namespace Web.Api.Controllers
                         });
                 }
                 // Delete all department cache
-                var keyCache = DepartmentCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(DepartmentCacheKey));
-                }
+                    foreach (var key in _cacheKey.DepartmentCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 _mapper.Map<DepartmentRequestModel, Department>(requestModel, department);
                 Department updatedDepartment = await _departmentService.UpdateAsync(department);
                 return Ok(_mapper.Map<DepartmentResponseModel>(updatedDepartment));
@@ -259,11 +276,13 @@ namespace Web.Api.Controllers
                         Errors = new List<string> { "Error while delete." }
                     });
                 // Delete all department cache
-                var keyCache = DepartmentCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(DepartmentCacheKey));
-                }
+                    foreach (var key in _cacheKey.DepartmentCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return NoContent();
             }
             catch (Exception ex)

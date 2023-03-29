@@ -12,10 +12,10 @@ using Web.Api.Extensions;
 using Web.Api.Services.User;
 using Web.Api.Entities;
 using Microsoft.Extensions.Caching.Memory;
-using Web.Api.Configuration;
 using static Web.Api.Configuration.CacheKey;
 using Microsoft.AspNetCore.Authorization;
 using Web.Api.Entities.Configuration;
+using Web.Api.Configuration;
 
 namespace Web.Api.Controllers
 {
@@ -28,13 +28,14 @@ namespace Web.Api.Controllers
         private readonly ITopicService _topicService;
         private readonly IUserService _userService;
         private readonly IMemoryCache _cache;
-        private TopicCacheKey topicCachekey = new TopicCacheKey();
-        public TopicController(IMapper mapper, ITopicService topicService, IUserService userService, IMemoryCache cache)
+        private CacheKey _cacheKey;
+        public TopicController(IMapper mapper, ITopicService topicService, IUserService userService, IMemoryCache cache, CacheKey cacheKey)
         {
             _mapper = mapper;
             _topicService = topicService;
             _userService = userService;
             _cache = cache;
+            _cacheKey = cacheKey;
         }
 
         /// <summary>
@@ -49,7 +50,8 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if(_cache.TryGetValue(topicCachekey.GetAllCacheKey,out IEnumerable<TopicResponseModel> TopicResponses)) { }
+                var getAllCacheKey = "GetAllTopics";
+                if (_cache.TryGetValue(getAllCacheKey,out IEnumerable<TopicResponseModel> TopicResponses)) { }
                 else
                 {
                     IEnumerable<Entities.Topic> topics = await _topicService.GetAllAsync();
@@ -58,7 +60,8 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(topicCachekey.GetAllCacheKey, TopicResponses.OrderByDescending(x => x.ClosureDate), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, TopicResponses.OrderByDescending(x => x.ClosureDate), cacheEntryOptions);
+                    _cacheKey.TopicCacheKey.Add(getAllCacheKey);
                 }
                 return Ok(TopicResponses.OrderByDescending(x => x.ClosureDate));
 
@@ -86,8 +89,20 @@ namespace Web.Api.Controllers
         {
             try
             {
-                IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserName(userName);
-                IEnumerable<TopicResponseModel>  TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
+                var getAllByUserIdCacheKey = userName + "GetAllByUserIdCacheKey";
+                if (_cache.TryGetValue(getAllByUserIdCacheKey, out IEnumerable<TopicResponseModel> TopicResponses)) { }
+                else
+                {
+                    IEnumerable<Entities.Topic> topics = await _topicService.GetAllByUserName(userName);
+                    TopicResponses = _mapper.Map<IEnumerable<TopicResponseModel>>(topics);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getAllByUserIdCacheKey, TopicResponses.OrderByDescending(x => x.ClosureDate), cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getAllByUserIdCacheKey);
+                }
+               
                 return Ok(TopicResponses.OrderByDescending(x => x.ClosureDate));
             }
             catch (Exception ex)
@@ -115,18 +130,28 @@ namespace Web.Api.Controllers
         {
             try
             {
-                Entities.Topic topic = await _topicService.GetByIdAsync(id);
-                if (topic == null)
+                var getByIdCacheKey = id.ToString() + "GetById";
+                if (_cache.TryGetValue(getByIdCacheKey, out TopicResponseModel TopicResponse)) { }
+                else
                 {
-                    return NotFound(new MessageResponseModel
+                    Entities.Topic topic = await _topicService.GetByIdAsync(id);
+                    if (topic == null)
                     {
-                        Message = "Not found.",
-                        StatusCode = (int)HttpStatusCode.NotFound,
-                        Errors = new List<string> { "Can not find the topic with the given id." }
-                    });
+                        return NotFound(new MessageResponseModel
+                        {
+                            Message = "Not found.",
+                            StatusCode = (int)HttpStatusCode.NotFound,
+                            Errors = new List<string> { "Can not find the topic with the given id." }
+                        });
+                    }
+                    TopicResponse = _mapper.Map<TopicResponseModel>(topic);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getByIdCacheKey, TopicResponse, cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getByIdCacheKey);
                 }
-                TopicResponseModel TopicResponse = _mapper.Map<TopicResponseModel>(topic);
-
                 return Ok(TopicResponse);
             }
             catch (Exception ex)
@@ -188,12 +213,14 @@ namespace Web.Api.Controllers
                         Errors= new List<string> { "Error while create new." }
                     });
                 // Delete all topic cache
-                var keyCache = topicCachekey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(topicCachekey));
-                }
-                
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
+
                 return Created(createdTopic.Id.ToString(), _mapper.Map<TopicResponseModel>(createdTopic));
             }
             catch (Exception ex)
@@ -259,11 +286,13 @@ namespace Web.Api.Controllers
 
                 Entities.Topic updatedTopic = await _topicService.UpdateAsync(topic);
                 // Delete all topic cache
-                var keyCache = topicCachekey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(topicCachekey));
-                }
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Ok(_mapper.Map<TopicResponseModel>(updatedTopic));
             }
             catch (Exception ex)
@@ -321,11 +350,13 @@ namespace Web.Api.Controllers
                         Errors= new List<string> { "Error while delete." }
                     });
                 // Delete all topic cache
-                var keyCache = topicCachekey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(topicCachekey));
-                }
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return NoContent();
             }
             catch (Exception ex)

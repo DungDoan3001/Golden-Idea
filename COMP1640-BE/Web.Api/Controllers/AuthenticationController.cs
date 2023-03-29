@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using Web.Api.Configuration;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
@@ -16,7 +17,6 @@ using Web.Api.Extensions;
 using Web.Api.Services.Authentication;
 using Web.Api.Services.FileUploadService;
 using Web.Api.Services.ResetPassword;
-using static Web.Api.Configuration.CacheKey;
 
 namespace Web.Api.Controllers
 {
@@ -32,8 +32,8 @@ namespace Web.Api.Controllers
         private readonly IResetPasswordService _resetPasswordService;
         private readonly IFileUploadService _fileUploadService;
         private readonly IMemoryCache _cache;
-        private UserCacheKey UserCacheKey = new UserCacheKey();
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService, IMemoryCache cache)
+        private CacheKey _cacheKey;
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService, IMemoryCache cache, CacheKey cacheKey)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -42,6 +42,7 @@ namespace Web.Api.Controllers
             _resetPasswordService = resetPasswordService;
             _fileUploadService = fileUploadService;
             _cache = cache;
+            _cacheKey = cacheKey;
         }
         /// <summary>
         /// Create a user.
@@ -99,11 +100,13 @@ namespace Web.Api.Controllers
                 var result = _mapper.Map<UserResponseModel>(data);
                 result.Role = userForRegistration.Role;
                 // Delete all user cache
-                var keyCache = UserCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(UserCacheKey));
-                }
+                    foreach (var key in _cacheKey.UserCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Ok(result);
             }
             catch (Exception ex)

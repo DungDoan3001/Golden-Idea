@@ -21,11 +21,10 @@ using Web.Api.Services.View;
 using Web.Api.Services.Comment;
 using Web.Api.Services.ReactionService;
 using Microsoft.Extensions.Caching.Memory;
-using Web.Api.Configuration;
-using static Web.Api.Configuration.CacheKey;
 using Microsoft.AspNetCore.Authorization;
 using Web.Api.Entities.Configuration;
 using System.Security.Claims;
+using Web.Api.Configuration;
 
 namespace Web.Api.Controllers
 {
@@ -45,12 +44,12 @@ namespace Web.Api.Controllers
         private readonly ICommentService _commentService;
         private readonly IReactionService _reactionService;
         private readonly IMemoryCache _cache;
-        private readonly IdeaCacheKey IdeaCacheKey = new IdeaCacheKey();
+        private CacheKey _cacheKey;
 
         public IdeaController(IMapper mapper, IIdeaService ideaService, IFileUploadService fileUploadService,
                             IFileService fileService, ITopicService topicService,
                             ICategoryService categoryService, IUserService userService, IViewService viewService,
-                            ICommentService commentService, IReactionService reactionService, IMemoryCache cache)
+                            ICommentService commentService, IReactionService reactionService, IMemoryCache cache, CacheKey cacheKey)
         {
             _mapper = mapper;
             _ideaService = ideaService;
@@ -63,6 +62,7 @@ namespace Web.Api.Controllers
             _commentService = commentService;
             _reactionService = reactionService;
             _cache = cache;
+            _cacheKey = cacheKey;
         }
 
         /// <summary>
@@ -77,7 +77,8 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(IdeaCacheKey.GetAllCacheKey, out IEnumerable<IdeaResponseModel> ideaResponses)) { }
+                var getAllCacheKey = "GetAllIdeas";
+                if (_cache.TryGetValue(getAllCacheKey, out IEnumerable<IdeaResponseModel> ideaResponses)) { }
                 else
                 {
                     IEnumerable<Idea> ideas = await _ideaService.GetAllAsync();
@@ -90,7 +91,8 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(IdeaCacheKey.GetAllCacheKey, ideaResponses.OrderBy(x => x.Title), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, ideaResponses.OrderBy(x => x.Title), cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getAllCacheKey);
                 }
                 return Ok(ideaResponses.OrderBy(x => x.Title));
             }
@@ -117,9 +119,20 @@ namespace Web.Api.Controllers
         {
             try
             {
-                IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userName, topicId);
-                IEnumerable<IdeaResponseModel>  IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
-                return Ok(IdeaResponses.OrderBy(x => x.Title));
+                var getAllByAuthorCacheKey = userName + "getAllByAuthorCacheKey";
+                if (_cache.TryGetValue(getAllByAuthorCacheKey, out IEnumerable<IdeaResponseModel> ideaResponses)) { }
+                else
+                {           
+                    IEnumerable<Idea> ideas = await _ideaService.GetAllByAuthorAsync(userName, topicId);
+                    ideaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getAllByAuthorCacheKey, ideaResponses.OrderBy(x => x.Title), cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getAllByAuthorCacheKey);
+                }
+                return Ok(ideaResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
@@ -144,9 +157,20 @@ namespace Web.Api.Controllers
         {
             try
             {
-                Idea idea = await _ideaService.GetByIdAsync(ideaId);
-                IdeaResponseModel IdeaResponse = _mapper.Map<IdeaResponseModel>(idea);
-                return Ok(IdeaResponse);
+                var getByIdCacheKey = ideaId.ToString() + "getById";
+                if (_cache.TryGetValue(getByIdCacheKey, out IdeaResponseModel ideaResponse)) { }
+                else
+                {
+                    Idea idea = await _ideaService.GetByIdAsync(ideaId);
+                    ideaResponse = _mapper.Map<IdeaResponseModel>(idea);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getByIdCacheKey, ideaResponse, cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getByIdCacheKey);
+                }
+                return Ok(ideaResponse);
             }
             catch (Exception ex)
             {
@@ -171,9 +195,20 @@ namespace Web.Api.Controllers
         {
             try
             {
-                Idea idea = await _ideaService.GetBySlugAsync(slug);
-                IdeaResponseModel IdeaResponse = _mapper.Map<IdeaResponseModel>(idea);
-                return Ok(IdeaResponse);
+                var getBySlugCacheKey = slug + "getBySlug";
+                if (_cache.TryGetValue(getBySlugCacheKey, out IdeaResponseModel ideaResponse)) { }
+                else
+                {
+                    Idea idea = await _ideaService.GetBySlugAsync(slug);
+                    ideaResponse = _mapper.Map<IdeaResponseModel>(idea);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getBySlugCacheKey, ideaResponse, cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getBySlugCacheKey);
+                }
+                return Ok(ideaResponse);
             }
             catch (Exception ex)
             {
@@ -198,9 +233,20 @@ namespace Web.Api.Controllers
         {
             try
             {
-                IEnumerable<Idea> ideas = await _ideaService.GetAllByTopicAsync(topicId);
-                IEnumerable<IdeaResponseModel>  IdeaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
-                return Ok(IdeaResponses);
+                var getByTopicCacheKey = topicId.ToString() + "getByTopic";                
+                if (_cache.TryGetValue(getByTopicCacheKey, out IEnumerable<IdeaResponseModel> ideaResponses)) { }
+                else
+                { 
+                    IEnumerable<Idea> ideas = await _ideaService.GetAllByTopicAsync(topicId);
+                    ideaResponses = _mapper.Map<IEnumerable<IdeaResponseModel>>(ideas);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getByTopicCacheKey, ideaResponses.OrderBy(x => x.Title), cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getByTopicCacheKey);
+                }   
+                return Ok(ideaResponses.OrderBy(x => x.Title));
             }
             catch (Exception ex)
             {
@@ -263,11 +309,14 @@ namespace Web.Api.Controllers
                     var topic = await _ideaService.SendEmailNotifyUserCreateIdea(createdIdea);
                 }
                 // Delete all idea cache
-                var keyCache = IdeaCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(IdeaCacheKey));
-                }
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
+                
                 return Created(createdIdea.Id.ToString(), new MessageResponseModel { Message = "Success", StatusCode = (int)HttpStatusCode.Created });
             }
             catch (Exception ex)
@@ -398,11 +447,13 @@ namespace Web.Api.Controllers
                     IEnumerable<File> addedFiles = await _fileService.AddRangeAsync(files);
                 }
                 // Delete all idea cache
-                var keyCache = IdeaCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(IdeaCacheKey));
-                }
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Ok(new MessageResponseModel { Message = "Success", StatusCode = (int)HttpStatusCode.OK });
             }
             catch (Exception ex)
@@ -470,11 +521,14 @@ namespace Web.Api.Controllers
                         Errors= new List<string> { "Can not detele an idea with the given id." }
                     });
                 // Delete all idea cache
-                var keyCache = IdeaCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(IdeaCacheKey));
-                }
+                    foreach (var key in _cacheKey.IdeaCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
+
                 return Ok(new MessageResponseModel
                 {
                     Message = "Deleted",

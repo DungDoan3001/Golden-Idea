@@ -39,6 +39,7 @@ using Web.Api.Services.User;
 using Web.Api.Services.View;
 using Web.Api.Services.ZipFile;
 using Web.Api.SignalR;
+using static Web.Api.Configuration.CacheKey;
 
 namespace Web.Api
 {
@@ -212,22 +213,15 @@ namespace Web.Api
             services.AddScoped<IReactionQuery, ReactionQuery>();
             services.AddScoped<ICommentQuery, CommentQuery>();
 
+            //
+            services.AddSingleton<CacheKey>();
             //SignalR
             services.AddSignalR();
 
             //Caching
             services.AddMemoryCache();
             services.AddResponseCaching();
-            //services.AddHttpCacheHeaders(
-            //    (expirationOpt) =>
-            //    {
-            //        expirationOpt.MaxAge = 65;
-            //        expirationOpt.CacheLocation = CacheLocation.Private;
-            //    },
-            //    (validationOpt) =>
-            //    {
-            //        validationOpt.MustRevalidate = true;
-            //    });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

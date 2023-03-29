@@ -13,9 +13,9 @@ using Microsoft.Extensions.Logging;
 using Web.Api.Services.EmailService;
 using Microsoft.Extensions.Caching.Memory;
 using Web.Api.Entities;
-using static Web.Api.Configuration.CacheKey;
 using Microsoft.AspNetCore.Authorization;
 using Web.Api.Entities.Configuration;
+using Web.Api.Configuration;
 
 namespace Web.Api.Controllers
 {
@@ -27,16 +27,15 @@ namespace Web.Api.Controllers
         private readonly IMapper _mapper;
         private readonly ICategoryService _categoryService;
         private readonly ILogger<CategoryController> _logger;
-        private readonly IEmailService _emailService;
         private readonly IMemoryCache _cache;
-        private CategoryCacheKey CategoryCacheKey = new CategoryCacheKey();
-        public CategoryController(IMapper mapper, ICategoryService categoryService, ILogger<CategoryController> logger, IEmailService emailService, IMemoryCache cache)
+        private CacheKey _cacheKey;
+        public CategoryController(IMapper mapper, ICategoryService categoryService, ILogger<CategoryController> logger, IMemoryCache cache, CacheKey cacheKey)
         {
             _mapper = mapper;
             _categoryService = categoryService;
             _logger = logger;
-            _emailService = emailService;
             _cache = cache;
+            _cacheKey = cacheKey;
         }
 
         /// <summary>
@@ -51,17 +50,19 @@ namespace Web.Api.Controllers
         {
             try
             {
-                if (_cache.TryGetValue(CategoryCacheKey.GetAllCacheKey, out IEnumerable<CategoryResponseModel> categoryResponses)) { }
+                var getAllCacheKey = "GetAllCatagories";
+                if (_cache.TryGetValue(getAllCacheKey, out IEnumerable<CategoryResponseModel> categoryResponses)) { }
                 else
                 {
-                    _logger.LogInformation("Called");
+                    _logger.LogInformation("Called");                  
                     IEnumerable<Entities.Category> categories = await _categoryService.GetAllAsync();
                     categoryResponses = _mapper.Map<IEnumerable<CategoryResponseModel>>(categories);
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(CategoryCacheKey.GetAllCacheKey, categoryResponses.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, categoryResponses.OrderBy(x => x.Name), cacheEntryOptions);
+                    _cacheKey.CategoryCacheKey.Add(getAllCacheKey);
                 }
                 return Ok(categoryResponses.OrderBy(x => x.Name));
             }
@@ -91,18 +92,28 @@ namespace Web.Api.Controllers
             try
             {
                 _logger.LogInformation("Called");
-                Category category = await _categoryService.GetByIdAsync(id);
-                if (category == null)
+                var getByIdCacheKey = id.ToString() + "GetById";
+                if (_cache.TryGetValue(getByIdCacheKey, out CategoryResponseModel departmentResponse)) { }
+                else
                 {
-                    return NotFound(new MessageResponseModel
+                    Category category = await _categoryService.GetByIdAsync(id);
+                    if (category == null)
                     {
-                        Message = "Not found.",
-                        StatusCode = (int)HttpStatusCode.NotFound,
-                        Errors = new List<string> { "Can not find the category with the given id" }
-                    });
+                        return NotFound(new MessageResponseModel
+                        {
+                            Message = "Not found.",
+                            StatusCode = (int)HttpStatusCode.NotFound,
+                            Errors = new List<string> { "Can not find the category with the given id" }
+                        });
+                    }
+                    departmentResponse = _mapper.Map<CategoryResponseModel>(category);
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(getByIdCacheKey, departmentResponse, cacheEntryOptions);
+                    _cacheKey.IdeaCacheKey.Add(getByIdCacheKey);
                 }
-                CategoryResponseModel departmentResponse = _mapper.Map<CategoryResponseModel>(category);
-
                 return Ok(departmentResponse);
             }
             catch (Exception ex)
@@ -149,11 +160,13 @@ namespace Web.Api.Controllers
                         Errors = new List<string> { "Error while create new." }
                     });
                 // Delete all category cache
-                var keyCache = CategoryCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(CategoryCacheKey));
-                }
+                    foreach (var key in _cacheKey.CategoryCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Created(createdCategory.Id.ToString(), _mapper.Map<CategoryResponseModel>(createdCategory));
             }
             catch (Exception ex)
@@ -205,11 +218,13 @@ namespace Web.Api.Controllers
                 _mapper.Map<CategoryRequestModel, Entities.Category>(requestModel, category);
                 Entities.Category updatedCategory = await _categoryService.UpdateAsync(category);
                 // Delete all category cache
-                var keyCache = CategoryCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(CategoryCacheKey));
-                }
+                    foreach (var key in _cacheKey.CategoryCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return Ok(_mapper.Map<CategoryResponseModel>(updatedCategory));
             }
             catch (Exception ex)
@@ -267,11 +282,13 @@ namespace Web.Api.Controllers
                         Errors = new List<string> { "Error while update." }
                     });
                 // Delete all category cache
-                var keyCache = CategoryCacheKey.GetType().GetProperties();
-                foreach (var key in keyCache)
+                await Task.Run(() =>
                 {
-                    _cache.Remove(key.GetValue(CategoryCacheKey));
-                }
+                    foreach (var key in _cacheKey.CategoryCacheKey)
+                    {
+                        _cache.Remove(key);
+                    }
+                });
                 return NoContent();
             }
             catch (Exception ex)

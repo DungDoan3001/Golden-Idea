@@ -31,36 +31,36 @@ namespace Web.Api.Controllers
         {
             try
             {
-                await Task.Run(() =>
-                {
-                    TopicCacheKey topicCacheKey = new TopicCacheKey();
-                    UserCacheKey userCacheKey = new UserCacheKey();
-                    CategoryCacheKey categoryCacheKey = new CategoryCacheKey();
-                    DepartmentCacheKey departmentCacheKey = new DepartmentCacheKey();
-                    IdeaCacheKey ideaCacheKey = new IdeaCacheKey();
-                    // Delete all idea cache
-                    foreach (var key in topicCacheKey.GetType().GetProperties())
-                    {
-                        _cache.Remove(key.GetValue(topicCacheKey));
-                    }
+                //await Task.Run(() =>
+                //{
+                //    TopicCacheKey topicCacheKey = new TopicCacheKey();
+                //    UserCacheKey userCacheKey = new UserCacheKey();
+                //    CategoryCacheKey categoryCacheKey = new CategoryCacheKey();
+                //    DepartmentCacheKey departmentCacheKey = new DepartmentCacheKey();
+                //    IdeaCacheKey ideaCacheKey = new IdeaCacheKey();
+                //    // Delete all idea cache
+                //    foreach (var key in topicCacheKey.GetType().GetProperties())
+                //    {
+                //        _cache.Remove(key.GetValue(topicCacheKey));
+                //    }
 
-                    foreach (var key in userCacheKey.GetType().GetProperties())
-                    {
-                        _cache.Remove(key.GetValue(userCacheKey));
-                    }
-                    foreach (var key in categoryCacheKey.GetType().GetProperties())
-                    {
-                        _cache.Remove(key.GetValue(categoryCacheKey));
-                    }
-                    foreach (var key in departmentCacheKey.GetType().GetProperties())
-                    {
-                        _cache.Remove(key.GetValue(departmentCacheKey));
-                    }
-                    foreach (var key in ideaCacheKey.GetType().GetProperties())
-                    {
-                        _cache.Remove(key.GetValue(ideaCacheKey));
-                    }
-                });
+                //    foreach (var key in userCacheKey.GetType().GetProperties())
+                //    {
+                //        _cache.Remove(key.GetValue(userCacheKey));
+                //    }
+                //    foreach (var key in categoryCacheKey.GetType().GetProperties())
+                //    {
+                //        _cache.Remove(key.GetValue(categoryCacheKey));
+                //    }
+                //    foreach (var key in departmentCacheKey.GetType().GetProperties())
+                //    {
+                //        _cache.Remove(key.GetValue(departmentCacheKey));
+                //    }
+                //    foreach (var key in ideaCacheKey.GetType().GetProperties())
+                //    {
+                //        _cache.Remove(key.GetValue(ideaCacheKey));
+                //    }
+                //});
                 return Ok();
             }
             catch (Exception)
