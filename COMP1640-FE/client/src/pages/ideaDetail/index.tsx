@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography, ListItemText, List } from '@mui/material';
 import { useTheme } from '@emotion/react';
 
-import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import ThumbDownTwoToneIcon from '@mui/icons-material/ThumbDownTwoTone';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -27,7 +26,10 @@ import IdeaFormEdit from './ideaFormEdit';
 import NoImage from '../../app/assets/null_img.jpg';
 import pdf from '../../app/assets/pdf.png';
 import word from '../../app/assets/word.png';
-import zip from '../../app/assets/zip.png';
+import image from '../../app/assets/image.png';
+import text from '../../app/assets/text.png';
+import excel from '../../app/assets/excel.png';
+import AnonymousImage from '../../app/assets/anonymous.png';
 
 const IdeaDetail = () => {
   const theme: any = useTheme();
@@ -162,12 +164,30 @@ const IdeaDetail = () => {
       })
     }
   }
-
+  const getFileIcon = (fileExtension: any) => {
+    switch (fileExtension) {
+      case 'pdf':
+        return pdf;
+      case 'doc':
+      case 'docx':
+        return word;
+      case 'xlsx':
+        return excel;
+      case 'txt':
+        return text;
+      case 'png':
+      case 'jpg':
+        return image;
+      default:
+        return NoImage;
+    }
+  }
   return (
     <>
       {(loading || loadReaction) || !user || !user.name ? <Loading /> :
         (editMode) ? <IdeaFormEdit cancelEdit={cancelEdit} id={idea?.topic.id} idea={idea} /> :
           <>
+            {console.log(idea)}
             <Box alignItems="center" justifyContent="center"
               width="100%"
               sx={{
@@ -260,8 +280,8 @@ const IdeaDetail = () => {
                   >
                     <Grid item xs={3} sm={4} md={6}>
                       <PostAuthorInfo
-                        avatar={idea?.user.avatar}
-                        userName={idea?.user.userName}
+                        avatar={idea?.isAnonymous ? AnonymousImage : idea?.user.avatar}
+                        userName={idea?.isAnonymous ? 'Anonymous' : idea?.user.userName}
                         lastUpdate={idea?.lastUpdate}
                       />
                     </Grid>
@@ -318,18 +338,14 @@ const IdeaDetail = () => {
                         <Box
                           component="img"
                           alt="fileIcon"
-                          src={
-                            (item.fileExtention === "pdf") ? pdf :
-                              (item.fileExtention === "doc" || (item.fileExtention === "docx")) ? word :
-                                (item.fileExtention = "zip") ? zip : NoImage
-                          }
+                          src={getFileIcon(item.fileExtension)}
                           height="2.5rem"
                           width="2.5rem"
                           sx={{
                             objectFit: "cover", mr: "1rem"
                           }} />
                         <Typography width="15rem" noWrap>
-                          {`${item.fileName}.${item.fileExtention}`}
+                          {`${item.fileName}.${item.fileExtension}`}
                         </Typography>
                         <IconButton onClick={() => handleDownload((index))} sx={{ ml: "1rem" }}>
                           <DownloadIcon />

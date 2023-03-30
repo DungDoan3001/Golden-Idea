@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import { Box, Button, Divider, List, ListItemText, Pagination, Typography } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
 import CategoryButton from '../../app/components/CategoryButton';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { categoryData } from '../../dataTest.js';
 import { useTheme } from '@emotion/react';
 import { Idea } from '../../app/models/Idea';
@@ -25,6 +25,7 @@ const viewOptions = [
 const ListMyIdeas = () => {
   const theme: any = useTheme();
   const { name, id } = useParams();
+  const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
   const [selectedViewOption, setSelectedViewOption] = useState('latest');
@@ -176,7 +177,7 @@ const ListMyIdeas = () => {
                 variant="contained"
                 size="medium"
                 color="success"
-                onClick={() => setEditMode(true)}
+                onClick={() => navigate(`/ideaform/${id}/slug`)}
                 startIcon={<AddCircleOutline />}
               >
                 Create a new Idea
