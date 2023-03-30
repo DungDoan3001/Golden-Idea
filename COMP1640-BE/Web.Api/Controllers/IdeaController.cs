@@ -119,7 +119,7 @@ namespace Web.Api.Controllers
         {
             try
             {
-                var getAllByAuthorCacheKey = userName + "getAllByAuthorCacheKey";
+                var getAllByAuthorCacheKey = topicId.ToString() + userName + "getAllByAuthorCacheKey";
                 if (_cache.TryGetValue(getAllByAuthorCacheKey, out IEnumerable<IdeaResponseModel> ideaResponses)) { }
                 else
                 {           
