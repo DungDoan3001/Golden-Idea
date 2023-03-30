@@ -8,6 +8,8 @@ using Web.Api.Services.FakeData;
 using Microsoft.AspNetCore.Authorization;
 using Web.Api.Entities.Configuration;
 using Web.Api.Extensions;
+using Microsoft.Extensions.Caching.Memory;
+using Web.Api.Configuration;
 
 namespace Web.Api.Controllers
 {
@@ -17,10 +19,13 @@ namespace Web.Api.Controllers
     public class FakeDataGenController : ControllerBase
     {
         private readonly IFakeDataService _fakeDataService;
-
-        public FakeDataGenController(IFakeDataService fakeDataService)
+        private readonly IMemoryCache _cache;
+        private CacheKey _cacheKey;
+        public FakeDataGenController(IFakeDataService fakeDataService, IMemoryCache cache, CacheKey cacheKey)
         {
             _fakeDataService = fakeDataService;
+            _cache = cache;
+            _cacheKey = cacheKey;
         }
 
         /// <summary>
@@ -44,6 +49,24 @@ namespace Web.Api.Controllers
                 var result = await _fakeDataService.CreateFakeIdeaData(numberToGenerate);
                 if (result)
                 {
+                    // Delete all idea cache
+                    await Task.Run(() =>
+                    {
+                        foreach (var key in _cacheKey.IdeaCacheKey)
+                        {
+                            _cache.Remove(key);
+                        }
+                        // Delete cache for Exception Report Chart Idea
+                        _cache.Remove(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey);
+                        // Delete cache for GetPercentageOfIdeaForEachDepartments chart
+                        _cache.Remove(_cacheKey.PercentageOfIdeasByDepartmentCacheKey);
+                        // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                        _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
+                        // Delete cache for TotalIdeaOfEachDepartmentCacheKey chart
+                        _cache.Remove(_cacheKey.TotalIdeaOfEachDepartmentCacheKey);
+                        // Delete cache for GetDailyReportInThreeMonths chart
+                        _cache.Remove(_cacheKey.DailyReportInThreeMonthsCacheKey);
+                    });
                     return Ok(new MessageResponseModel
                     {
                         Message = "Created successfully " + numberToGenerate + " ideas.",
@@ -76,6 +99,25 @@ namespace Web.Api.Controllers
                 var result = await _fakeDataService.DeleteFakeDataAsync();
                 if (result)
                 {
+                    // Delete all idea cache
+                    await Task.Run(() =>
+                    {
+                        foreach (var key in _cacheKey.IdeaCacheKey)
+                        {
+                            _cache.Remove(key);
+                        }
+                        // Delete cache for Exception Report Chart Idea
+                        _cache.Remove(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey);
+                        // Delete cache for GetPercentageOfIdeaForEachDepartments chart
+                        _cache.Remove(_cacheKey.PercentageOfIdeasByDepartmentCacheKey);
+                        // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                        _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
+                        // Delete cache for TotalIdeaOfEachDepartmentCacheKey chart
+                        _cache.Remove(_cacheKey.TotalIdeaOfEachDepartmentCacheKey);
+                        // Delete cache for GetDailyReportInThreeMonths chart
+                        _cache.Remove(_cacheKey.DailyReportInThreeMonthsCacheKey);
+                    });
+
                     return Ok(new MessageResponseModel
                     {
                         Message = "Deleted successfully every fake idea data",
