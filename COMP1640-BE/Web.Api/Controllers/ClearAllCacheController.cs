@@ -48,6 +48,10 @@ namespace Web.Api.Controllers
                                 _cache.Remove(item);
                             }
                         }
+                        if (type == typeof(string))
+                        {
+                            _cache.Remove(key.GetValue(_cacheKey));
+                        }
                     }
                 });
                 return Ok();

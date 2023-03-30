@@ -161,6 +161,10 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for GetPercentageOfIdeaForEachDepartments chart
+                    _cache.Remove(_cacheKey.PercentageOfIdeasByDepartmentCacheKey);
+                    // Delete cache for TotalIdeaOfEachDepartmentCacheKey chart
+                    _cache.Remove(_cacheKey.TotalIdeaOfEachDepartmentCacheKey);
                 });
                 return Created(createdDepartment.Id.ToString(), _mapper.Map<DepartmentResponseModel>(createdDepartment));
             }
@@ -282,6 +286,10 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for GetPercentageOfIdeaForEachDepartments chart
+                    _cache.Remove(_cacheKey.PercentageOfIdeasByDepartmentCacheKey);
+                    // Delete cache for TotalIdeaOfEachDepartmentCacheKey chart
+                    _cache.Remove(_cacheKey.TotalIdeaOfEachDepartmentCacheKey);
                 });
                 return NoContent();
             }

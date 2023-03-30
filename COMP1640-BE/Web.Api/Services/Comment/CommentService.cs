@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using Web.Api.Data.Queries;
 using Microsoft.Extensions.Configuration;
 using Web.Api.Services.EmailService;
+using Microsoft.Extensions.Caching.Memory;
+using Web.Api.Configuration;
 
 namespace Web.Api.Services.Comment
 {
@@ -26,8 +28,10 @@ namespace Web.Api.Services.Comment
         private readonly ICommentQuery _commentQuery;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly IMemoryCache _cache;
+        private CacheKey _cacheKey;
 
-        public CommentService(IUnitOfWork unitOfWork, AppDbContext context, IMapper mapper, UserManager<Entities.User> userManager, ICommentQuery commentQuery, IConfiguration configuration, IEmailService emailService)
+        public CommentService(IUnitOfWork unitOfWork, AppDbContext context, IMapper mapper, UserManager<Entities.User> userManager, ICommentQuery commentQuery, IConfiguration configuration, IEmailService emailService, IMemoryCache cache, CacheKey cacheKey)
         {
             _unitOfWork = unitOfWork;
             _commentRepo = unitOfWork.GetBaseRepo<Entities.Comment>();
@@ -37,6 +41,8 @@ namespace Web.Api.Services.Comment
             _commentQuery = commentQuery;
             _configuration = configuration;
             _emailService = emailService;
+            _cache = cache;
+            _cacheKey = cacheKey;
         }
 
         public async Task<CommentResponseModel> Create(CommentRequestModel comment)
@@ -69,6 +75,16 @@ namespace Web.Api.Services.Comment
                 {
                     throw new Exception("Send an email to the owner idea is failed!");
                 }
+                // Delete cache for Exception Report Chart Ideas + Comments
+                await Task.Run(() =>
+                {
+                    _cache.Remove(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey);
+                    _cache.Remove(_cacheKey.NumOfCommentByDepartCacheKey);
+                    // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                    _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
+                    // Delete cache for GetDailyReportInThreeMonths chart
+                    _cache.Remove(_cacheKey.DailyReportInThreeMonthsCacheKey);
+                });
                 return result;
             }
             catch (Exception)
@@ -118,6 +134,11 @@ namespace Web.Api.Services.Comment
                 {
                     _commentRepo.DeleteRange(comments);
                     await _unitOfWork.CompleteAsync();
+                    await Task.Run(() =>
+                    {
+                        // Delete cache for GetDailyReportInThreeMonths chart
+                        _cache.Remove(_cacheKey.NumOfCommentByDepartCacheKey);
+                    });
                     return true;
                 } else { return false; }
 

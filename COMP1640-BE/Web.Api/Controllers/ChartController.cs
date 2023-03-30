@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Web.Api.Configuration;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities.Configuration;
 using Web.Api.Extensions;
@@ -18,9 +20,13 @@ namespace Web.Api.Controllers
     public class ChartController : ControllerBase
     {
         public readonly IChartService _chartService;
-        public ChartController(IChartService chartService)
+        private readonly IMemoryCache _cache;
+        private CacheKey _cacheKey;
+        public ChartController(IChartService chartService, CacheKey cacheKey, IMemoryCache cache)
         {
             _chartService = chartService;
+            _cacheKey = cacheKey;
+            _cache = cache;
         }
         /// <summary>
         /// Get all needed information for Contributors Chart.
@@ -57,7 +63,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                return await _chartService.GetTotalIdeaOfEachDepartment();
+                if (_cache.TryGetValue(_cacheKey.TotalIdeaOfEachDepartmentCacheKey, out List<TotalIdeaOfDepartmentsResponseModel> result)) { }
+                else
+                {
+                    result = await _chartService.GetTotalIdeaOfEachDepartment();
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(_cacheKey.TotalIdeaOfEachDepartmentCacheKey, result, cacheEntryOptions);
+                }
+                return result;
             }
             catch (Exception ex)
             {
@@ -107,7 +123,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                return await _chartService.GetPercentageOfIdeaForEachDepartments();
+                if (_cache.TryGetValue(_cacheKey.PercentageOfIdeasByDepartmentCacheKey, out List<PercentageOfIdeaForEachDepartment> result)) { }
+                else
+                {
+                    result = await _chartService.GetPercentageOfIdeaForEachDepartments();
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(_cacheKey.PercentageOfIdeasByDepartmentCacheKey, result, cacheEntryOptions);
+                }
+                return result;
             }
             catch (Exception ex)
             {
@@ -132,7 +158,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                return await _chartService.GetTotalOfStaffAndIdeaAndTopicAndCommment();
+                if (_cache.TryGetValue(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey, out TotalStaffAndIdeaAndTopicAndCommentResponseModel result)) { }
+                else
+                {
+                    result = await _chartService.GetTotalOfStaffAndIdeaAndTopicAndCommment();
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey, result, cacheEntryOptions);
+                }
+                return result;
             }
             catch (Exception ex)
             {
@@ -157,7 +193,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                return await _chartService.GetNumOfIdeaAnonyAndNoCommentByDepart();
+                if (_cache.TryGetValue(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey, out List<NumOfIdeaAnonyByDepartment> result)) { }
+                else
+                {
+                    result = await _chartService.GetNumOfIdeaAnonyAndNoCommentByDepart();
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey, result, cacheEntryOptions);
+                }
+                return result;
             }
             catch (Exception ex)
             {
@@ -181,7 +227,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                return await _chartService.GetNumOfCommentByDepart();
+                if (_cache.TryGetValue(_cacheKey.NumOfCommentByDepartCacheKey, out List<NumOfCommentResponseModel> result)) { }
+                else
+                {
+                    result = await _chartService.GetNumOfCommentByDepart();
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(_cacheKey.NumOfCommentByDepartCacheKey, result, cacheEntryOptions);
+                }
+                return result;
             }
             catch (Exception ex)
             {
@@ -205,7 +261,17 @@ namespace Web.Api.Controllers
         {
             try
             {
-                return await _chartService.GetDailyReportInThreeMonths();
+                if (_cache.TryGetValue(_cacheKey.DailyReportInThreeMonthsCacheKey, out List<DailyReportResponseModel> result)) { }
+                else
+                {
+                    result = await _chartService.GetDailyReportInThreeMonths();
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                        .SetPriority(CacheItemPriority.Normal);
+                    _cache.Set(_cacheKey.DailyReportInThreeMonthsCacheKey, result, cacheEntryOptions);
+                }
+                return result;
             }
             catch (Exception ex)
             {

@@ -219,6 +219,8 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                    _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
                 });
 
                 return Created(createdTopic.Id.ToString(), _mapper.Map<TopicResponseModel>(createdTopic));
@@ -356,6 +358,8 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                    _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
                 });
                 return NoContent();
             }

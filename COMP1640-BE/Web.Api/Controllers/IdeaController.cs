@@ -315,6 +315,16 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for Exception Report Chart Idea
+                    _cache.Remove(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey);
+                    // Delete cache for GetPercentageOfIdeaForEachDepartments chart
+                    _cache.Remove(_cacheKey.PercentageOfIdeasByDepartmentCacheKey);
+                    // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                    _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
+                    // Delete cache for TotalIdeaOfEachDepartmentCacheKey chart
+                    _cache.Remove(_cacheKey.TotalIdeaOfEachDepartmentCacheKey);
+                    // Delete cache for GetDailyReportInThreeMonths chart
+                    _cache.Remove(_cacheKey.DailyReportInThreeMonthsCacheKey);
                 });
                 
                 return Created(createdIdea.Id.ToString(), new MessageResponseModel { Message = "Success", StatusCode = (int)HttpStatusCode.Created });
@@ -347,7 +357,6 @@ namespace Web.Api.Controllers
             {
                 var search = await _ideaService.SearchByTitle(searchTerm);
                 var result = _mapper.Map<List<IdeaResponseModel>>(search);
-
                 return Ok(result);
             }
             catch (Exception ex)
@@ -453,7 +462,10 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for Exception Report Chart Idea
+                    _cache.Remove(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey);
                 });
+
                 return Ok(new MessageResponseModel { Message = "Success", StatusCode = (int)HttpStatusCode.OK });
             }
             catch (Exception ex)
@@ -527,6 +539,16 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for Exception Report Chart Idea
+                    _cache.Remove(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey);
+                    // Delete cache for GetPercentageOfIdeaForEachDepartments chart
+                    _cache.Remove(_cacheKey.PercentageOfIdeasByDepartmentCacheKey);
+                    // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                    _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
+                    // Delete cache for TotalIdeaOfEachDepartmentCacheKey chart
+                    _cache.Remove(_cacheKey.TotalIdeaOfEachDepartmentCacheKey);
+                    // Delete cache for GetDailyReportInThreeMonths chart
+                    _cache.Remove(_cacheKey.DailyReportInThreeMonthsCacheKey);
                 });
 
                 return Ok(new MessageResponseModel

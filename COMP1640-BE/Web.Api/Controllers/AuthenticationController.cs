@@ -106,6 +106,8 @@ namespace Web.Api.Controllers
                     {
                         _cache.Remove(key);
                     }
+                    // Delete cache for chart TotalStaffAndIdeaAndCommentAndTopic
+                    _cache.Remove(_cacheKey.TotalStaffAndIdeaAndCommentAndTopicCacheKey);
                 });
                 return Ok(result);
             }
