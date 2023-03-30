@@ -386,6 +386,7 @@ namespace Web.Api.Controllers
             try
             {
                 string userName = User.Claims.SingleOrDefault(x => x.Type.Equals(ClaimTypes.Name)).Value;
+                string userRole = User.Claims.SingleOrDefault(x => x.Type.Equals(ClaimTypes.Role)).Value;
                 // Check valid request model
                 var message = await CheckValidRequest(requestModel, true);
                 if (message != null)
@@ -403,7 +404,7 @@ namespace Web.Api.Controllers
                         Errors = new List<string> { "Can not find idea with the given id." }
                     });
                 }
-                if (idea.User.UserName != userName)
+                if ((idea.User.UserName != userName && userRole != IdentityRoles.Administrator) || userRole != IdentityRoles.Administrator)
                 {
                     return Conflict(new MessageResponseModel
                     {
@@ -416,7 +417,10 @@ namespace Web.Api.Controllers
                 // Delete old media
                 if(requestModel.File != null)
                 {
-                    await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
+                    if(idea.PublicId != null)
+                    {
+                        await _fileUploadService.DeleteMediaAsync(idea.PublicId, true);
+                    }
                 }
                 // Begin delete file based on the path to delete
                 List<Entities.File> fileToDeleteLs = new List<File>();
@@ -466,7 +470,12 @@ namespace Web.Api.Controllers
                     _cache.Remove(_cacheKey.NumOfIdeaAnonyAndNoCommentByDepartCacheKey);
                 });
 
-                return Ok(new MessageResponseModel { Message = "Success", StatusCode = (int)HttpStatusCode.OK });
+                return Ok(new 
+                { 
+                    Message = "Success", 
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Slug = updatedIdea.Slug,
+                });
             }
             catch (Exception ex)
             {
