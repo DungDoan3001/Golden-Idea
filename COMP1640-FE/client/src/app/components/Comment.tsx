@@ -5,13 +5,18 @@ import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
 import { RootState, useAppSelector } from '../store/configureStore';
-import { Paper, Grid, Avatar, Box, Divider, Button, Checkbox, FormControlLabel, TextField, IconButton, Typography } from '@mui/material';
+import { Paper, Grid, Avatar, Box, Divider, Checkbox, TextField, IconButton, Typography, CircularProgress } from '@mui/material';
 import moment from 'moment';
 import { useTheme } from '@mui/styles';
 import Loading from './Loading';
 import { Send } from '@mui/icons-material';
 import AppPagination from './AppPagination';
 import { GenericHTMLFormElement } from 'axios';
+import BadWords from 'bad-words';
+import { toast } from 'react-toastify';
+import * as toxicity from "@tensorflow-models/toxicity";
+import * as tf from '@tensorflow/tfjs'
+
 interface CommentProps {
   ideaId: any;
   isComment: boolean;
@@ -38,6 +43,8 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
   const [isLoading, setIsLoading] = useState(true);
   const comments = useSelector((state: RootState) => state.comment.comments);
   const [comment, setComment] = useState([]);
+  const [isSending, setIsSending] = useState(false);
+  const [sendIcon, setSendIcon] = useState(<Send />);
   const theme: any = useTheme()
   useEffect(() => {
     var token = sessionStorage.getItem('user');
@@ -67,7 +74,41 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
       connection.stop().catch(error => console.log('Error while stopping connection: ' + error));
     };
   }, [dispatch, ideaId]);
+  const VIOLENT_WORDS = ['violence', 'kill', 'murder', 'hurt', 'attack', 'die'];
+  const RACIST_WORDS = ['racist', 'discriminate', 'hate', 'bigot', 'prejudice'];
 
+  const validateComment = async (commentText: string): Promise<string | null> => {
+    const badWords = new BadWords();
+    if (badWords.isProfane(commentText)) {
+      return 'Your comment contains offensive language.';
+    }
+    const words = commentText.toLowerCase().split(' ');
+
+    for (const word of words) {
+      if (VIOLENT_WORDS.includes(word)) {
+        return 'Your comment contains violent language.';
+      }
+      if (RACIST_WORDS.includes(word)) {
+        return 'Your comment contains racist language.';
+      }
+    }
+    // Load the TensorFlow backend
+    await tf.ready();
+    const threshold = 0.7; // Set the threshold for toxicity detection
+    const toxicityLabels = ['toxicity', 'sexual_explicit']; // Specify which label(s) to detect
+
+    // Load the toxicity classifier model
+    const toxicityClassifier = await toxicity.load(threshold, toxicityLabels);
+
+    // Classify the comment text and check for toxicity
+    const predictions = await toxicityClassifier.classify(commentText);
+    for (const prediction of predictions) {
+      if (prediction.results[0].match) {
+        return 'Your comment contains toxic content.';
+      }
+    }
+    return null;
+  };
   const sendComment = async (comment: ChatComment) => {
     try {
       await connection.invoke('SendComment', comment)
@@ -83,18 +124,32 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
   const handleAnonymousChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsAnonymous(event.target.checked);
   };
-  const handleSubmit = (event: React.FormEvent<GenericHTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<GenericHTMLFormElement>) => {
     event.preventDefault();
+    setText('Checking your content...');
+    setIsSending(true);
+    setSendIcon(<CircularProgress size={24} />);
     if (user && user.name) {
-      const comment: ChatComment = {
-        ideaId: ideaId,
-        username: user.name,
-        content: text,
-        isAnonymous: isAnonymous,
-      };
-      sendComment(comment);
-      setText('');
-      setIsAnonymous(false);
+      const validationResult = await validateComment(text);
+      if (validationResult !== null) {
+        // Display error toast
+        toast.error(validationResult);
+        setText('');
+        setIsSending(false);
+        setSendIcon(<Send />);
+      } else {
+        const comment: ChatComment = {
+          ideaId: ideaId,
+          username: user.name,
+          content: text,
+          isAnonymous: isAnonymous,
+        };
+        sendComment(comment);
+        setText('');
+        setIsSending(false);
+        setSendIcon(<Send />);
+        setIsAnonymous(false);
+      }
     }
   };
   return (
@@ -136,9 +191,9 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
                       <IconButton
                         className={classes.inputAdornment}
                         type="submit"
-                        disabled={!text.trim()}
+                        disabled={!text.trim() || isSending}
                       >
-                        <Send />
+                        {sendIcon}
                       </IconButton>
                     ),
                   }}
@@ -162,13 +217,13 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
               >
                 <Grid container wrap="nowrap" spacing={2}>
                   <Grid item>
-                    <Avatar alt="Profile Image" src={item.isAnonymous === false ? item.avatar : ''} />
+                    <Avatar alt="Profile Image" src={item.isAnonymous ? '' : item.avatar} />
                   </Grid>
                   <Grid item xs zeroMinWidth>
                     <Grid container wrap="nowrap" spacing={2}>
                       <Grid item xs zeroMinWidth>
                         <Box fontSize="1.1rem" component="h4" justifyContent="left">
-                          {item.isAnonymous === false ? item.username : 'Anonymous'}
+                          {item.isAnonymous ? 'Anonymous' : item.username}
                         </Box>
                       </Grid>
                       <Grid item xs zeroMinWidth>

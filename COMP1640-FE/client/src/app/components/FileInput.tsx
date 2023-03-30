@@ -1,76 +1,138 @@
-import { Delete } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { Delete, AddBox, Description, Image, InsertDriveFile, PictureAsPdf } from '@mui/icons-material';
+import { Avatar, IconButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
-const MAX_FILES = 5;
+
+const FileUploaderContainer = styled('div')({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    width: '100%',
+});
+
+const FileInputWrapper = styled('div')({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+});
+
+const UploadedFilesList = styled('div')({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+});
+
+const UploadedFileItem = styled('div')({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    backgroundColor: '#F5F5F5',
+    borderRadius: '4px',
+    padding: '8px',
+});
 
 interface FileInputProps {
-  onChange: (files: FileList) => void;
+    onChange: (files: any) => void;
     name: string;
+    maxFiles: number;
 }
+export const getFileIcon = (fileName: string) => {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    switch (ext) {
+        case 'png':
+        case 'jpg':
+            return <Image />;
+        case 'pdf':
+            return <PictureAsPdf />;
+        case 'doc':
+        case 'docx':
+            return <Description />;
+        case 'xlsx':
+        case 'txt':
+            return <InsertDriveFile />;
+        default:
+            return <InsertDriveFile />;
+    }
+};
+const FileInput: React.FC<FileInputProps> = ({ onChange, maxFiles }) => {
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const [fileLimit, setFileLimit] = useState<boolean>(false);
 
-const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [errorMessage, setErrorMessage] = useState<string>('');
-    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newFiles = event.target.files;
-        if (!newFiles) {
-            return;
-        }
-        const numFiles = newFiles.length;
-        if (selectedFiles.length + numFiles > MAX_FILES) {
-            setErrorMessage(`You can only upload up to ${MAX_FILES} files.`);
-            return;
-        }
-        const oversizedFiles: string[] = [];
-        const validFiles: File[] = [];
-        for (let i = 0; i < numFiles; i++) {
-            const file = newFiles.item(i);
-            if (!file) {
-                continue;
+    const handleUploadFiles = (files: File[]) => {
+        const uploaded = [...uploadedFiles];
+        let limitExceeded = false;
+        files.some((file) => {
+            if (uploaded.findIndex((f) => f.name === file.name) === -1) {
+                if (file.size > MAX_FILE_SIZE) {
+                    toast.error(`${file.name} exceeds the maximum file size of 5MB.`);
+                    return true;
+                }
+                uploaded.push(file);
+                if (uploaded.length === maxFiles) setFileLimit(true);
+                if (uploaded.length > maxFiles) {
+                    toast.error(`You can only add a maximum of ${maxFiles} files.`);
+                    setFileLimit(false);
+                    limitExceeded = true;
+                    return true;
+                }
             }
-            if (file.size > MAX_FILE_SIZE) {
-                oversizedFiles.push(file.name);
-            } else {
-                validFiles.push(file);
-            }
+        });
+        if (!limitExceeded) {
+            setUploadedFiles(uploaded);
+            onChange(uploaded);
         }
-        if (oversizedFiles.length > 0) {
-            setErrorMessage(`The following files are too large: ${oversizedFiles.join(', ')}.`);
-            return;
-        }
-        setErrorMessage('');
-        setSelectedFiles([...selectedFiles, ...validFiles]);
-        onChange(newFiles);
     };
+
+    const handleFileEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const chosenFiles = Array.prototype.slice.call(e.target.files);
+        handleUploadFiles(chosenFiles);
+    };
+
     const handleRemoveFile = (index: number) => {
-        const newSelectedFiles = [...selectedFiles];
-        newSelectedFiles.splice(index, 1);
-        setSelectedFiles(newSelectedFiles);
+        const uploaded = [...uploadedFiles];
+        uploaded.splice(index, 1);
+        setUploadedFiles(uploaded);
+        if (uploaded.length < maxFiles) {
+            setFileLimit(false);
+        }
     };
     return (
-        <div>
-            <div>
-                <input type="file" accept=".doc,.docx,.pdf,.zip" multiple onChange={handleFileSelect} />
-                {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
-            </div>
-            {/* {selectedFiles.length > 0 && (
-                <div>
-                    <h3>Selected Files:</h3>
-                    <ul>
-                        {selectedFiles.map((file, index) => (
-                            <li key={file.name}>
-                                {file.name} ({file.size / 1024} KB)
-                                <IconButton aria-label="delete" size="large" color="error" onClick={() => handleRemoveFile(index)}>
-                                    <Delete fontSize="inherit" />
-                                </IconButton>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )} */}
-        </div>
+        <FileUploaderContainer>
+            <UploadedFilesList>
+                {uploadedFiles.map((file, index) => (
+                    <UploadedFileItem key={file.name}>
+                        <Avatar>
+                            {getFileIcon(file.name)}
+                        </Avatar>
+                        <div className="file-name">
+                            {file.name}
+                        </div>
+                        <IconButton color="error" onClick={() => handleRemoveFile(index)}>
+                            <Delete />
+                        </IconButton>
+                    </UploadedFileItem>
+                ))}
+            </UploadedFilesList>
+            <FileInputWrapper>
+                <label htmlFor="fileUpload">
+                    <IconButton color="info" size='large' component="span">
+                        <AddBox />
+                    </IconButton>
+                </label>
+                <input
+                    id="fileUpload"
+                    type="file"
+                    multiple
+                    accept=".pdf,.png,.doc,.docx,.txt,.xlsx,.jpg"
+                    onChange={handleFileEvent}
+                    style={{ display: 'none' }}
+                />
+                <span>{uploadedFiles.length} files uploaded</span>
+            </FileInputWrapper>
+        </FileUploaderContainer>
     );
 };
 

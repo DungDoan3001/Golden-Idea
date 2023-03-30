@@ -1,29 +1,49 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, Typography, useTheme } from '@mui/material'
-import { watchFile } from 'fs'
+import { Avatar, Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, Typography, useTheme } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 import AppImageInput from '../../app/components/AppImageInput'
 import AppSelect from '../../app/components/AppSelect'
 import AppTextInput from '../../app/components/AppTextInput'
-import { Idea } from '../../app/models/Idea';
-import { addIdea, getIdeaBySlug, updateIdea } from '../myIdeas/ideasSlice';
 import { toast } from 'react-toastify'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Category } from '../../app/models/Category'
 import './style.scss'
 import axios from 'axios'
 import { Configuration, CreateImageRequestResponseFormatEnum, CreateImageRequestSizeEnum, OpenAIApi } from 'openai'
 import FileInput from '../../app/components/FileInput'
 import TermsAndConditionsDialog from '../../app/components/TermsAndConditionsDialog'
 import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore'
-import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import { getCategories } from '../category/categorySlice'
+import { styled } from '@mui/material/styles';
+import { Delete, AddBox, Description, Image, InsertDriveFile, PictureAsPdf } from '@mui/icons-material';
 
+const MAX_FILES = 5;
+//Style for Old List Files
+const FileUploaderContainer = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+  width: '100%',
+});
+
+const UploadedFilesList = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+});
+
+const UploadedFileItem = styled('div')({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  backgroundColor: '#F5F5F5',
+  borderRadius: '4px',
+  padding: '8px',
+});
 //Configuration of OpenAIApi
 const configuration = new Configuration({
   apiKey: process.env.REACT_APP_OPEN_API_KEY
@@ -42,14 +62,13 @@ interface Props {
 export const validationSchema = yup.object({
   Title: yup.string().min(2),
   Content: yup.string().min(2),
-  CategoryId: yup.mixed().required(),
   File: yup.mixed()
     .test('fileSize', 'File size too large', function (value) {
       if (!value) return true;
       const file = value as FileObject;
       return file.size <= 2 * 1024 * 1024;
     }).notRequired(),
-  UploadFiles: yup.mixed()
+  ListFile: yup.mixed()
 })
 
 const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
@@ -65,8 +84,9 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
   const [image, setImage] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
+  const [updatedIdea, setUpdatedIdea] = useState(idea);
+  const [deletedFiles, setDeletedFiles] = useState<string[]>([]);
   const watchFile = watch('File', null);
-
   let fetchMount = true;
   useEffect(() => {
     if (fetchMount) {
@@ -97,11 +117,28 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
     setTermsAgreed(true);
   }
 
-  const handleFileSelect = (files: FileList) => {
-    const data = Array.prototype.slice.call(files)
-    setValue('ListFile', data);
+  const handleFileUpload = (files: File[]) => {
+    setValue('ListFile', files);
   };
 
+  const getFileIcon = (fileExtension: string) => {
+    const ext = fileExtension;
+    switch (ext) {
+      case 'png':
+      case 'jpg':
+        return <Image />;
+      case 'pdf':
+        return <PictureAsPdf />;
+      case 'doc':
+      case 'docx':
+        return <Description />;
+      case 'xlsx':
+      case 'txt':
+        return <InsertDriveFile />;
+      default:
+        return <InsertDriveFile />;
+    }
+  };
   const modules = {
     toolbar: [
       [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
@@ -129,14 +166,12 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
       }
   }, [reset, watchFile, isDirty]);
 
-  function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   async function handleSubmitData(data: FieldValues) {
     try {
       setValue('Username', user?.name);
       setValue('TopicId', id);
+      setValue('CategoryId', data.category.id);
+      console.log(data);
       await axios({
         method: "put",
         url: `https://goldenidea.azurewebsites.net/api/ideas/${idea.id}`,
@@ -152,7 +187,6 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
-    delay(1000);
     cancelEdit();
   }
 
@@ -189,11 +223,18 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
         imageUrl = URL.createObjectURL(imageBlob);
       }
       setImage(imageUrl);
-      console.log(imageUrl);
     } catch (error) {
       console.error(error);
     }
   };
+  function handleDeleteFile(filePath: any) {
+    const updatedFiles = updatedIdea.files.filter((file: { filePath: any }) => file.filePath !== filePath);
+    const newIdea = { ...updatedIdea, files: updatedFiles };
+    setUpdatedIdea(newIdea);
+    setDeletedFiles([...deletedFiles, filePath]);
+    setValue('OldListFile', [...deletedFiles, filePath]);
+  }
+
   return (
     <Box sx={{
       [theme.breakpoints.up('sm')]: {
@@ -265,14 +306,31 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
           )}
           <Grid item xs={12} md={12} px={2} pb={4}>
             <h3>Upload Files</h3>
-            <FileInput onChange={handleFileSelect} name='FileList' />
+            <FileUploaderContainer>
+              <UploadedFilesList>
+                {updatedIdea.files.map((file: { fileName: any, fileExtension: any, filePath: any }, index: any) => (
+                  <UploadedFileItem key={file.fileName}>
+                    <Avatar>
+                      {getFileIcon(file.fileExtension)}
+                    </Avatar>
+                    <div className="file-name">
+                      {file.fileName}.{file.fileExtension}
+                    </div>
+                    <IconButton color="error" onClick={() => handleDeleteFile(file.filePath)}>
+                      <Delete />
+                    </IconButton>
+                  </UploadedFileItem>
+                ))}
+              </UploadedFilesList>
+            </FileUploaderContainer>
+            <FileInput onChange={handleFileUpload} name='ListFile' maxFiles={MAX_FILES - updatedIdea.files.length} />
           </Grid>
           <Grid item xs={12} md={12} px={2}>
             <FormControlLabel
               control={
                 <Checkbox
-                  {...register("IsAnonymous")}
-                  defaultChecked={false}
+                  {...register("isAnonymous")}
+                  defaultChecked={idea?.isAnonymous}
                   color="info"
                 />
               }
