@@ -21,6 +21,7 @@
     "@reduxjs/toolkit": "^1.9.2",
     "@tensorflow-models/toxicity": "^1.2.2",
     "@tensorflow/tfjs": "^4.2.0",
+    "@tensorflow/tfjs-node": "^4.2.0",
     "@types/bad-words": "^3.0.1",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.11",
