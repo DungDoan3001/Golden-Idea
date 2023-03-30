@@ -9,7 +9,7 @@ import ThumbsUpDownTwoToneIcon from '@mui/icons-material/ThumbsUpDownTwoTone';
 import { Link } from 'react-router-dom';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-
+import AnonymousImage from '../assets/anonymous.png';
 interface HomePageItemProps {
   data: any
 }
@@ -129,8 +129,8 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
                 {content}
               </Typography>
               <PostAuthorInfo
-                avatar={data.user.avatar}
-                userName={data.user.userName}
+                avatar={data.isAnonymous ? AnonymousImage : data.user.avatar}
+                userName={data.isAnonymous ? 'Anonymous' : data.user.userName}
                 lastUpdate={data.lastUpdate}
               />
             </Box>

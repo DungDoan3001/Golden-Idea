@@ -1,8 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, Typography, useTheme } from '@mui/material'
-import { watchFile } from 'fs'
 import React, { useEffect, useState } from 'react'
-import { Controller, FieldValues, useForm } from 'react-hook-form'
+import { FieldValues, useForm } from 'react-hook-form'
 import AppImageInput from '../../app/components/AppImageInput'
 import AppSelect from '../../app/components/AppSelect'
 import AppTextInput from '../../app/components/AppTextInput'
@@ -48,7 +47,7 @@ export const validationSchema = yup.object({
       const file = value as FileObject;
       return file.size <= 2 * 1024 * 1024;
     }).notRequired(),
-  UploadFiles: yup.mixed()
+  ListFile: yup.mixed()
 })
 const IdeaForm = () => {
   const theme: any = useTheme();
@@ -85,9 +84,8 @@ const IdeaForm = () => {
     setDialogOpen(false);
     setTermsAgreed(true);
   }
-  const handleFileSelect = (files: FileList) => {
-    const data = Array.prototype.slice.call(files)
-    setValue('ListFile', data);
+  const handleFileUpload = (files: File[]) => {
+    setValue('ListFile', files);
   };
   const modules = {
     toolbar: [
@@ -254,7 +252,7 @@ const IdeaForm = () => {
           )}
           <Grid item xs={12} md={12} px={2} pb={4}>
             <h3>Upload Files</h3>
-            <FileInput onChange={handleFileSelect} name='FileList' />
+            <FileInput onChange={handleFileUpload} name='ListFile' maxFiles={5} />
           </Grid>
           <Grid item xs={12} md={12} px={2}>
             <FormControlLabel

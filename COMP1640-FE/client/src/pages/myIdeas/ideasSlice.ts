@@ -2,6 +2,7 @@ import { AsyncThunk, createAsyncThunk, createSlice, Slice } from '@reduxjs/toolk
 import { Idea } from '../../app/models/Idea';
 import agent from '../../app/api/agent';
 import { toast } from 'react-toastify';
+import { router } from "../../app/routes/Routers";
 
 export interface GetMyIdeasParams {
   topicId: any;
@@ -71,8 +72,13 @@ export const addIdea = createAsyncThunk('ideas/addIdea', async (values: any) => 
 export const getIdeaBySlug: AsyncThunk<Idea, any, {}> = createAsyncThunk(
   'ideas/getIdeaBySlug',
   async (slug: any) => {
-    const response = await agent.Idea.getIdeaBySlug(slug);
-    return response;
+    try {
+      const response = await agent.Idea.getIdeaBySlug(slug);
+      return response;
+    } catch (error: any) {
+      router.navigate('/server-error');
+      throw new Error(`Failed to get idea by slug: ${error.message}`);
+    }
   }
 );
 
