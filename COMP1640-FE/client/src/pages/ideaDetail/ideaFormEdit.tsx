@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux'
 import { getCategories } from '../category/categorySlice'
 import { styled } from '@mui/material/styles';
 import { Delete, AddBox, Description, Image, InsertDriveFile, PictureAsPdf } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom'
 
 const MAX_FILES = 5;
 //Style for Old List Files
@@ -80,6 +81,7 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
   const { categories } = useSelector((state: RootState) => state.category);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [uploadOption, setUploadOption] = useState('upload');
   const [image, setImage] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -171,23 +173,25 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
       setValue('Username', user?.name);
       setValue('TopicId', id);
       setValue('CategoryId', data.category.id);
-      console.log(data);
-      await axios({
+      const response: any = await axios({
         method: "put",
         url: `https://goldenidea.azurewebsites.net/api/ideas/${idea.id}`,
         data: data,
         headers: { "Content-Type": "multipart/form-data" },
       });
+      navigate(`/ideaDetail/${response.data.slug}`);
       toast.success('Successfully', {
         position: toast.POSITION.TOP_RIGHT,
       });
+      cancelEdit();
     } catch (error: any) {
       console.log(error);
+      cancelEdit();
       toast.error('Failed to load resource: the server responded with a status of 409 (Conflict)', {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
-    cancelEdit();
+
   }
 
   const handleGenerateImage = async () => {
@@ -261,7 +265,7 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
           <Grid item xs={11} md={12} px={2} pb={5}>
             <ReactQuill
               value={watch('content')}
-              onChange={data => setValue('Content', data)}
+              onChange={data => setValue('content', data)}
               defaultValue={idea.content}
               theme='snow'
               modules={modules}

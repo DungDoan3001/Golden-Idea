@@ -47,15 +47,12 @@ const IdeaDetail = () => {
   const [editMode, setEditMode] = useState(false);
 
   const dispatch = useAppDispatch();
-  let fetchMount = true;
   useEffect(() => {
-    if (fetchMount) {
-      dispatch(getIdeaBySlug(slug));
-    }
+    dispatch(getIdeaBySlug(slug));
     return () => {
-      fetchMount = false;
+      // cleanup function
     };
-  }, []);
+  }, [dispatch, slug]);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -45,8 +45,6 @@ const ListCatagoryIdeas = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  console.log(ideaData);
-
   const dispatch = useAppDispatch();
   useEffect(() => {
     const fetchData = async () => {

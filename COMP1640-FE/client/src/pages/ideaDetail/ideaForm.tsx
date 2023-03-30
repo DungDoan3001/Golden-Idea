@@ -158,9 +158,7 @@ const IdeaForm = () => {
 
     try {
       const response = await openAI.createImage(imageParameters);
-      console.log(response);
       const imageBase64 = response.data.data[0].b64_json;
-      console.log(response.data);
       let imageUrl;
       if (imageBase64) {
         const byteCharacters = atob(imageBase64);
