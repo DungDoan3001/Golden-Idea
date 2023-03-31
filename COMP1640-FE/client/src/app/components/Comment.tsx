@@ -77,7 +77,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
   const VIOLENT_WORDS = new Set(['violence', 'kill', 'murder', 'hurt', 'attack', 'die']);
   const RACIST_WORDS = new Set(['racist', 'discriminate', 'hate', 'bigot', 'prejudice']);
 
-  const toxicityLabels = ['toxicity', 'sexual_explicit'];
+  const toxicityLabels = ['toxicity'];
   const threshold = 0.7;
   const toxicityClassifierPromise = tf.ready().then(() => toxicity.load(threshold, toxicityLabels));
 

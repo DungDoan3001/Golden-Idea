@@ -1,18 +1,15 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, Typography, useTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import AppImageInput from '../../app/components/AppImageInput'
 import AppSelect from '../../app/components/AppSelect'
 import AppTextInput from '../../app/components/AppTextInput'
-import { Idea } from '../../app/models/Idea';
-import { addIdea, getIdeaBySlug, updateIdea } from '../myIdeas/ideasSlice';
 import { toast } from 'react-toastify'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Category } from '../../app/models/Category'
 import './style.scss'
 import axios from 'axios'
 import { Configuration, CreateImageRequestResponseFormatEnum, CreateImageRequestSizeEnum, OpenAIApi } from 'openai'
