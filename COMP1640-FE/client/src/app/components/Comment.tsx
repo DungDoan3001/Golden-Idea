@@ -74,8 +74,12 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
       connection.stop().catch(error => console.log('Error while stopping connection: ' + error));
     };
   }, [dispatch, ideaId]);
-  const VIOLENT_WORDS = ['violence', 'kill', 'murder', 'hurt', 'attack', 'die'];
-  const RACIST_WORDS = ['racist', 'discriminate', 'hate', 'bigot', 'prejudice'];
+  const VIOLENT_WORDS = new Set(['violence', 'kill', 'murder', 'hurt', 'attack', 'die']);
+  const RACIST_WORDS = new Set(['racist', 'discriminate', 'hate', 'bigot', 'prejudice']);
+
+  const toxicityLabels = ['toxicity', 'sexual_explicit'];
+  const threshold = 0.7;
+  const toxicityClassifierPromise = tf.ready().then(() => toxicity.load(threshold, toxicityLabels));
 
   const validateComment = async (commentText: string): Promise<string | null> => {
     const badWords = new BadWords();
@@ -85,22 +89,17 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
     const words = commentText.toLowerCase().split(' ');
 
     for (const word of words) {
-      if (VIOLENT_WORDS.includes(word)) {
+      if (VIOLENT_WORDS.has(word)) {
         return 'Your comment contains violent language.';
       }
-      if (RACIST_WORDS.includes(word)) {
+      if (RACIST_WORDS.has(word)) {
         return 'Your comment contains racist language.';
       }
     }
-    // Load the TensorFlow backend
-    await tf.ready();
-    const threshold = 0.7; // Set the threshold for toxicity detection
-    const toxicityLabels = ['toxicity', 'sexual_explicit']; // Specify which label(s) to detect
 
-    // Load the toxicity classifier model
-    const toxicityClassifier = await toxicity.load(threshold, toxicityLabels);
+    // Load the toxicity classifier model if it hasn't been loaded yet
+    const toxicityClassifier = await toxicityClassifierPromise;
 
-    // Classify the comment text and check for toxicity
     const predictions = await toxicityClassifier.classify(commentText);
     for (const prediction of predictions) {
       if (prediction.results[0].match) {
