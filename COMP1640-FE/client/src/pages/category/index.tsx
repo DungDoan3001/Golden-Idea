@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, IconButton, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
-import { categoryData } from '../../dataTest';
 import Header from '../../app/components/Header';
 import Loading from '../../app/components/Loading';
 import { AddCircleOutline, Delete, Edit } from '@mui/icons-material';
@@ -16,7 +15,6 @@ import { deleteCategory, getCategories } from './categorySlice';
 const CategoryPage = () => {
     const theme: any = useTheme();
     const [pageSize, setPageSize] = React.useState<number>(5);
-    const [data, setData] = useState(categoryData);
     const [editMode, setEditMode] = useState(false);
     const [recordForEdit, setRecordForEdit] = useState<Category | undefined>(undefined);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '', onConfirm: () => { } })

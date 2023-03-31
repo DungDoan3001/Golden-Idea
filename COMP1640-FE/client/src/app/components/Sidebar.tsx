@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Drawer,
@@ -13,7 +12,6 @@ import {
 } from "@mui/material";
 import {
   Topic,
-  Forum,
   ChevronLeft,
   ChevronRightOutlined,
   HomeOutlined,

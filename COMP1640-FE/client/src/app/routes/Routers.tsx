@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
               { path: 'ideaDetail/:slug', element: <IdeaDetail /> },
               { path: 'catagoryTopic/:name', element: <ListCatagoryIdeas /> },
               { path: 'search/:filter', element: <SearchPage /> },
-              { path: 'ideaform/:topicId/:slug', element: <IdeaForm /> },
+              { path: 'ideaform/:topicId/', element: <IdeaForm /> },
             ]
           },
         ]

@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Avatar, Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, Typography, useTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Controller, FieldValues, useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
+import { FieldValues, useForm } from 'react-hook-form'
 import AppImageInput from '../../app/components/AppImageInput'
 import AppSelect from '../../app/components/AppSelect'
 import AppTextInput from '../../app/components/AppTextInput'
@@ -19,7 +19,7 @@ import { RootState, useAppDispatch, useAppSelector } from '../../app/store/confi
 import { useSelector } from 'react-redux'
 import { getCategories } from '../category/categorySlice'
 import { styled } from '@mui/material/styles';
-import { Delete, AddBox, Description, Image, InsertDriveFile, PictureAsPdf } from '@mui/icons-material';
+import { Delete, Description, Image, InsertDriveFile, PictureAsPdf } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom'
 
 const MAX_FILES = 5;

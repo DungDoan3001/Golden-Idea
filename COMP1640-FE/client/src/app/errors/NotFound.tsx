@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Button, Container, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { Button, Typography } from '@mui/material';
 import { Link } from "react-router-dom";
 import Image404 from '../assets/404.svg';
 

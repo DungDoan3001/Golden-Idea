@@ -10,7 +10,7 @@ import * as z from 'zod';
 import './style.scss';
 import { addTopic, getTopics, updateTopic } from './topicSlice';
 import { toast } from 'react-toastify';
-import moment from 'moment';
+
 
 interface Props {
     topic?: Topic;
@@ -40,7 +40,6 @@ const TopicForm = ({ topic, cancelEdit }: Props) => {
     }, [topic, reset, isDirty]);
     async function handleSubmitData(data: FieldValues) {
         try {
-            let response: Topic;
             if (topic) {
                 const updatedTopic: Topic = {
                     id: topic.id,
@@ -49,8 +48,7 @@ const TopicForm = ({ topic, cancelEdit }: Props) => {
                     closureDate: new Date(data.closureDate), // convert string to date object
                     finalClosureDate: new Date(data.finalClosureDate), // convert string to date object
                 };
-                console.log(updatedTopic);
-                response = await dispatch(updateTopic(updatedTopic)).unwrap();
+                await dispatch(updateTopic(updatedTopic)).unwrap();
             } else {
                 const newTopic: Topic = {
                     name: data.name,
@@ -58,7 +56,7 @@ const TopicForm = ({ topic, cancelEdit }: Props) => {
                     closureDate: new Date(data.closureDate), // convert string to date object
                     finalClosureDate: new Date(data.finalClosureDate), // convert string to date object
                 };
-                response = await dispatch(addTopic(newTopic)).unwrap();
+                await dispatch(addTopic(newTopic)).unwrap();
             }
             cancelEdit();
             await dispatch(getTopics()).unwrap();

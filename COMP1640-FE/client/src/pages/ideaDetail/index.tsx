@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Divider, Grid, IconButton, Paper, Typography, ListItemText, List } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Divider, Grid, IconButton, Typography, ListItemText, List } from '@mui/material';
 import { useTheme } from '@emotion/react';
 
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
@@ -9,7 +9,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
-
+import parse from 'html-react-parser';
 import PostAuthorInfo from '../../app/components/PostAuthorInfo';
 
 import { useNavigate, useParams } from 'react-router-dom';
@@ -43,7 +43,6 @@ const IdeaDetail = () => {
   const { user } = useAppSelector(state => state.account);
   const [isCommentAvailable, setIsCommentAvailable] = useState(true);
   const [isEditable, setIsEditable] = useState(true);
-  const [content, setContent] = useState("");
   const [editMode, setEditMode] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -61,7 +60,7 @@ const IdeaDetail = () => {
         const data = {
           username: user.name
         }
-        const response = await agent.Idea.postView(idea.id, data)
+        await agent.Idea.postView(idea.id, data)
         const res = await agent.Idea.getReaction(idea.id, user.name);
         if (res.react === 1) setIslike(true)
         else if (res.react === -1) setIsDislike(true)
@@ -83,9 +82,6 @@ const IdeaDetail = () => {
       const today = new Date().getTime();
       const closureDate = new Date(idea?.topic.closureDate).getTime();
       setIsEditable(today < closureDate && user.name === idea.user.userName);
-      const regex = /(<([^>]+)>)/ig;
-      const newString = idea.content.replace(regex, '');
-      setContent(newString);
     }
   }, [idea, user]);
 
@@ -99,7 +95,7 @@ const IdeaDetail = () => {
         (isLike ? setIslike(false) : setIslike(true));
         setIsDislike(false);
         const data = { ideaId: idea.id, username: user.name };
-        const response = await agent.Idea.postReaction("upvote", data);
+        await agent.Idea.postReaction("upvote", data);
       } catch (error) {
         console.log(error);
       }
@@ -111,7 +107,7 @@ const IdeaDetail = () => {
         (isDislike ? setIsDislike(false) : setIsDislike(true));
         setIslike(false);
         const data = { ideaId: idea.id, username: user.name };
-        const response = await agent.Idea.postReaction("downvote", data);
+        await agent.Idea.postReaction("downvote", data);
       } catch (error) {
         console.log(error);
       }
@@ -326,7 +322,7 @@ const IdeaDetail = () => {
                       color={theme.palette.content.main}
                       fontSize="1rem"
                     >
-                      {content}
+                      {parse(idea?.content || '')}
                     </Typography>
                   </Box>
                   {(idea && idea.files) ?

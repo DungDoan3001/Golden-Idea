@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { themeSettings } from "./theme";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAppDispatch } from "./app/store/configureStore";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./app/components/Loading";
 import Login from "./pages/account/login";

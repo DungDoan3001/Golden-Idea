@@ -26,8 +26,6 @@ const ListMyIdeas = () => {
   const theme: any = useTheme();
   const { name, id } = useParams();
   const navigate = useNavigate();
-  const [editMode, setEditMode] = useState(false);
-  const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
   const [selectedViewOption, setSelectedViewOption] = useState('latest');
   const { user } = useAppSelector(state => state.account);
   const { ideas_user, loading } = useSelector((state: RootState) => state.idea);
@@ -79,10 +77,6 @@ const ListMyIdeas = () => {
     setIdea(sortedIdeas.slice(startIndex, endIndex));
   }, [selectedViewOption, ideas_user, currentPage]);
 
-  function cancelEdit() {
-    if (recordForEdit) setRecordForEdit(undefined);
-    setEditMode(false);
-  }
   const handleViewOptionChange = (value: string) => {
     setSelectedViewOption(value);
   };
@@ -177,7 +171,7 @@ const ListMyIdeas = () => {
                 variant="contained"
                 size="medium"
                 color="success"
-                onClick={() => navigate(`/ideaform/${id}/slug`)}
+                onClick={() => navigate(`/ideaform/${id}`)}
                 startIcon={<AddCircleOutline />}
               >
                 Create a new Idea

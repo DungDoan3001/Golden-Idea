@@ -1,5 +1,5 @@
 import { ResponsivePie } from "@nivo/pie";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useStoreContext } from "../context/ContextProvider";
 
 interface Props {

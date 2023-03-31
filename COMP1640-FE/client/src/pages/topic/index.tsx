@@ -13,8 +13,8 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 import { deleteTopic, getTopics } from './topicSlice';
-import agent from '../../app/api/agent';
 import axios from 'axios';
+
 const TopicPage = () => {
     const theme: any = useTheme();
     const [pageSize, setPageSize] = React.useState<number>(5);
@@ -137,10 +137,10 @@ const TopicPage = () => {
                 if (user) {
                     isDownloadablePerson = user?.role[0] === 'QA Manager';
                 }
-
+                const is_modifyData_Person = `${user?.role[0]}` === 'Administrator' || (params.row.username === user?.name && `${user?.role[0]}` === 'QA Coordinator')
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: "3px" }}>
-                        {is_CRUD_Person && (
+                        {is_modifyData_Person && (
                             <>
                                 <IconButton aria-label="edit" size="large" color="info" onClick={() => handleSelect(params.row)} >
                                     <Edit fontSize="inherit" />

@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Box, Button, Typography, List, ListItemText, Divider, IconButton, Pagination } from '@mui/material';
+import { Box, Button, Typography, List, ListItemText, Divider, Pagination } from '@mui/material';
 import HomePageItem from '../../app/components/HomePageItem';
 import CategoryButton from '../../app/components/CategoryButton';
 import { useParams } from "react-router-dom";
 import { useTheme } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
-import { Idea } from '../../app/models/Idea';
 import { AddCircleOutline } from '@mui/icons-material';
 import Filter from '../../app/components/filter/Filter';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../app/store/configureStore';
 import { getIdeas } from './ideasSlice';
 import Loading from '../../app/components/Loading';
-import { get } from 'http';
 import { getCategories } from '../category/categorySlice';
 import BackButton from '../../app/components/BackButton';
 const viewOptions = [
@@ -28,8 +26,6 @@ const ListIdeas = () => {
   const theme: any = useTheme();
   const navigate = useNavigate();
   const { name, id } = useParams();
-  const [editMode, setEditMode] = useState(false);
-  const [recordForEdit, setRecordForEdit] = useState<Idea | undefined>(undefined);
   const [selectedViewOption, setSelectedViewOption] = useState('latest');
   const { ideas, loading } = useSelector((state: RootState) => state.idea);
   const { categories } = useSelector((state: RootState) => state.category);
@@ -177,7 +173,7 @@ const ListIdeas = () => {
                   variant="contained"
                   size="medium"
                   color="success"
-                  onClick={() => navigate(`/ideaform/${id}/slug`)}
+                  onClick={() => navigate(`/ideaform/${id}`)}
                   startIcon={<AddCircleOutline />}
                 >
                   Create a new Idea
