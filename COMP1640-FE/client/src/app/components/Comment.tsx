@@ -12,10 +12,11 @@ import Loading from './Loading';
 import { Send } from '@mui/icons-material';
 import AppPagination from './AppPagination';
 import { GenericHTMLFormElement } from 'axios';
-import BadWords from 'bad-words';
 import { toast } from 'react-toastify';
-import * as toxicity from "@tensorflow-models/toxicity";
-import * as tf from '@tensorflow/tfjs'
+// import * as toxicity from "@tensorflow-models/toxicity";
+// import * as tf from '@tensorflow/tfjs'
+// import BadWords from 'bad-words';
+
 
 interface CommentProps {
   ideaId: any;
@@ -74,37 +75,25 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
       connection.stop().catch(error => console.log('Error while stopping connection: ' + error));
     };
   }, [dispatch, ideaId]);
-  const VIOLENT_WORDS = new Set(['violence', 'kill', 'murder', 'hurt', 'attack', 'die']);
-  const RACIST_WORDS = new Set(['racist', 'discriminate', 'hate', 'bigot', 'prejudice']);
 
-  const toxicityLabels = ['toxicity'];
-  const threshold = 0.7;
-  const toxicityClassifierPromise = tf.ready().then(() => toxicity.load(threshold, toxicityLabels));
-
+  const PERSPECTIVE_API_URL = `https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=${process.env.REACT_APP_PERSPECTIVE_API_KEY}`;
   const validateComment = async (commentText: string): Promise<string | null> => {
-    const badWords = new BadWords();
-    if (badWords.isProfane(commentText)) {
-      return 'Your comment contains offensive language.';
-    }
-    const words = commentText.toLowerCase().split(' ');
+    const response = await fetch(PERSPECTIVE_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        comment: { text: commentText },
+        requestedAttributes: {
+          TOXICITY: {},
+        },
+      }),
+    });
+    const { attributeScores } = await response.json();
 
-    for (const word of words) {
-      if (VIOLENT_WORDS.has(word)) {
-        return 'Your comment contains violent language.';
-      }
-      if (RACIST_WORDS.has(word)) {
-        return 'Your comment contains racist language.';
-      }
-    }
-
-    // Load the toxicity classifier model if it hasn't been loaded yet
-    const toxicityClassifier = await toxicityClassifierPromise;
-
-    const predictions = await toxicityClassifier.classify(commentText);
-    for (const prediction of predictions) {
-      if (prediction.results[0].match) {
-        return 'Your comment contains toxic content.';
-      }
+    if (attributeScores.TOXICITY.summaryScore.value >= 0.8) {
+      return 'Your comment has been flagged as potentially toxic and goes against our community standards. Please revise your comment to ensure it aligns with our guidelines.';
     }
     return null;
   };

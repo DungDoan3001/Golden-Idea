@@ -94,7 +94,7 @@ export default function Login() {
                         >
                             Sign In
                         </LoadingButton>
-                        <Grid container marginLeft={{ sm: 30, md: 30 }}>
+                        <Grid container marginLeft={{ sm: '20rem', md: '14rem' }}>
                             <Grid item>
                                 <Link to='/forgot' style={{ textDecoration: 'none' }}>
                                     {"Forgot password?"}
