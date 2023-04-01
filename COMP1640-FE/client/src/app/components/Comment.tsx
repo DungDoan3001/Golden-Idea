@@ -90,6 +90,13 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
         },
       }),
     });
+    if (!response.ok) {
+      // handle error
+      console.error('Error:', response);
+      // show toast message
+      toast.error('Cannot check the content of your comment');
+      return null;
+    }
     const { attributeScores } = await response.json();
 
     if (attributeScores.TOXICITY.summaryScore.value >= 0.8) {
