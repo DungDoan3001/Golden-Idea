@@ -11,6 +11,17 @@ This system is a secure web-enabled role-based platform for collecting ideas for
 - **The Application can be view at:** [GOLDENIDEA FRONT PAGE](https://goldenidea.dungdoan.me/) - OR - [MIRROR](https://golden-idea-comp-1640.vercel.app/)
 - **API Deffinition can be view at:** [API DEFFINITION](https://goldenidea.azurewebsites.net/swagger/index.html)
 
+# Account For Testing
+
+These accounts can only see emails at page [https://larksuite.com/mail](https://larksuite.com/mail).
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Administrator | administrator@dungdoan.me | Password@GoldenIdea |
+| QA Coordinator | qacoordinator@dungdoan.me | Password@GoldenIdea |
+| QA Manager | qamanager@dungdoan.me | Password@GoldenIdea |
+| Staff | staff@dungdoan.me | Password@GoldenIdea |
+
 ## Roles
 
 - **Quality Assurance Manager:** Oversees the process.
