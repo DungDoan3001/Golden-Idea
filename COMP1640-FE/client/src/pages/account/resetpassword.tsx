@@ -51,41 +51,70 @@ const ResetPass = () => {
             toast.error("Reset code is missing", { position: "top-right" });
             return;
         }
+        console.log(data);
         try {
             store.setRequestLoading(true);
-            const response = await agent.Account.resetpassword(resetCode, data)
-            store.setRequestLoading(false);
-            if (response.data && response.data.message) {
-                toast.success(response.data.message, {
-                    position: "top-right",
-                });
-            }
-            toast.success('Change password success - Login with new password ', {
-                position: "top-right",
+            const res = await fetch(`https://goldenidea.azurewebsites.net/api/authentication/change-password/${resetCode}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             });
-            router.navigate("/");
-        } catch (error: any) {
-            if (axios.isAxiosError(error)) {
-                const response = error.response;
-                if (response && response.status === 400) {
-                    toast.error(response.data.message, { position: "top-right" });
-                }
-                else if (response && response.status === 404) {
-                    toast.error("There is a conflict while changing password", { position: "top-right" });
-                    return;
-                }
-                else {
-                    toast.error("Invalid Token. Make sure that you use a latest email link .", {
-                        position: "top-right",
-                    });
-                }
-            } else {
-                toast.error("Invalid Token. Make sure that you use a latest email link .", {
+
+            const result = await res.json();
+            if (result.succeeded === true) {
+                store.setRequestLoading(false);
+                toast.success('Change password success - Login with new password ', {
                     position: "top-right",
                 });
+                router.navigate('/');
             }
+            else {
+                toast.error(`${result.statusCode} - ${result.message}`, {
+                    position: "top-right",
+                });
+                store.setRequestLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
             store.setRequestLoading(false);
         }
+        // try {
+        //     store.setRequestLoading(true);
+        //     const response = await agent.Account.resetpassword(resetCode, data)
+        //     store.setRequestLoading(false);
+        //     if (response.data && response.data.message) {
+        //         toast.success(response.data.message, {
+        //             position: "top-right",
+        //         });
+        //     }
+        //     toast.success('Change password success - Login with new password ', {
+        //         position: "top-right",
+        //     });
+        //     router.navigate("/");
+        // } catch (error: any) {
+        //     if (axios.isAxiosError(error)) {
+        //         const response = error.response;
+        //         if (response && response.status === 400) {
+        //             toast.error(response.data.message, { position: "top-right" });
+        //         }
+        //         else if (response && response.status === 404) {
+        //             toast.error("There is a conflict while changing password", { position: "top-right" });
+        //             return;
+        //         }
+        //         else {
+        //             toast.error("Invalid Token. Make sure that you use a latest email link .", {
+        //                 position: "top-right",
+        //             });
+        //         }
+        //     } else {
+        //         toast.error("Invalid Token. Make sure that you use a latest email link .", {
+        //             position: "top-right",
+        //         });
+        //     }
+        //     store.setRequestLoading(false);
+        // }
     };
 
     const onSubmitHandler: SubmitHandler<ResetPasswordInput> = (values) => {

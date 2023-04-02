@@ -6,6 +6,14 @@ This project is for the University of Greenwich and was written for the subject 
 
 This system is a secure web-enabled role-based platform for collecting ideas for improvement from staff in a large University.
 
+## Application Image
+
+### Login Form
+![Login](https://user-images.githubusercontent.com/97430041/229363694-6c9d265d-6a45-4fef-8207-dad194a99638.png)
+
+### Home Page
+![Home Page](https://user-images.githubusercontent.com/97430041/229363819-55ab0d6f-ceee-4c3b-b460-87b23ffd50ab.png)
+
 ## Related Link
 
 - **The Application can be view at:** [GOLDENIDEA FRONT PAGE](https://goldenidea.dungdoan.me/) - OR - [MIRROR](https://golden-idea-comp-1640.vercel.app/)

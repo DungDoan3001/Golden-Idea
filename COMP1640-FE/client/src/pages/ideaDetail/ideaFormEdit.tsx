@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Avatar, Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, Typography, useTheme } from '@mui/material'
+import { Avatar, Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, Typography, useTheme } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import AppImageInput from '../../app/components/AppImageInput'
@@ -196,7 +196,7 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
   }
 
   const handleGenerateImage = async () => {
-    const prompt = watch('Title');
+    const prompt = watch('title');
     if (!prompt) {
       toast.error('Sorry! Please enter the title to generate the image');
       return;
@@ -306,9 +306,16 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
           ) : (
             <Grid container item xs={12} sm={12} marginTop={3} display='flex' justifyContent='space-around' alignItems='center'>
               <Grid item>
-                <Button variant="contained" color="primary" onClick={handleGenerateImage} disabled={isGenerating}>
-                  {isGenerating ? 'Generating...' : 'Generate Image'}
-                </Button>
+                {isGenerating ? (
+                  <Button variant="contained" color="primary" disabled>
+                    <CircularProgress size={24} color="primary" />
+                    Please wait for generating ...
+                  </Button>
+                ) : (
+                  <Button variant="contained" color="primary" onClick={handleGenerateImage}>
+                    Generate Image
+                  </Button>
+                )}
               </Grid>
               <Grid item>
                 {image ? (
