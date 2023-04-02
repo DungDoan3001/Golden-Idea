@@ -63,7 +63,7 @@ const ResetPass = () => {
             });
 
             const result = await res.json();
-            if (result.statusCode === 200) {
+            if (result.statusCode == 200) {
                 store.setRequestLoading(false);
                 toast.success('Change password success - Login with new password ', {
                     position: "top-right",
