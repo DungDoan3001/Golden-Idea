@@ -88,6 +88,7 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
   const [termsAgreed, setTermsAgreed] = useState(false);
   const [updatedIdea, setUpdatedIdea] = useState(idea);
   const [deletedFiles, setDeletedFiles] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
   const watchFile = watch('File', null);
   let fetchMount = true;
   useEffect(() => {
@@ -196,7 +197,10 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
 
   const handleGenerateImage = async () => {
     const prompt = watch('Title');
-    if (!prompt) return;
+    if (!prompt) {
+      toast.error('Sorry! Please enter the title to generate the image');
+      return;
+    }
 
     const imageParameters = {
       model: 'image-alpha-001',
@@ -207,6 +211,7 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
     };
 
     try {
+      setIsGenerating(true);
       const response = await openAI.createImage(imageParameters);
       console.log(response);
       const imageBase64 = response.data.data[0].b64_json;
@@ -227,8 +232,12 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
         imageUrl = URL.createObjectURL(imageBlob);
       }
       setImage(imageUrl);
+      setIsGenerating(false);
+      toast.success('Image generated successfully! 🎉');
     } catch (error) {
       console.error(error);
+      toast.error('An error occurred while generating the image. Please try again later.');
+      setIsGenerating(false);
     }
   };
   function handleDeleteFile(filePath: any) {
@@ -297,7 +306,9 @@ const IdeaFormEdit = ({ idea, id, cancelEdit }: Props) => {
           ) : (
             <Grid container item xs={12} sm={12} marginTop={3} display='flex' justifyContent='space-around' alignItems='center'>
               <Grid item>
-                <Button variant="contained" color="primary" onClick={handleGenerateImage}>Generate Image</Button>
+                <Button variant="contained" color="primary" onClick={handleGenerateImage} disabled={isGenerating}>
+                  {isGenerating ? 'Generating...' : 'Generate Image'}
+                </Button>
               </Grid>
               <Grid item>
                 {image ? (

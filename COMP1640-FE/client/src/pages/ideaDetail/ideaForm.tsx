@@ -58,6 +58,7 @@ const IdeaForm = () => {
   const [image, setImage] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   let fetchMount = true;
   useEffect(() => {
@@ -143,7 +144,10 @@ const IdeaForm = () => {
 
   const handleGenerateImage = async () => {
     const prompt = watch('Title');
-    if (!prompt) return;
+    if (!prompt) {
+      toast.error('Sorry! Please enter the title to generate the image');
+      return;
+    }
 
     const imageParameters = {
       model: 'image-alpha-001',
@@ -154,8 +158,11 @@ const IdeaForm = () => {
     };
 
     try {
+      setIsGenerating(true);
       const response = await openAI.createImage(imageParameters);
+      console.log(response);
       const imageBase64 = response.data.data[0].b64_json;
+      console.log(response.data);
       let imageUrl;
       if (imageBase64) {
         const byteCharacters = atob(imageBase64);
@@ -172,9 +179,12 @@ const IdeaForm = () => {
         imageUrl = URL.createObjectURL(imageBlob);
       }
       setImage(imageUrl);
-      console.log(imageUrl);
+      setIsGenerating(false);
+      toast.success('Image generated successfully! 🎉');
     } catch (error) {
       console.error(error);
+      toast.error('An error occurred while generating the image. Please try again later.');
+      setIsGenerating(false);
     }
   };
   return (
@@ -234,7 +244,9 @@ const IdeaForm = () => {
           ) : (
             <Grid container item xs={12} sm={12} marginTop={3} display='flex' justifyContent='space-around' alignItems='center'>
               <Grid item>
-                <Button variant="contained" color="primary" onClick={handleGenerateImage}>Generate Image</Button>
+                <Button variant="contained" color="primary" onClick={handleGenerateImage} disabled={isGenerating}>
+                  {isGenerating ? 'Generating...' : 'Generate Image'}
+                </Button>
               </Grid>
               <Grid item>
                 {image ? (

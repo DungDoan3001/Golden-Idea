@@ -180,7 +180,6 @@ const IdeaDetail = () => {
       {(loading || loadReaction) || !user || !user.name ? <Loading /> :
         (editMode) ? <IdeaFormEdit cancelEdit={cancelEdit} id={idea?.topic.id} idea={idea} /> :
           <>
-            {console.log(idea)}
             <Box alignItems="center" justifyContent="center"
               width="100%"
               sx={{
@@ -315,14 +314,24 @@ const IdeaDetail = () => {
                     >
                     </Box>
                   </Box>
-                  <Box>
+                  <Box
+                    sx={{
+                      maxWidth: { xs: "85vw", sm: "60vw" },
+                      overflowX: "auto",
+                      width: "100%",
+                      height: { xs: "auto", sm: "auto" },
+                      objectFit: "contain",
+                      margin: { xs: "2rem 0", sm: "4rem 0" },
+                    }}
+                  >
                     <Typography
+                      variant="body1"
                       textAlign="justify"
-                      variant="h5"
                       color={theme.palette.content.main}
-                      fontSize="1rem"
+                      fontSize={{ xs: theme.typography.pxToRem(14), sm: theme.typography.pxToRem(16) }}
+                      lineHeight={{ xs: 1.5, sm: 1.8 }}
                     >
-                      {parse(idea?.content || '')}
+                      {parse(idea?.content || "")}
                     </Typography>
                   </Box>
                   {(idea && idea.files) ?
