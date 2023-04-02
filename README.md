@@ -13,14 +13,14 @@ This system is a secure web-enabled role-based platform for collecting ideas for
 
 # Account For Testing
 
-These accounts can only see emails at page [https://larksuite.com/mail](https://larksuite.com/mail).
+These accounts can only see emails if they go to the page [https://larksuite.com/mail](https://larksuite.com/mail). Please do not change the password of these accounts.
 
 | Role | Email | Password |
 | --- | --- | --- |
-| Administrator | administrator@dungdoan.me | Password@GoldenIdea |
-| QA Coordinator | qacoordinator@dungdoan.me | Password@GoldenIdea |
-| QA Manager | qamanager@dungdoan.me | Password@GoldenIdea |
-| Staff | staff@dungdoan.me | Password@GoldenIdea |
+| Administrator | administrator@dungdoan.me | Password@GoldenIdea2023 |
+| QA Coordinator | qacoordinator@dungdoan.me | Password@GoldenIdea2023 |
+| QA Manager | qamanager@dungdoan.me | Password@GoldenIdea2023 |
+| Staff | staff@dungdoan.me | Password@GoldenIdea2023 |
 
 ## Roles
 
