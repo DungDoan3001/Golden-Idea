@@ -13,7 +13,7 @@ This system is a secure web-enabled role-based platform for collecting ideas for
 
 # Account For Testing
 
-These accounts can only see emails if they go to the page [https://larksuite.com/mail](https://larksuite.com/mail). Please do not change the password of these accounts.
+These accounts can only see emails if they go to the page [https://larksuite.com/mail](https://larksuite.com/mail). **Please do not change the password of these accounts.**
 
 | Role | Email | Password |
 | --- | --- | --- |
