@@ -179,7 +179,7 @@ const IdeaDetail = () => {
     <>
       {(loading || loadReaction) || !user || !user.name ? <Loading /> :
         (editMode) ? <IdeaFormEdit cancelEdit={cancelEdit} id={idea?.topic.id} idea={idea} /> :
-          <>
+          idea ? (<>
             <Box alignItems="center" justifyContent="center"
               width="100%"
               sx={{
@@ -404,6 +404,7 @@ const IdeaDetail = () => {
             <Divider variant="fullWidth" />
             <Comment ideaId={idea?.id} isComment={isCommentAvailable} />
           </>
+          ) : <Typography variant="h2" align="left" fontWeight={'bold'} marginLeft={4.5} marginTop={3}>SORRY! NO DATA WITH THIS SLUG</Typography>
       }
       <ConfirmDialog
         confirmDialog={confirmDialog}
