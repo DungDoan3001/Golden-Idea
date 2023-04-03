@@ -151,7 +151,7 @@ const IdeaDetail = () => {
           let alink = document.createElement('a');
           alink.href = fileURL;
           // alink.download = idea.files[i].path;
-          alink.download = idea.files[i].fileName;
+          alink.download = idea.files[i].fileName.split('/').pop() + '.' + idea.files[i].fileExtension;
           alink.click();
         })
       })
