@@ -9,7 +9,7 @@ This system is a secure web-enabled role-based platform for collecting ideas for
 ## Application Image
 
 ### Login Form
-![Login](https://user-images.githubusercontent.com/97430041/229363694-6c9d265d-6a45-4fef-8207-dad194a99638.png)
+![Login](https://user-images.githubusercontent.com/105436645/229393213-633020a1-9c5a-4cce-9365-97f599028503.png)
 
 ### Home Page
 ![Home Page](https://user-images.githubusercontent.com/97430041/229363819-55ab0d6f-ceee-4c3b-b460-87b23ffd50ab.png)
@@ -83,7 +83,7 @@ Statistical analysis such as number of ideas per department is available.
 
 The technology stack for this system includes:
 
-- Front-end: React.js with Material UI framework, and SignalR integration
+- Front-end: React.js(Typescript) with Redux Toolkit - Redux Thunk, Material UI v5, SignalR, Alan AI, Tensorflow.js, Open AI, Perspective API, Alan AI 
 - Back-end: ASP.NET Core Web API with generic repository pattern, unit of work pattern, dependency injection, and SignalR integration
 - Database: PostgreSQL
 
