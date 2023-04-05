@@ -8,7 +8,6 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DownloadIcon from '@mui/icons-material/Download';
 import parse from 'html-react-parser';
 import PostAuthorInfo from '../../app/components/PostAuthorInfo';
 
@@ -30,6 +29,8 @@ import image from '../../app/assets/image.png';
 import text from '../../app/assets/text.png';
 import excel from '../../app/assets/excel.png';
 import AnonymousImage from '../../app/assets/anonymous.png';
+import FileRender from '../../app/components/FileRender';
+import { Visibility, Download, VisibilityOff } from '@mui/icons-material';
 
 const IdeaDetail = () => {
   const theme: any = useTheme();
@@ -44,6 +45,7 @@ const IdeaDetail = () => {
   const [isCommentAvailable, setIsCommentAvailable] = useState(true);
   const [isEditable, setIsEditable] = useState(true);
   const [editMode, setEditMode] = useState(false);
+  const [selectedFileUrl, setSelectedFileUrl] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -165,6 +167,7 @@ const IdeaDetail = () => {
       case 'docx':
         return word;
       case 'xlsx':
+      case 'csv':
         return excel;
       case 'txt':
         return text;
@@ -175,6 +178,14 @@ const IdeaDetail = () => {
         return NoImage;
     }
   }
+  const handleFileClick = (fileUrl: string) => {
+    if (selectedFileUrl === fileUrl) {
+      // If the same file is clicked again, close the document by setting the selected file URL to null
+      setSelectedFileUrl(null);
+    } else {
+      setSelectedFileUrl(fileUrl);
+    }
+  };
   return (
     <>
       {(loading || loadReaction) || !user || !user.name ? <Loading /> :
@@ -336,23 +347,36 @@ const IdeaDetail = () => {
                   </Box>
                   {(idea && idea.files) ?
                     idea.files.map((item: any, index: any) => (
-                      <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
-                        <Box
-                          component="img"
-                          alt="fileIcon"
-                          src={getFileIcon(item.fileExtension)}
-                          height="2.5rem"
-                          width="2.5rem"
-                          sx={{
-                            objectFit: "cover", mr: "1rem"
-                          }} />
-                        <Typography width="15rem" noWrap>
-                          {`${item.fileName}.${item.fileExtension}`}
-                        </Typography>
-                        <IconButton onClick={() => handleDownload((index))} sx={{ ml: "1rem" }}>
-                          <DownloadIcon />
-                        </IconButton>
-                      </Box>)) : (null)}
+                      <>
+                        <Box mt="2rem" display="flex" alignItems="center" justifyContent="left">
+                          <Box
+                            component="img"
+                            alt="fileIcon"
+                            src={getFileIcon(item.fileExtension)}
+                            height="2.5rem"
+                            width="2.5rem"
+                            sx={{
+                              objectFit: "cover", mr: "1rem"
+                            }} />
+                          <Typography
+                            width="15rem"
+                            noWrap
+                          >
+                            {`${item.fileName}.${item.fileExtension}`}
+                          </Typography>
+                          <IconButton onClick={() => handleFileClick(item.filePath)} sx={{ ml: "1rem" }}>
+                            {selectedFileUrl === item.filePath ? <VisibilityOff color="error" /> : <Visibility />}
+                          </IconButton>
+                          <IconButton onClick={() => handleDownload((index))} sx={{ ml: "1rem" }}>
+                            <Download />
+                          </IconButton>
+                        </Box>
+                      </>
+                    )
+                    ) : (null)}
+                  {selectedFileUrl !== null ? (
+                    <FileRender fileUrl={selectedFileUrl} />
+                  ) : null}
                   <Box m="1rem 0rem">
                     <IconButton onClick={ClickLike}>
                       {(isLike) ?

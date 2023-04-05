@@ -52,6 +52,7 @@ export const getFileIcon = (fileName: string) => {
             return <Description />;
         case 'xlsx':
         case 'txt':
+        case 'csv':
             return <InsertDriveFile />;
         default:
             return <InsertDriveFile />;
@@ -126,7 +127,7 @@ const FileInput: React.FC<FileInputProps> = ({ onChange, maxFiles }) => {
                     id="fileUpload"
                     type="file"
                     multiple
-                    accept=".pdf,.png,.doc,.docx,.txt,.xlsx,.jpg"
+                    accept=".pdf,.png,.doc,.docx,.txt,.xlsx,.jpg,.csv"
                     onChange={handleFileEvent}
                     style={{ display: 'none' }}
                 />
