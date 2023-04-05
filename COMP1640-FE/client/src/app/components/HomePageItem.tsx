@@ -131,7 +131,7 @@ const HomePageItem = ({ data }: HomePageItemProps) => {
               <PostAuthorInfo
                 avatar={data.isAnonymous ? AnonymousImage : data.user.avatar}
                 userName={data.isAnonymous ? 'Anonymous' : data.user.userName}
-                lastUpdate={data.lastUpdate}
+                lastUpdate={data.createdAt}
               />
             </Box>
 
