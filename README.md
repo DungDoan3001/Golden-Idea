@@ -60,8 +60,10 @@ These accounts can only see emails if they go to the page [https://larksuite.com
 | Idea Lists            | Lists of Most Popular, Most Viewed, Latest Ideas, and Latest Comments are available to all users (paginated with 5 per page).                                       |
 | Data Downloading      | The University QA Manager can download all data after final closure date in CSV format (uploaded documents in ZIP file).                                            |
 | System Administration | An administrator maintains system data such as closure dates and staff details.                                                                                     |
+| Document preview | When user go to the idea detail page, they can easily preview any document in the post without having to download it.                                                                                     |
 | AI voice Chatbot | User can ask some FAQ or change color mode or search ideas by title or navigate to any page in this app via AI voice chatbot.                                                                                     |
 | AI image generating | When user submit their ideas they can generate image with the title by using Generate image with Open AI Dall-E2.                                                                                     |
+| AI content validation | When user submit their comment, the Golden Idea app will use detect toxicity model to validate their idea .                                                                                     |
 ## Reports
 
 ### Statistics
