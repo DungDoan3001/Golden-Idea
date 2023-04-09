@@ -43,7 +43,7 @@ const ListIdeas = () => {
     return () => {
       fetchMount = false;
     };
-  }, []);
+  }, [name, id]);
 
   useEffect(() => {
     const today = new Date().getTime();
