@@ -71,6 +71,7 @@ const Navbar = () => {
     if (searchRef && searchRef.current) {
       const searchValue = searchRef.current.value;
       navigate(`/search/${searchValue}`);
+      searchRef.current.value = ""; // clear the search input
     }
   };
   return (

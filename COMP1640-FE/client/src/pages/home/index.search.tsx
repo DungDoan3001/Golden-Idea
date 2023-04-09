@@ -22,7 +22,7 @@ const SearchPage = () => {
         return () => {
             fetchMount = false;
         };
-    }, []);
+    }, [filter]);
     console.log(ideas_search)
     return (
         <>

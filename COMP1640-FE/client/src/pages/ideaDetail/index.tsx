@@ -56,6 +56,7 @@ const IdeaDetail = () => {
   }, [dispatch, slug]);
 
   useEffect(() => {
+    let unsubscribe = false;
     const fetchData = async () => {
       if (idea && user && user.name) {
         setLoadReaction(true);
@@ -64,13 +65,19 @@ const IdeaDetail = () => {
         }
         await agent.Idea.postView(idea.id, data)
         const res = await agent.Idea.getReaction(idea.id, user.name);
-        if (res.react === 1) setIslike(true)
-        else if (res.react === -1) setIsDislike(true)
-        setLoadReaction(false);
+        if (!unsubscribe) {
+          if (res.react === 1) setIslike(true)
+          else if (res.react === -1) setIsDislike(true)
+          setLoadReaction(false);
+        }
       }
     }
     fetchData();
-  }, [idea, user]);
+    return () => {
+      console.log("clean up");
+      unsubscribe = true;
+    }
+  }, [idea, user, slug]);
 
   useEffect(() => {
     if (idea && user && user.name) {
