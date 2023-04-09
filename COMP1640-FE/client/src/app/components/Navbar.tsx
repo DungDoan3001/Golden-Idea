@@ -70,6 +70,9 @@ const Navbar = () => {
   const handleSearch = () => {
     if (searchRef && searchRef.current) {
       const searchValue = searchRef.current.value;
+      if (!searchValue.trim()) {
+        return; // if search value is empty, return without handling the search
+      }
       navigate(`/search/${searchValue}`);
       searchRef.current.value = ""; // clear the search input
     }
