@@ -72,7 +72,7 @@ const ForgotPassword = () => {
                             onSubmit={handleSubmit(onSubmitHandler)}
                             className="sign-in-form"
                         >
-                            <h2 className="title">Change password</h2>
+                            <h2 className="title">Forgot password</h2>
                             <div className="input-field">
                                 <i>< ForwardToInbox /></i>
                                 <FormInput
