@@ -1,14 +1,18 @@
 using AutoMapper;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Web.Api.Configuration;
+using Web.Api.Data.Context;
 using Web.Api.DTOs.RequestModels;
 using Web.Api.DTOs.ResponseModels;
 using Web.Api.Entities;
@@ -32,8 +36,9 @@ namespace Web.Api.Controllers
         private readonly IResetPasswordService _resetPasswordService;
         private readonly IFileUploadService _fileUploadService;
         private readonly IMemoryCache _cache;
+        protected AppDbContext _context;
         private CacheKey _cacheKey;
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService, IMemoryCache cache, CacheKey cacheKey)
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, RoleManager<Entities.Role> roleManager, IAuthenticationManager authManager, IResetPasswordService resetPasswordService, IFileUploadService fileUploadService, IMemoryCache cache, CacheKey cacheKey, AppDbContext context)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -43,6 +48,7 @@ namespace Web.Api.Controllers
             _fileUploadService = fileUploadService;
             _cache = cache;
             _cacheKey = cacheKey;
+            _context = context;
         }
         /// <summary>
         /// Create a user.
@@ -62,6 +68,14 @@ namespace Web.Api.Controllers
                 if (!await roleManager.RoleExistsAsync(userForRegistration.Role))
                 {
                     return NotFound(new MessageResponseModel { Message = "The role does not existed!", StatusCode = (int)HttpStatusCode.NotFound });
+                }
+                var usersInRole = await _userManager.GetUsersInRoleAsync(userForRegistration.Role);
+                foreach(var userInRole in usersInRole)
+                {
+                    if(userInRole.DepartmentId == userForRegistration.DepartmentId)
+                    {
+                        return Conflict(new MessageResponseModel { Message = "The department has exist a QA Manager, each department has only one QA Manager", StatusCode = (int)HttpStatusCode.NotFound });
+                    }
                 }
                 if (await _userManager.FindByEmailAsync(userForRegistration.Email) != null)
                 {

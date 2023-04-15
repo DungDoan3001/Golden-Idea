@@ -59,6 +59,7 @@ namespace Web.Api.Services.User
             try
             {
                 var roles = _roleManager.Roles.AsNoTracking().ToList();
+                
                 roles.Remove(roles.Single(r => r.Name == "Staff"));
                 List<Entities.User> result = new List<Entities.User>();
                 foreach(var role in roles)

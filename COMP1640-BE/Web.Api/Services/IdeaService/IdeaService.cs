@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.Api.Data.Context;
 using Web.Api.Data.Queries;
 using Web.Api.Data.Repository;
 using Web.Api.Data.UnitOfWork;
@@ -21,7 +23,8 @@ namespace Web.Api.Services.IdeaService
         private readonly IEmailService _emailService;
         private readonly UserManager<Entities.User> _userManager;
         private readonly IConfiguration _configuration;
-        public IdeaService(IUnitOfWork unitOfWork, IIdeaQuery ideaQuery, IEmailService emailService, UserManager<Entities.User> userManager, IConfiguration configuration)
+        protected AppDbContext _context;
+        public IdeaService(IUnitOfWork unitOfWork, IIdeaQuery ideaQuery, IEmailService emailService, UserManager<Entities.User> userManager, IConfiguration configuration, AppDbContext context)
         {
             _unitOfWork = unitOfWork;
             _ideaRepo = unitOfWork.GetBaseRepo<Idea>();
@@ -29,6 +32,7 @@ namespace Web.Api.Services.IdeaService
             _emailService = emailService;
             _userManager = userManager;
             _configuration = configuration;
+            _context = context;
         }
 
         public async Task<IEnumerable<Idea>> GetAllAsync()
@@ -176,7 +180,22 @@ namespace Web.Api.Services.IdeaService
 
         public async Task<bool> SendEmailNotifyUserCreateIdea(Entities.Idea idea)
         {
+            List<Entities.User> userInfoToSendEmail = new List<Entities.User>();
             var ownerTopic = await _userManager.FindByIdAsync(idea.Topic.UserId.ToString());
+            var roleOfOwnerTopic = await _userManager.GetRolesAsync(ownerTopic);
+            if (roleOfOwnerTopic.FirstOrDefault().ToLower().Trim() != "qamanager")
+            {
+                //Check user have QA role and the same department
+                var allUserInQAManagerRole = await _userManager.GetUsersInRoleAsync("QA Manager"); // get QA manager
+                foreach(var QAManager in allUserInQAManagerRole)
+                {
+                    if(QAManager.DepartmentId == ownerTopic.DepartmentId)
+                    {
+                        userInfoToSendEmail.Add(QAManager);
+                    }
+                }               
+            }
+            userInfoToSendEmail.Add(ownerTopic);
 
             string appDomain = _configuration.GetSection("Application:AppDomain").Value;
             string ideaDetailLink = _configuration.GetSection("Application:IdeaDetail").Value; //id topic + slug idea
@@ -187,15 +206,20 @@ namespace Web.Api.Services.IdeaService
             string html1 = "</span>\r\n                  <p style=\"color:#455056; font-size:1em;line-height:24px;\">\r\n                    Notify: Your topic get a new idea!\r\n                   </p>\r\n                  <a href=\"";
             string html2 = "\"\r\n                    style=\"background:#f6f872;text-decoration:none !important; font-weight:500; margin-top:35px; color:#000000;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;\">Click here to see the idea</a>\r\n                    </a>\r\n                </td>\r\n              </tr>\r\n              <tr>\r\n                <td style=\"height:40px;\">&nbsp;</td>\r\n              </tr>\r\n            </table>\r\n          </td>\r\n        <tr>\r\n          <td style=\"height:20px;\">&nbsp;</td>\r\n        </tr>\r\n        <tr>\r\n          <td style=\"text-align:center;\">\r\n            <p style=\"font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;\">\r\n              &copy; <strong>www.goldenidea.dungdoan.me.com</strong></p>\r\n          </td>\r\n        </tr>\r\n        <tr>\r\n          <td style=\"height:50px;\">&nbsp;</td>\r\n        </tr>\r\n      </table>\r\n    </td>\r\n  </tr>\r\n</table>";
             string mainHtml = html1 + appDomain + ideaDetailLink + html2;
-            SendEmailOptions option = new SendEmailOptions
+            bool checkSendEmail = true;
+            foreach(var user in userInfoToSendEmail)
             {
-                ToName = ownerTopic.Name,
-                ToEmail = ownerTopic.Email,
-                Body = string.Format(html + mainHtml, idea.Slug),
-                Subject = "[Golden Idea] Notify to your topic"
-            };
-            var result = await _emailService.SendEmailAsync(option.ToName, option.ToEmail, option.Subject, option.Body);
-            return result;
+                SendEmailOptions option = new SendEmailOptions
+                {
+                    ToName = user.Name,
+                    ToEmail = user.Email,
+                    Body = string.Format(html + mainHtml, idea.Slug),
+                    Subject = "[Golden Idea] Notify to your topic"
+                };
+                var result = await _emailService.SendEmailAsync(option.ToName, option.ToEmail, option.Subject, option.Body);
+                checkSendEmail = result;
+            }
+            return checkSendEmail;
         }
     }
 }
