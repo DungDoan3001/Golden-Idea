@@ -44,6 +44,7 @@ const IdeaDetail = () => {
   const { user } = useAppSelector(state => state.account);
   const [isCommentAvailable, setIsCommentAvailable] = useState(true);
   const [isEditable, setIsEditable] = useState(true);
+  const [isDelete, setIsDelete] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [selectedFileUrl, setSelectedFileUrl] = useState<string | null>(null);
 
@@ -90,7 +91,8 @@ const IdeaDetail = () => {
 
       const today = new Date().getTime();
       const closureDate = new Date(idea?.topic.closureDate).getTime();
-      setIsEditable(today < closureDate && user.name === idea.user.userName);
+      setIsEditable((today < closureDate && user.name === idea.user.userName) || (today < closureDate && user?.role[0] === 'Administrator'));
+      setIsDelete((today < closureDate && user?.role[0] === 'Administrator'));
     }
   }, [idea, user]);
 
@@ -296,27 +298,31 @@ const IdeaDetail = () => {
                       />
                     </Grid>
                     <Grid item xs={9} sm={8} md={6}>
-                      {(isEditable) ? (<Box display="flex" justifyContent="right" alignItems="right">
-                        <IconButton
-                          color="info"
-                          style={{ marginRight: "1rem" }}
-                          onClick={() => handleEdit(idea)}
-                        >
-                          <EditIcon style={{ fontSize: "1.25rem" }} />
-                        </IconButton>
-                        <IconButton
-                          color="error"
-                          style={{ marginRight: "1rem" }}
-                          onClick={() => setConfirmDialog({
-                            isOpen: true,
-                            title: 'Are you sure to delete this record?',
-                            subTitle: "You can't undo this operation",
-                            onConfirm: () => { handleDelete(idea?.id) }
-                          })}
-                        >
-                          <DeleteIcon style={{ fontSize: "1.25rem" }} />
-                        </IconButton>
-                      </Box>) : (null)}
+                      <Box display="flex" justifyContent="right" alignItems="right">
+                        {(isEditable) ? (
+                          <IconButton
+                            color="info"
+                            style={{ marginRight: "1rem" }}
+                            onClick={() => handleEdit(idea)}
+                          >
+                            <EditIcon style={{ fontSize: "1.25rem" }} />
+                          </IconButton>
+                        ) : (null)}
+                        {(isDelete) ? (
+                          <IconButton
+                            color="error"
+                            style={{ marginRight: "1rem" }}
+                            onClick={() => setConfirmDialog({
+                              isOpen: true,
+                              title: 'Are you sure to delete this record?',
+                              subTitle: "You can't undo this operation",
+                              onConfirm: () => { handleDelete(idea?.id) }
+                            })}
+                          >
+                            <DeleteIcon style={{ fontSize: "1.25rem" }} />
+                          </IconButton>
+                        ) : (null)}
+                      </Box>
                     </Grid>
                   </Grid>
                   <Box m="2rem" display="flex" alignItems="center" justifyContent="center">
