@@ -91,10 +91,10 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(getAllCacheKey, ideaResponses.OrderBy(x => x.Title), cacheEntryOptions);
+                    _cache.Set(getAllCacheKey, ideaResponses.OrderByDescending(x => x.CreatedAt), cacheEntryOptions);
                     _cacheKey.IdeaCacheKey.Add(getAllCacheKey);
-                }
-                return Ok(ideaResponses.OrderBy(x => x.Title));
+                }   
+                return Ok(ideaResponses.OrderByDescending(x => x.CreatedAt));
             }
             catch (Exception ex)
             {
@@ -129,10 +129,10 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(getAllByAuthorCacheKey, ideaResponses.OrderBy(x => x.Title), cacheEntryOptions);
+                    _cache.Set(getAllByAuthorCacheKey, ideaResponses.OrderByDescending(x => x.CreatedAt), cacheEntryOptions);
                     _cacheKey.IdeaCacheKey.Add(getAllByAuthorCacheKey);
                 }
-                return Ok(ideaResponses.OrderBy(x => x.Title));
+                return Ok(ideaResponses.OrderByDescending(x => x.CreatedAt));
             }
             catch (Exception ex)
             {
@@ -243,10 +243,10 @@ namespace Web.Api.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(45))
                         .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                         .SetPriority(CacheItemPriority.Normal);
-                    _cache.Set(getByTopicCacheKey, ideaResponses.OrderBy(x => x.Title), cacheEntryOptions);
+                    _cache.Set(getByTopicCacheKey, ideaResponses.OrderByDescending(x => x.CreatedAt), cacheEntryOptions);
                     _cacheKey.IdeaCacheKey.Add(getByTopicCacheKey);
                 }   
-                return Ok(ideaResponses.OrderBy(x => x.Title));
+                return Ok(ideaResponses.OrderByDescending(x => x.CreatedAt));
             }
             catch (Exception ex)
             {
@@ -404,14 +404,17 @@ namespace Web.Api.Controllers
                         Errors = new List<string> { "Can not find idea with the given id." }
                     });
                 }
-                if ((idea.User.UserName != userName && userRole != IdentityRoles.Administrator) || userRole != IdentityRoles.Administrator)
+                if(userRole != IdentityRoles.Administrator)
                 {
-                    return Conflict(new MessageResponseModel
+                    if(idea.User.UserName != userName)
                     {
-                        Message = "Forbiden",
-                        StatusCode = (int)HttpStatusCode.Conflict,
-                        Errors = new List<string> { "Only user that create the idea or admin can edit this idea." }
-                    });
+                        return Conflict(new MessageResponseModel
+                        {
+                            Message = "Forbiden",
+                            StatusCode = (int)HttpStatusCode.Conflict,
+                            Errors = new List<string> { "Only user that create the idea or admin can edit this idea." }
+                        });
+                    }
                 }
 
                 // Delete old media
