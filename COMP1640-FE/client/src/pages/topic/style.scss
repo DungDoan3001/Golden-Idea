@@ -1,0 +1,89 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: medium;
+
+  .MuiFormControl-root {
+    margin-bottom: 24px;
+    width: 100%;
+
+    .MuiInput-root {
+      border-radius: 4px;
+      background-color: #f7f7f7;
+      padding: 8px 12px;
+      font-size: 12px;
+
+      &:hover {
+        background-color: #ebebeb;
+      }
+
+      &:focus {
+        background-color: #f3f3f3;
+      }
+
+      &.Mui-error {
+        background-color: #ffd2d2;
+      }
+    }
+  }
+
+  .MuiButton-root {
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 24px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    &:active {
+      box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.3);
+    }
+
+    &.MuiButton-containedPrimary {
+      background-color: #007aff;
+      color: #fff;
+
+      &:hover {
+        background-color: #0052cc;
+      }
+
+      &:active {
+        background-color: #0069d9;
+      }
+    }
+
+    &.MuiButton-containedSuccess {
+      background-color: #4caf50;
+      color: #fff;
+
+      &:hover {
+        background-color: #388e3c;
+      }
+
+      &:active {
+        background-color: #43a047;
+      }
+    }
+  }
+
+  .MuiBox-root {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    margin-top: 24px;
+    margin-bottom: 8px;
+
+    @media (min-width: 960px) {
+      margin-left: 25px;
+    }
+
+    button {
+      margin-right: 0.5rem;
+    }
+  }
+}
