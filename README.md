@@ -18,7 +18,7 @@ This system is a secure web-enabled role-based platform for collecting ideas for
 
 - **The Application can be view at:** [GOLDENIDEA FRONT PAGE](https://goldenidea.dungdoan.me/) - OR - [MIRROR](https://golden-idea-comp-1640.vercel.app/)
 - **API Deffinition can be view at:** [API DEFFINITION](https://goldenidea.azurewebsites.net/swagger/index.html)
-- **Application screencast can be view at:** [Screencast](https://youtu.be/JFjaqxtrjbM)
+- **Application screencast can be view at:** [SCREENCAST](https://youtu.be/JFjaqxtrjbM)
 
 # Account For Testing
 
