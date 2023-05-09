@@ -5,7 +5,7 @@ import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
 import { RootState, useAppSelector } from '../store/configureStore';
-import { Paper, Grid, Avatar, Box, Divider, Checkbox, TextField, IconButton, Typography, CircularProgress } from '@mui/material';
+import { Paper, Grid, Avatar, Box, Divider, Checkbox, TextField, IconButton, Typography, CircularProgress, useMediaQuery } from '@mui/material';
 import moment from 'moment';
 import { useTheme } from '@mui/styles';
 import Loading from './Loading';
@@ -47,6 +47,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
   const [isSending, setIsSending] = useState(false);
   const [sendIcon, setSendIcon] = useState(<Send />);
   const theme: any = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   useEffect(() => {
     var token = sessionStorage.getItem('user');
     const connection = new HubConnectionBuilder()
@@ -208,21 +209,21 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
             !comments.length ? (<Typography>No comment</Typography>) : (comment.map((item: any) => (
               <Paper
                 sx={{ backgroundColor: theme.palette.comment.main }}
-                style={{ padding: "1rem 1rem 0rem" }}
+                style={{ padding: isMobile ? "0.5rem 0.5rem 0rem" : "1rem 1rem 0rem" }}
               >
-                <Grid container wrap="nowrap" spacing={2}>
+                <Grid container wrap="nowrap" spacing={isMobile ? 1 : 2}>
                   <Grid item>
                     <Avatar alt="Profile Image" src={item.isAnonymous ? '' : item.avatar} />
                   </Grid>
                   <Grid item xs zeroMinWidth>
-                    <Grid container wrap="nowrap" spacing={2}>
+                    <Grid container wrap="nowrap" spacing={isMobile ? 1 : 2}>
                       <Grid item xs zeroMinWidth>
-                        <Box fontSize="1.1rem" component="h4" justifyContent="left">
+                        <Box fontSize={isMobile ? "1rem" : "1.1rem"} component="h4" justifyContent="left">
                           {item.isAnonymous ? 'Anonymous' : item.username}
                         </Box>
                       </Grid>
                       <Grid item xs zeroMinWidth>
-                        <Box mt="0.25rem" fontSize="0.8rem" display="flex" justifyContent="right" alignItems="center" color="gray">
+                        <Box mt="0.25rem" fontSize={isMobile ? "0.7rem" : "0.8rem"} display="flex" justifyContent="right" alignItems="center" color="gray">
                           {moment.utc(item.createdDate).utcOffset(moment().utcOffset()).format("hh:mm A | DD/MM/YYYY")}
                         </Box>
                       </Grid>
@@ -230,7 +231,7 @@ const Comment: React.FC<CommentProps> = ({ ideaId, isComment }) => {
                     {item.content}
                   </Grid>
                 </Grid>
-                <Divider variant="fullWidth" style={{ margin: "1rem 0rem" }} />
+                <Divider variant="fullWidth" style={{ margin: isMobile ? "0.5rem 0rem" : "1rem 0rem" }} />
               </Paper>
             )))
           }
